@@ -4,7 +4,7 @@ import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { Avatar, Col, Row, Space, Typography } from 'antd'
 
-import { curve, slippage } from 'app/helper/oracle'
+import { slippage } from 'app/helper/oracle'
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
 import { numeric } from 'shared/util'
@@ -72,10 +72,10 @@ const SwapInfo = () => {
   const hopLastRoute = route?.hops.at(-1) // get lasted route hop
   const bidAmoutLastRoute = route?.amounts.at(-1) || '' // laseted route bid amount
 
-  const askAmountLastRoute = useMemo(() => {
-    if (!hopLastRoute) return 0
-    return curve(bidAmoutLastRoute, hopLastRoute)
-  }, [bidAmoutLastRoute, hopLastRoute])
+  // const askAmountLastRoute = useMemo(() => {
+  //   if (!hopLastRoute) return 0
+  //   return curve(bidAmoutLastRoute, hopLastRoute)
+  // }, [bidAmoutLastRoute, hopLastRoute])
   const slippageRate = useMemo(() => {
     if (!hopLastRoute) return 0
     return utils.undecimalize(slippage(bidAmoutLastRoute, hopLastRoute), 9)
