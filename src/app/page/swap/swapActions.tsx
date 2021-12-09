@@ -1,7 +1,7 @@
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { Card, Col, Row, Typography } from 'antd'
 import SwapButton from 'app/components/swapButton'
-import SwapInfo from 'app/components/swapInfo'
+import SwapInfo from 'app/components/preview'
 import { AppState } from 'app/model'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'

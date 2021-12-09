@@ -1,5 +1,5 @@
 import { utils, Swap } from '@senswap/sen-js'
-import { HopData } from 'app/components/preview/hop'
+import { HopData } from 'app/components/preview/index'
 import { extractReserve } from './router'
 
 export const ORACLE = Swap.oracle

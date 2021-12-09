@@ -4,7 +4,7 @@ import { curve } from './oracle'
 import { State as BidState } from 'app/model/bid.controller'
 import { State as AskState } from 'app/model/ask.controller'
 import { inverseCurve } from './oracle'
-import { HopData } from 'app/components/preview/hop'
+import { HopData } from 'app/components/preview/index'
 import TokenProvider from 'os/providers/tokenProvider'
 
 const POOL_ACTIVITY_STATUS = 1

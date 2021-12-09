@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
-import { Row, Col, Typography, Button, Card, Space, Tooltip, Tag } from 'antd'
+import { Row, Col, Typography, Button, Space, Tooltip, Tag } from 'antd'
 
 import { AppDispatch, AppState } from 'app/model'
 import cgk, { MintInfo } from 'app/helper/cgk'
@@ -121,32 +121,26 @@ const Bid = () => {
         </Space>
       </Col>
       <Col span={24}>
-        <Card
-          bordered={false}
-          className="card-child card-input"
-          bodyStyle={{ padding: 4 }}
-        >
-          <NumericInput
-            placeholder="0"
-            value={bidData.amount}
-            onChange={onAmount}
-            prefix={
-              <Selection value={selectionInfo} onChange={onSelectionInfo} />
-            }
-            suffix={
-              <Button
-                type="text"
-                size="small"
-                style={{ fontSize: 12, marginRight: -7 }}
-                onClick={onMax}
-              >
-                MAX
-              </Button>
-            }
-            bordered={false}
-            max={balance}
-          />
-        </Card>
+        <NumericInput
+          placeholder="0"
+          value={bidData.amount}
+          onChange={onAmount}
+          size="large"
+          prefix={
+            <Selection value={selectionInfo} onChange={onSelectionInfo} />
+          }
+          suffix={
+            <Button
+              type="text"
+              size="small"
+              style={{ fontSize: 12, marginRight: -7 }}
+              onClick={onMax}
+            >
+              MAX
+            </Button>
+          }
+          max={balance}
+        />
       </Col>
       <Col span={24}>
         <Row gutter={[4, 4]} style={{ fontSize: 12, marginLeft: 2 }}>

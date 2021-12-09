@@ -26,11 +26,12 @@ const Selection = ({
   const { logoURI, symbol } = value?.mintInfo || {}
   return (
     <Fragment>
-      <Space
-        style={{ marginLeft: -6, cursor: 'pointer' }}
-        onClick={() => setVisible(true)}
-      >
-        <Avatar size={24} src={logoURI}>
+      <Space style={{ cursor: 'pointer' }} onClick={() => setVisible(true)}>
+        <Avatar
+          size={24}
+          src={logoURI}
+          style={{ backgroundColor: '#2D3355', border: 'none' }}
+        >
           <IonIcon name="diamond-outline" />
         </Avatar>
         <Typography.Text type="secondary" style={{ margin: 0 }}>
