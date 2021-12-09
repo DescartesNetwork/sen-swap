@@ -3,7 +3,7 @@ import { forceCheck } from 'react-lazyload'
 
 import { Row, Col, Avatar, Space, Typography, Divider, Modal } from 'antd'
 import MintSelection, { SelectionInfo } from './mintSelection'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const Selection = ({
   value,

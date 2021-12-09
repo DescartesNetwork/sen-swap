@@ -8,7 +8,7 @@ import { curve, slippage } from 'app/helper/oracle'
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
 import { numeric } from 'shared/util'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const ExtraTypography = ({
   label = '',

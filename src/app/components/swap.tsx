@@ -4,7 +4,7 @@ import { account } from '@senswap/sen-js'
 
 import { Row, Col, Button } from 'antd'
 import Bid from './bid'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 import Ask from './ask'
 
 import {

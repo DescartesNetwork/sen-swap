@@ -2,7 +2,7 @@ import moment from 'moment'
 
 import { Card, Col, Row, Typography, Table, Button } from 'antd'
 import { HISTORY_COLUMN } from './column'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 import './index.less'
 

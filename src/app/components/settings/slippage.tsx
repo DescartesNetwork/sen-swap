@@ -1,5 +1,5 @@
 import { Row, Col, Button, Typography, Tooltip } from 'antd'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const Option = ({
   label,

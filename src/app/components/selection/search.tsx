@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { Card, Input, Button } from 'antd'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 import { TokenInfo } from '@solana/spl-token-registry'
 import { useMint } from 'senhub/providers'

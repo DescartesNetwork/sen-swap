@@ -1,5 +1,5 @@
 import { Row, Col, Typography, Switch } from 'antd'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const Advanced = ({
   value,

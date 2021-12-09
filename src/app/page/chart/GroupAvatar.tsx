@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Avatar, AvatarProps } from 'antd'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const GroupAvatar = ({
   icons = [],

@@ -4,7 +4,7 @@ import { utils } from '@senswap/sen-js'
 import { Row, Col, Card, Space, Avatar, Typography, Tooltip } from 'antd'
 
 import { AppState } from 'app/model'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 import { numeric } from 'shared/util'
 
 const WrapSol = ({ amount }: { amount: bigint }) => {

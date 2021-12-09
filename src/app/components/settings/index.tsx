@@ -6,7 +6,7 @@ import Advanced from './advanced'
 
 import { updateSettings } from 'app/model/settings.controller'
 import { AppDispatch, AppState } from 'app/model'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const Settings = () => {
   const dispatch = useDispatch<AppDispatch>()

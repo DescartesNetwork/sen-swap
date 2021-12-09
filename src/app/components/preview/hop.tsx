@@ -3,7 +3,7 @@ import { TokenInfo } from '@solana/spl-token-registry'
 import { PoolData, utils } from '@senswap/sen-js'
 
 import { Row, Col, Card, Space, Avatar, Button, Typography } from 'antd'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 import { AppState } from 'app/model'
 import { numeric } from 'shared/util'

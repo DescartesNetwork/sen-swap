@@ -11,7 +11,7 @@ import Pool from './pool'
 
 import { AppState } from 'app/model'
 import { extractReserve, pointSorting } from 'app/helper/router'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 import { useMint, usePool } from 'senhub/providers'
 
 export type SelectionInfo = {

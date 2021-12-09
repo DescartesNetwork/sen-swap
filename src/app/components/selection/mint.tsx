@@ -10,7 +10,7 @@ import {
   Divider,
   Button,
 } from 'antd'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const Mint = ({
   logoURI,

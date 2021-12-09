@@ -6,7 +6,7 @@ import { Space, Avatar, Typography, Card, Divider, Tooltip } from 'antd'
 import { useMint } from 'senhub/providers'
 import { fetchCGK } from 'shared/helper'
 import { numeric } from 'shared/util'
-import IonIcon from 'shared/ionicon'
+import IonIcon from 'shared/antd/ionicon'
 
 const Pool = ({
   value,
