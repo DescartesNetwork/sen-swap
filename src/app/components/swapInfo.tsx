@@ -94,8 +94,6 @@ const SwapInfo = () => {
     return listRouteIcons
   }, [bidMintInfo, route?.hops])
 
-  console.log(route, wrapAmount, route?.hops.at(-1), 'route')
-
   return (
     <Row gutter={[12, 12]}>
       <Col span={24}>
