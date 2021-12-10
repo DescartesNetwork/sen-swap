@@ -29,30 +29,21 @@ export const HISTORY_COLUMN = [
       </Space>
     ),
   },
-  {
-    title: 'PAID',
-    dataIndex: 'paid',
-    render: (text: string, record: any) => (
-      <Space>
-        <MintAvatar mintAddress={record.from} />
-        <MintSymbol mintAddress={record.from} />
-        <span>-</span>
-        <MintAvatar mintAddress={record.to} />
-        <MintSymbol mintAddress={record.to} />
-      </Space>
-    ),
-  },
+
   {
     title: 'AMOUNT',
     dataIndex: 'amount',
-    align: 'center' as 'center',
+    width: 400,
     render: (text: string, record: any) => (
-      <Typography.Text>
-        <Space size={4}>
-          {text}
-          <MintSymbol mintAddress={record.from} />
-        </Space>
-      </Typography.Text>
+      <Space size={8}>
+        {record.amountFrom}
+        <MintSymbol mintAddress={record.from} />
+        <MintAvatar mintAddress={record.from} />
+        <IonIcon name="arrow-forward-outline" />
+        {record.amountTo}
+        <MintSymbol mintAddress={record.to} />
+        <MintAvatar mintAddress={record.to} />
+      </Space>
     ),
   },
   {
