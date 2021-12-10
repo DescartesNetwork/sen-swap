@@ -1,32 +1,45 @@
-import { useState } from 'react'
-import moment from 'moment'
+import { useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Card, Col, Row, Typography, Table, Button } from 'antd'
 import { HISTORY_COLUMN } from './column'
 import IonIcon from 'shared/antd/ionicon'
 
+import { fetchHistorySwap } from 'app/model/history.controller'
+import { AppDispatch, AppState } from 'app/model'
+
 import './index.less'
 
 const ROW_PER_PAGE = 5
+const LIMIT_IN_STORE = 10
 
 const History = () => {
   const [amountRow, setAmountRow] = useState(ROW_PER_PAGE)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const data = {
-    key: 0,
-    time: moment().format('DD MMM, YYYY hh:mm'),
-    transaction: 'Swap Solana',
-    paid: 'Solana - Ethereum',
-    amount: '',
-    status: 'success',
-  }
-  const sources = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((e) => {
-    data.key = e
-    data.amount = `${e} SOL`
-    return { ...data }
-  })
+  const { historySwap } = useSelector((state: AppState) => state.history)
+  const dispatch = useDispatch<AppDispatch>()
+
+  const fetchHistory = useCallback(async () => {
+    await dispatch(fetchHistorySwap({})).unwrap()
+    setIsLoading(false)
+  }, [dispatch])
+
+  useEffect(() => {
+    fetchHistory()
+  }, [fetchHistory])
 
   const onHandleViewMore = () => {
+    const currentTransactionDataLength = historySwap.slice(0, amountRow).length
+
+    if (historySwap.length - currentTransactionDataLength <= LIMIT_IN_STORE) {
+      const lastSignature = historySwap.at(-1)?.transactionId
+      dispatch(
+        fetchHistorySwap({
+          lastSignature,
+        }),
+      )
+    }
     setAmountRow(amountRow + ROW_PER_PAGE)
   }
 
@@ -41,7 +54,8 @@ const History = () => {
             <Col span={24} style={{ height: 336 }}>
               <Table
                 columns={HISTORY_COLUMN}
-                dataSource={sources.slice(0, amountRow)}
+                dataSource={historySwap.slice(0, amountRow)}
+                loading={isLoading}
                 pagination={false}
                 rowClassName={(record, index) =>
                   index % 2 ? 'odd-row' : 'even-row'
@@ -54,7 +68,7 @@ const History = () => {
                 onClick={onHandleViewMore}
                 type="text"
                 icon={<IonIcon name="chevron-down-outline" />}
-                disabled={amountRow >= sources.length}
+                disabled={amountRow >= historySwap.length}
               >
                 View more
               </Button>
