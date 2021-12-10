@@ -2,13 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export type State = {
   slippage: number
-  advanced: boolean
 }
 
-const NAME = 'sen-swap'
+const NAME = 'settings'
 const initialState: State = {
   slippage: 0.01,
-  advanced: false,
 }
 
 /**
@@ -17,9 +15,7 @@ const initialState: State = {
 
 export const updateSettings = createAsyncThunk(
   `${NAME}/updateSettings`,
-  async (settings: Partial<State>) => {
-    return settings
-  },
+  async (settings: Partial<State>) => ({ ...settings }),
 )
 
 /**

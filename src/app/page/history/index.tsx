@@ -27,6 +27,7 @@ const History = () => {
 
   useEffect(() => {
     fetchHistory()
+    return () => setIsLoading(false)
   }, [fetchHistory])
 
   const onHandleViewMore = () => {
@@ -37,6 +38,7 @@ const History = () => {
       dispatch(
         fetchHistorySwap({
           lastSignature,
+          isLoadMore: true,
         }),
       )
     }
@@ -44,10 +46,20 @@ const History = () => {
   }
 
   return (
-    <Card bordered={false} style={{ height: 464 }}>
+    <Card bordered={false} style={{ height: 472 }}>
       <Row gutter={[16, 24]}>
-        <Col>
+        <Col flex="auto">
           <Typography.Title level={5}>Swap history</Typography.Title>
+        </Col>
+        <Col>
+          <Button
+            onClick={() => {
+              setIsLoading(true)
+              fetchHistory()
+            }}
+          >
+            Refresh
+          </Button>
         </Col>
         <Col span={24}>
           <Row justify="center" gutter={[16, 9]}>

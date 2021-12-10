@@ -20,7 +20,6 @@ import { useMintSelection } from '../hooks/useMintSelection'
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { wallet } = useWallet()
-  const settings = useSelector((state: AppState) => state.settings)
   const askData = useSelector((state: AppState) => state.ask)
 
   const { balance } = useMintAccount(askData.accountAddress)
@@ -36,7 +35,6 @@ const Ask = () => {
   const selectionInfo: SelectionInfo = useMemo(
     () => ({
       mintInfo: askData.mintInfo,
-      poolAddress: askData.poolAddress,
       poolAddresses: askData.poolAddresses,
     }),
     [askData],
@@ -59,10 +57,6 @@ const Ask = () => {
     )
     dispatch(updateAskData({ accountAddress, ...selectionInfo }))
   }
-
-  useEffect(() => {
-    if (!settings.advanced) dispatch(updateAskData({ poolAddress: undefined }))
-  }, [settings, dispatch])
 
   // calculator
   const totalValue = cgkData.price * Number(askData.amount)

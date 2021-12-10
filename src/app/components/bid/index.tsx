@@ -25,7 +25,6 @@ const Bid = () => {
   const {
     wallet: { address: walletAddress, lamports },
   } = useWallet()
-  const settings = useSelector((state: AppState) => state.settings)
   const bidData = useSelector((state: AppState) => state.bid)
 
   const { balance, decimals, mint, amount } = useMintAccount(
@@ -43,7 +42,6 @@ const Bid = () => {
   const selectionInfo: SelectionInfo = useMemo(
     () => ({
       mintInfo: bidData.mintInfo,
-      poolAddress: bidData.poolAddress,
       poolAddresses: bidData.poolAddresses,
     }),
     [bidData],
@@ -81,10 +79,6 @@ const Bid = () => {
     )
     return dispatch(updateBidData({ accountAddress, ...selectionInfo }))
   }
-
-  useEffect(() => {
-    if (!settings.advanced) dispatch(updateBidData({ poolAddress: undefined }))
-  }, [settings, dispatch])
 
   // calculator
   const totalValue = cgkData.price * Number(bidData.amount)

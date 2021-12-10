@@ -15,7 +15,7 @@ const ROUTE_DEFAULT = {
   amounts: [],
   hops: [],
 }
-const NAME = 'sen-swap'
+const NAME = 'route'
 const initialState: State = {
   route: ROUTE_DEFAULT,
 }

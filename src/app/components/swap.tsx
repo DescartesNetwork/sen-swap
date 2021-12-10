@@ -6,11 +6,11 @@ import { Row, Col, Button } from 'antd'
 import Bid from './bid'
 import IonIcon from 'shared/antd/ionicon'
 import Ask from './ask'
+import SwapSettings from 'app/page/swap/swapSettings'
 
 import {
   BestRouteInfo,
   buildPoolGraph,
-  ExtendedPoolData,
   findAllRoute,
   findBestRouteFromAsk,
   findBestRouteFromBid,
@@ -20,7 +20,6 @@ import { AppDispatch, AppState } from 'app/model'
 import { usePool } from 'senhub/providers'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
-import SwapSettings from 'app/page/swap/swapSettings'
 import { updateRouteInfo } from 'app/model/route.controller'
 
 const Swap = () => {
@@ -28,7 +27,6 @@ const Swap = () => {
   const [bestRoute, setBestRoute] = useState(new BestRouteInfo())
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
-  const { advanced } = useSelector((state: AppState) => state.settings)
   const { pools } = usePool()
   /**
    * Switch tokens
@@ -43,36 +41,17 @@ const Swap = () => {
     await dispatch(updateData({ amount, prioritized: true }))
   }, [dispatch, askData, bidData])
 
-  const parsePools = useCallback(
-    (
-      poolAddress: string | undefined,
-      poolAddresses: string[],
-    ): ExtendedPoolData[] => {
-      return account.isAddress(poolAddress)
-        ? [
-            {
-              address: poolAddress,
-              ...pools[poolAddress],
-            },
-          ]
-        : poolAddresses.map((address) => ({ address, ...pools[address] }))
-    },
-    [pools],
-  )
-
   /**
    * Find optimal route
    */
   const findRoute = useCallback(async () => {
     const {
-      poolAddress: bidPoolAddress,
       poolAddresses: bidPoolAddresses,
       mintInfo: bidMintInfo,
       amount: bidAmount,
       priority: bidPriority,
     } = bidData
     const {
-      poolAddress: askPoolAddress,
       poolAddresses: askPoolAddresses,
       mintInfo: askMintInfo,
       amount: askAmount,
@@ -80,9 +59,15 @@ const Swap = () => {
     } = askData
 
     const { address: bidMintAddress } = bidMintInfo || {}
-    const bidPools = parsePools(bidPoolAddress, bidPoolAddresses)
+    const bidPools = bidPoolAddresses.map((address) => ({
+      address,
+      ...pools[address],
+    }))
     const { address: askMintAddress } = askMintInfo || {}
-    const askPools = parsePools(askPoolAddress, askPoolAddresses)
+    const askPools = askPoolAddresses.map((address) => ({
+      address,
+      ...pools[address],
+    }))
     let bestRoute = new BestRouteInfo()
 
     if (
@@ -106,31 +91,13 @@ const Swap = () => {
     findAllRoute(routes, graph, bidMintAddress, askMintAddress, pathTrace)
     // No available route
     if (!routes.length) return setBestRoute(bestRoute)
-    // If advance is true this mean end user want to use manual mode.
-    // They can select the pool of token pair to swap.
-    if (advanced) {
-      routes = routes.filter((route) => {
-        const length = route.pools.length
-        if (
-          account.isAddress(bidPoolAddress) &&
-          route.pools[0] !== bidPoolAddress
-        )
-          return false
-        if (
-          account.isAddress(askPoolAddress) &&
-          route.pools[length - 1] !== askPoolAddress
-        )
-          return false
-        return true
-      })
-    }
 
     if (askPriority < bidPriority) {
       bestRoute = await findBestRouteFromBid(pools, routes, bidData, askData)
     } else
       bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
     return setBestRoute(bestRoute)
-  }, [advanced, askData, bidData, parsePools, pools])
+  }, [askData, bidData, pools])
 
   const updateRoute = useCallback(() => {
     const bidPriority = bidData.priority

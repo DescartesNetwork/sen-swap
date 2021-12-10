@@ -5,12 +5,11 @@ export type State = {
   amount: string // Desired amount
   accountAddress: string // Associated account to the selected token
   mintInfo?: TokenInfo // Selected token
-  poolAddress?: string // Selected pool (for advanced mode)
   poolAddresses: string[] // List of available pools
   priority: number
 }
 
-const NAME = 'sen-swap'
+const NAME = 'ask'
 const initialState: State = {
   amount: '',
   accountAddress: '',

@@ -1,15 +1,4 @@
-import React from 'react'
-
-import {
-  Row,
-  Col,
-  Space,
-  Avatar,
-  Typography,
-  Card,
-  Divider,
-  Button,
-} from 'antd'
+import { Row, Col, Space, Avatar, Typography, Card, Divider } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 
 const Mint = ({
@@ -17,23 +6,14 @@ const Mint = ({
   symbol,
   name,
   onClick,
-  advanced = false,
-  onAdvanced = () => {},
   active = false,
 }: {
   logoURI: string | undefined
   symbol: string
   name: string
   onClick: () => void
-  advanced?: boolean
-  onAdvanced?: () => void
   active?: boolean
 }) => {
-  const onPools = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    return onAdvanced()
-  }
-
   return (
     <Card
       className="card-child"
@@ -42,8 +22,8 @@ const Mint = ({
       onClick={onClick}
       hoverable
     >
-      <Row gutter={[16, 16]} wrap={false}>
-        <Col flex="auto">
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
           <Space size={12} style={{ marginLeft: -4 }}>
             <Avatar
               src={logoURI}
@@ -61,19 +41,6 @@ const Mint = ({
               {name}
             </Typography.Text>
           </Space>
-        </Col>
-        <Col>
-          {advanced ? (
-            <Button
-              type="text"
-              className="contained"
-              icon={<IonIcon name="arrow-forward-circle-outline" />}
-              style={{ marginRight: -7 }}
-              onClick={onPools}
-            >
-              View Pools
-            </Button>
-          ) : null}
         </Col>
       </Row>
     </Card>
