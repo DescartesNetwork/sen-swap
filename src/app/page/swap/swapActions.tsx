@@ -40,7 +40,9 @@ const SwapActions = () => {
         <Col span={24}>
           <Typography.Title level={5}>Review & Swap</Typography.Title>
         </Col>
-
+        <Col span={24}>
+          <SwapInfo />
+        </Col>
         <Col span={24}>
           <SwapButton
             hops={route?.hops || []}
