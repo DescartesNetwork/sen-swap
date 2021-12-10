@@ -62,7 +62,7 @@ type CgkData = {
   name: any
   address: any
   rank: any
-  price: any
+  price: number
   priceChange: any
   totalVolume: any
 }

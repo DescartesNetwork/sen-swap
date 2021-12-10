@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Row, Col, Button, Popover, Typography, Divider } from 'antd'
+import { Row, Col, Button, Popover, Typography } from 'antd'
 import Slippage from './slippage'
-import Advanced from './advanced'
 
 import { updateSettings } from 'app/model/settings.controller'
 import { AppDispatch, AppState } from 'app/model'
@@ -14,9 +13,6 @@ const Settings = () => {
 
   const onSlippage = (slippage: number) => {
     return dispatch(updateSettings({ ...settings, slippage }))
-  }
-  const onAdvanced = (advanced: boolean) => {
-    return dispatch(updateSettings({ ...settings, advanced }))
   }
 
   return (
@@ -30,10 +26,6 @@ const Settings = () => {
           </Col>
           <Col span={24}>
             <Slippage value={settings.slippage} onChange={onSlippage} />
-          </Col>
-          <Divider style={{ marginTop: 8, marginBottom: 8 }} />
-          <Col span={24}>
-            <Advanced value={settings.advanced} onChange={onAdvanced} />
           </Col>
         </Row>
       }
