@@ -16,10 +16,11 @@ const SwapPoolInfo = () => {
 
   const askCgk = useMintCgk(askMint?.address)
   const bidCgk = useMintCgk(bidMint?.address)
+  const askHop = route?.hops.at(-1)
 
   const askPoolData = useMemo(() => {
-    return route?.hops.at(-1)?.poolData
-  }, [route?.hops])
+    return askHop?.poolData
+  }, [askHop?.poolData])
 
   const askMintPoolTVL = useMemo(() => {
     if (!askMint?.address || !askPoolData) return BigInt(0)
@@ -34,8 +35,6 @@ const SwapPoolInfo = () => {
     if (!bidMint?.address || !bidPoolData) return BigInt(0)
     return extractReserve(bidMint.address, bidPoolData)
   }, [bidMint?.address, bidPoolData])
-
-  console.log(route, bidMint, bidTVL, 'route')
 
   return (
     <Card bordered={false}>
@@ -66,21 +65,19 @@ const SwapPoolInfo = () => {
         </Col>
         <Col span={11}>
           <Space direction="vertical" size={4}>
-            <MintAvatar
-              mintAddress={route?.hops.at(-1)?.dstMintInfo.address || ''}
-            />
+            <MintAvatar mintAddress={askHop?.dstMintInfo.address || ''} />
             <Space>
               <Typography.Text>TVL:</Typography.Text>
               <Typography.Title level={5}>
                 {numeric(
                   utils.undecimalize(
                     askMintPoolTVL,
-                    route?.hops.at(-1)?.dstMintInfo.decimals || 9,
+                    askHop?.dstMintInfo.decimals || 9,
                   ),
                 ).format('0,0.[00]a')}
               </Typography.Title>
               <Typography.Title level={5}>
-                {route?.hops.at(-1)?.dstMintInfo.symbol}
+                {askHop?.dstMintInfo.symbol}
               </Typography.Title>
             </Space>
             <Typography.Text className="caption" type="secondary">
@@ -89,7 +86,7 @@ const SwapPoolInfo = () => {
                 Number(
                   utils.undecimalize(
                     askMintPoolTVL,
-                    route?.hops.at(-1)?.dstMintInfo.decimals || 9,
+                    askHop?.dstMintInfo.decimals || 9,
                   ),
                 ) * askCgk.price,
               ).format('0,0.[00]a')}
