@@ -20,7 +20,6 @@ const WORMHOLE_COLOR = '#F9575E'
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
   const bidData = useSelector((state: AppState) => state.bid)
-  const settings = useSelector((state: AppState) => state.settings)
   const [mapMintInfos, setMapMintInfos] = useState<Map<string, MintInfo>>()
   const { accounts } = useAccount()
   const {
@@ -31,7 +30,6 @@ const Bid = () => {
   const selectionInfo: SelectionInfo = useMemo(
     () => ({
       mintInfo: bidData.mintInfo,
-      poolAddress: bidData.poolAddress,
       poolAddresses: bidData.poolAddresses,
     }),
     [bidData],
@@ -86,10 +84,6 @@ const Bid = () => {
     const price = Number(amount) * (priceCGK || 0)
     return price
   }, [bidData, mapMintInfos, selectionInfo])
-
-  useEffect(() => {
-    if (!settings.advanced) dispatch(updateBidData({ poolAddress: undefined }))
-  }, [settings, dispatch])
 
   useEffect(() => {
     const { mintInfo } = selectionInfo || {}

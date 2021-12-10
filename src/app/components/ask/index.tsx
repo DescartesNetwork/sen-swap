@@ -17,7 +17,6 @@ import Selection from '../selection'
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
   const askData = useSelector((state: AppState) => state.ask)
-  const settings = useSelector((state: AppState) => state.settings)
   const [mapMintInfos, setMapMintInfos] = useState<Map<string, MintInfo>>()
   const { accounts } = useAccount()
   const {
@@ -28,7 +27,6 @@ const Ask = () => {
   const selectionInfo: SelectionInfo = useMemo(
     () => ({
       mintInfo: askData.mintInfo,
-      poolAddress: askData.poolAddress,
       poolAddresses: askData.poolAddresses,
     }),
     [askData],
@@ -70,9 +68,6 @@ const Ask = () => {
     return price
   }, [askData, mapMintInfos, selectionInfo])
 
-  useEffect(() => {
-    if (!settings.advanced) dispatch(updateAskData({ poolAddress: undefined }))
-  }, [settings, dispatch])
   useEffect(() => {
     const { mintInfo } = selectionInfo || {}
     if (!mintInfo) return
