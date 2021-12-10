@@ -23,11 +23,7 @@ import { updateAskData } from 'app/model/ask.controller'
 import SwapSettings from 'app/page/swap/swapSettings'
 import { updateRouteInfo } from 'app/model/route.controller'
 
-const Swap = ({
-  onChange = () => {},
-}: {
-  onChange: (route: BestRouteInfo) => void
-}) => {
+const Swap = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [bestRoute, setBestRoute] = useState(new BestRouteInfo())
   const bidData = useSelector((state: AppState) => state.bid)
@@ -145,9 +141,8 @@ const Swap = ({
     if (bidPriority < askPriority) {
       dispatch(updateBidData({ amount: bestRoute.amount }))
     }
-    onChange(bestRoute)
     dispatch(updateRouteInfo({ route: { ...bestRoute } }))
-  }, [askData.priority, bestRoute, bidData.priority, dispatch, onChange])
+  }, [askData.priority, bestRoute, bidData.priority, dispatch])
 
   useEffect(() => {
     updateRoute()
