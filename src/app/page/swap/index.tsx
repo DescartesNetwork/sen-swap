@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import SwapActions from './swapActions'
 import SwapForm from './swapForm'
-import TokenInfo from './tokenInfo'
+import SwapPoolInfo from './swapPoolInfo'
 
 const Swap = () => {
   return (
@@ -13,7 +13,7 @@ const Swap = () => {
         <SwapActions />
       </Col>
       <Col span={24}>
-        <TokenInfo />
+        <SwapPoolInfo />
       </Col>
     </Row>
   )

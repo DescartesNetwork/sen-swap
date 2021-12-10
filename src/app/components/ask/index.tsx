@@ -2,7 +2,7 @@ import { useMemo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account, utils } from '@senswap/sen-js'
 
-import { Row, Col, Typography, Card, Space, Tooltip } from 'antd'
+import { Row, Col, Typography, Space, Tooltip } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
 
 import { AppDispatch, AppState } from 'app/model'
@@ -88,21 +88,15 @@ const Ask = () => {
         <Typography.Text>To</Typography.Text>
       </Col>
       <Col span={24}>
-        <Card
-          bordered={false}
-          className="card-child card-input"
-          bodyStyle={{ padding: 4 }}
-        >
-          <NumericInput
-            placeholder="0"
-            value={askData.amount}
-            onChange={onAmount}
-            prefix={
-              <Selection value={selectionInfo} onChange={onSelectionInfo} />
-            }
-            bordered={false}
-          />
-        </Card>
+        <NumericInput
+          placeholder="0"
+          value={askData.amount}
+          onChange={onAmount}
+          size="large"
+          prefix={
+            <Selection value={selectionInfo} onChange={onSelectionInfo} />
+          }
+        />
       </Col>
       <Col span={24}>
         <Row gutter={[4, 4]} style={{ fontSize: 12, marginLeft: 2 }}>

@@ -3,7 +3,7 @@ import { utils } from '@senswap/sen-js'
 import { useSelector } from 'react-redux'
 
 import { Button } from 'antd'
-import { HopData } from './preview/hop'
+import { HopData } from './preview/index'
 import { AppState } from 'app/model'
 import { useWallet } from 'senhub/providers'
 import { explorer } from 'shared/util'

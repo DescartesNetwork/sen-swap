@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { HopData } from 'app/components/preview/hop'
+import { HopData } from 'app/components/preview/index'
 
 type RouteInfo = {
   hops: HopData[]

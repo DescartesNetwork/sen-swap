@@ -32,11 +32,7 @@ const Search = ({
   }, [search])
 
   return (
-    <Card
-      className="card-child bg-white"
-      bodyStyle={{ padding: 8 }}
-      bordered={false}
-    >
+    <Card className="card-child" bodyStyle={{ padding: 8 }} bordered={false}>
       <Input
         placeholder="Search"
         value={keyword}

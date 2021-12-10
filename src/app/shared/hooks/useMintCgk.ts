@@ -13,11 +13,12 @@ const DEFAULT_DATA = {
   totalVolume: 0,
 }
 
-const useMintCgk = (mintAddress: string): CgkData => {
+const useMintCgk = (mintAddress?: string): CgkData => {
   const [cgkData, setCgkData] = useState<CgkData>(DEFAULT_DATA)
   const { tokenProvider } = useMint()
 
   const fetchCgkData = useCallback(async () => {
+    if (!mintAddress) return setCgkData(DEFAULT_DATA)
     try {
       const token = await tokenProvider.findByAddress(mintAddress)
       const ticket = token?.extensions?.coingeckoId

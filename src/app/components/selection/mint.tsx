@@ -36,7 +36,7 @@ const Mint = ({
 
   return (
     <Card
-      className="card-child bg-white"
+      className="card-child"
       bodyStyle={{ padding: `8px 16px`, cursor: 'pointer' }}
       bordered={active}
       onClick={onClick}
@@ -45,7 +45,11 @@ const Mint = ({
       <Row gutter={[16, 16]} wrap={false}>
         <Col flex="auto">
           <Space size={12} style={{ marginLeft: -4 }}>
-            <Avatar src={logoURI} size={32}>
+            <Avatar
+              src={logoURI}
+              size={32}
+              style={{ backgroundColor: '#2D3355', border: 'none' }}
+            >
               <IonIcon name="diamond-outline" />
             </Avatar>
             <Typography.Text style={{ margin: 0 }}>{symbol}</Typography.Text>
