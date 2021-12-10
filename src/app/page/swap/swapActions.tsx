@@ -1,7 +1,6 @@
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { Card, Col, Row, Typography } from 'antd'
 import SwapButton from 'app/components/swapButton'
-import SwapInfo from 'app/components/swapInfo'
 import { AppState } from 'app/model'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
@@ -40,9 +39,7 @@ const SwapActions = () => {
         <Col span={24}>
           <Typography.Title level={5}>Review & Swap</Typography.Title>
         </Col>
-        <Col span={24}>
-          <SwapInfo />
-        </Col>
+
         <Col span={24}>
           <SwapButton
             hops={route?.hops || []}
