@@ -1,31 +1,43 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { Row, Col, Typography, Button, Space, Tooltip, Tag } from 'antd'
-
-import { AppDispatch, AppState } from 'app/model'
-import cgk, { MintInfo } from 'app/helper/cgk'
-import { SelectionInfo } from '../selection/mintSelection'
-import { useAccount, useWallet } from 'senhub/providers'
-import { updateBidData } from 'app/model/bid.controller'
-import Selection from '../selection'
 import IonIcon from 'shared/antd/ionicon'
+import Selection from '../selection'
+
+import { useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
-import NumericInput from 'app/shared/components/numericInput'
 import { randomColor } from 'shared/helper'
+import { AppDispatch, AppState } from 'app/model'
+import { updateBidData } from 'app/model/bid.controller'
+import NumericInput from 'app/shared/components/numericInput'
+import { SelectionInfo } from '../selection/mintSelection'
+import { useMintSelection } from '../hooks/useMintSelection'
+import { useMintAccount } from 'app/shared/hooks/useMintAccount'
+import useMintCgk from 'app/shared/hooks/useMintCgk'
+import configs from 'app/configs'
 
 const WORMHOLE_COLOR = '#F9575E'
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const bidData = useSelector((state: AppState) => state.bid)
-  const settings = useSelector((state: AppState) => state.settings)
-  const [mapMintInfos, setMapMintInfos] = useState<Map<string, MintInfo>>()
-  const { accounts } = useAccount()
   const {
-    wallet: { lamports, address: walletAddress },
+    wallet: { address: walletAddress, lamports },
   } = useWallet()
+  const settings = useSelector((state: AppState) => state.settings)
+  const bidData = useSelector((state: AppState) => state.bid)
+
+  const { balance, decimals, mint, amount } = useMintAccount(
+    bidData.accountAddress,
+  )
+  const cgkData = useMintCgk(bidData.mintInfo?.address)
+  const selectionDefault = useMintSelection(configs.swap.bidDefault)
+
+  // Select default
+  useEffect(() => {
+    dispatch(updateBidData(selectionDefault))
+  }, [dispatch, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(
@@ -36,22 +48,16 @@ const Bid = () => {
     }),
     [bidData],
   )
+
   // Compute human-readable balance
-  const balance = useMemo((): string => {
-    if (!accounts) return '0'
-    const bidAccount = accounts[bidData.accountAddress]
-    const bidMint = bidData.mintInfo
-    if (!bidMint || !bidAccount) return '0'
-    const bidBalance = bidAccount?.amount || BigInt(0)
-    if (bidMint.address !== DEFAULT_WSOL)
-      return utils.undecimalize(bidBalance, bidMint.decimals)
+  const balanceTransfer = useMemo((): string => {
+    if (mint !== DEFAULT_WSOL) return balance
     // So estimate max = 0.01 fee -> multi transaction.
-    const estimateFee = utils.decimalize(0.01, bidMint.decimals)
-    const max = lamports + bidBalance - estimateFee
-    if (max <= bidBalance)
-      return utils.undecimalize(bidBalance, bidMint.decimals)
-    return utils.undecimalize(max, bidMint.decimals)
-  }, [accounts, bidData, lamports])
+    const estimateFee = utils.decimalize(0.01, decimals)
+    const max = lamports + amount - estimateFee
+    if (max <= amount) return utils.undecimalize(amount, decimals)
+    return utils.undecimalize(max, decimals)
+  }, [amount, balance, decimals, lamports, mint])
 
   // Handle amount
   const onAmount = useCallback(
@@ -62,6 +68,7 @@ const Bid = () => {
   )
   // All in :)))
   const onMax = () => onAmount(balance)
+
   // Update bid data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
     const { splt } = window.sentre
@@ -75,30 +82,12 @@ const Bid = () => {
     return dispatch(updateBidData({ accountAddress, ...selectionInfo }))
   }
 
-  const priceCGK = useMemo(() => {
-    const { mintInfo } = selectionInfo || {}
-    const { amount } = bidData
-    if (!mapMintInfos || !mintInfo || !amount) return
-    const { address } = mintInfo
-    let priceInfo
-    if (mapMintInfos.has(address)) priceInfo = mapMintInfos.get(address)
-    const { price: priceCGK } = priceInfo || {}
-    const price = Number(amount) * (priceCGK || 0)
-    return price
-  }, [bidData, mapMintInfos, selectionInfo])
-
   useEffect(() => {
     if (!settings.advanced) dispatch(updateBidData({ poolAddress: undefined }))
   }, [settings, dispatch])
 
-  useEffect(() => {
-    const { mintInfo } = selectionInfo || {}
-    if (!mintInfo) return
-    ;(async () => {
-      const infos = await cgk.getMintInfos([mintInfo.address])
-      setMapMintInfos(infos)
-    })()
-  }, [selectionInfo])
+  // calculator
+  const totalValue = cgkData.price * Number(bidData.amount)
 
   return (
     <Row gutter={[8, 8]}>
@@ -139,20 +128,20 @@ const Bid = () => {
               MAX
             </Button>
           }
-          max={balance}
+          max={balanceTransfer}
         />
       </Col>
       <Col span={24}>
         <Row gutter={[4, 4]} style={{ fontSize: 12, marginLeft: 2 }}>
           <Col flex="auto">
-            {priceCGK ? (
+            {cgkData.price ? (
               <Tooltip title="The estimation is based on CoinGecko API.">
                 <Space size={4}>
                   <IonIcon name="information-circle-outline" />
                   <Typography.Text type="secondary">
-                    {numeric(bidData.amount).format('0,0.[0000]a')}{' '}
+                    {numeric(bidData.amount).format('0,0.[0000]')}{' '}
                     {selectionInfo.mintInfo?.symbol || 'TOKEN'} ~ $
-                    {numeric(priceCGK).format('0,0.[00]a')}
+                    {numeric(totalValue).format('0,0.[00]a')}
                   </Typography.Text>
                 </Space>
               </Tooltip>
@@ -160,7 +149,7 @@ const Bid = () => {
           </Col>
           <Col>
             <Typography.Text type="secondary">
-              Available: {numeric(balance || 0).format('0,0.[00]')}{' '}
+              Available: {numeric(balanceTransfer || 0).format('0,0.[00]')}{' '}
               {selectionInfo.mintInfo?.symbol || 'TOKEN'}
             </Typography.Text>
           </Col>

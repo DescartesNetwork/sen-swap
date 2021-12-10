@@ -1,28 +1,36 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { account, utils } from '@senswap/sen-js'
+import { account } from '@senswap/sen-js'
 
 import { Row, Col, Typography, Space, Tooltip } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
+import Selection from '../selection'
 
-import { AppDispatch, AppState } from 'app/model'
-import { useAccount, useWallet } from 'senhub/providers'
-import { updateAskData } from 'app/model/ask.controller'
+import { useWallet } from 'senhub/providers'
 import IonIcon from 'shared/antd/ionicon'
 import { numeric } from 'shared/util'
-import cgk, { MintInfo } from 'app/helper/cgk'
+import { AppDispatch, AppState } from 'app/model'
+import { updateAskData } from 'app/model/ask.controller'
 import NumericInput from 'app/shared/components/numericInput'
-import Selection from '../selection'
+import useMintCgk from 'app/shared/hooks/useMintCgk'
+import { useMintAccount } from 'app/shared/hooks/useMintAccount'
+import configs from 'app/configs'
+import { useMintSelection } from '../hooks/useMintSelection'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const askData = useSelector((state: AppState) => state.ask)
+  const { wallet } = useWallet()
   const settings = useSelector((state: AppState) => state.settings)
-  const [mapMintInfos, setMapMintInfos] = useState<Map<string, MintInfo>>()
-  const { accounts } = useAccount()
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const askData = useSelector((state: AppState) => state.ask)
+
+  const { balance } = useMintAccount(askData.accountAddress)
+  const cgkData = useMintCgk(askData.mintInfo?.address)
+  const selectionDefault = useMintSelection(configs.swap.askDefault)
+
+  // Select default
+  useEffect(() => {
+    dispatch(updateAskData(selectionDefault))
+  }, [dispatch, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(
@@ -33,18 +41,12 @@ const Ask = () => {
     }),
     [askData],
   )
-  // Compute human-readable balance
-  const balance = useMemo((): string => {
-    if (!account.isAddress(askData.accountAddress)) return '0'
-    const { amount } = accounts[askData.accountAddress] || {}
-    const { decimals } = askData.mintInfo || {}
-    if (!amount || !decimals) return '0'
-    return utils.undecimalize(amount, decimals)
-  }, [accounts, askData])
+
   // Handle amount
   const onAmount = (val: string) => {
     return dispatch(updateAskData({ amount: val, prioritized: true }))
   }
+
   // Update ask data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
     const { splt } = window.sentre
@@ -52,35 +54,18 @@ const Ask = () => {
     if (!account.isAddress(mintAddress))
       return dispatch(updateAskData({ ...selectionInfo }))
     const accountAddress = await splt.deriveAssociatedAddress(
-      walletAddress,
+      wallet.address,
       mintAddress,
     )
     dispatch(updateAskData({ accountAddress, ...selectionInfo }))
   }
 
-  const priceCGK = useMemo(() => {
-    const { mintInfo } = selectionInfo
-    const { amount } = askData
-    if (!mapMintInfos || !mintInfo || !amount) return
-    const { address } = mintInfo
-    let priceInfo
-    if (mapMintInfos.has(address)) priceInfo = mapMintInfos.get(address)
-    const { price: priceCGK } = priceInfo || {}
-    const price = Number(amount) * (priceCGK || 0)
-    return price
-  }, [askData, mapMintInfos, selectionInfo])
-
   useEffect(() => {
     if (!settings.advanced) dispatch(updateAskData({ poolAddress: undefined }))
   }, [settings, dispatch])
-  useEffect(() => {
-    const { mintInfo } = selectionInfo || {}
-    if (!mintInfo) return
-    ;(async () => {
-      const infos = await cgk.getMintInfos([mintInfo.address])
-      setMapMintInfos(infos)
-    })()
-  }, [selectionInfo])
+
+  // calculator
+  const totalValue = cgkData.price * Number(askData.amount)
 
   return (
     <Row gutter={[8, 8]}>
@@ -101,14 +86,14 @@ const Ask = () => {
       <Col span={24}>
         <Row gutter={[4, 4]} style={{ fontSize: 12, marginLeft: 2 }}>
           <Col flex="auto">
-            {priceCGK ? (
+            {cgkData.price ? (
               <Tooltip title="The estimation is based on CoinGecko API.">
                 <Space size={4}>
                   <IonIcon name="information-circle-outline" />
                   <Typography.Text type="secondary">
-                    {numeric(askData.amount).format('0,0.[0000]a')}{' '}
+                    {numeric(askData.amount).format('0,0.[0000]')}{' '}
                     {selectionInfo.mintInfo?.symbol || 'TOKEN'} ~ $
-                    {numeric(priceCGK).format('0,0.[0]a')}
+                    {numeric(totalValue).format('0,0.[0]a')}
                   </Typography.Text>
                 </Space>
               </Tooltip>
