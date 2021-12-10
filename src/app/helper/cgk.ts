@@ -1,5 +1,6 @@
 import TokenProvider from 'os/providers/tokenProvider'
 import { fetchCGK } from 'shared/helper'
+import axios from 'axios'
 
 export interface MintInfo {
   address: string
@@ -43,5 +44,17 @@ const cgk = {
     return mapMintsDetails
   },
 }
-
 export default cgk
+
+export const fetchMarketChart = async (ticket: string) => {
+  try {
+    const data: any = await axios({
+      method: 'get',
+      url: `https://api.coingecko.com/api/v3/coins/${ticket}/market_chart?vs_currency=usd&days=max&interval=daily`,
+    })
+    const priceData: [number /*time*/, number /*price*/][] = data.data.prices
+    return priceData.map((data) => ({ time: data[0], val: data[1] }))
+  } catch (error) {
+    return []
+  }
+}

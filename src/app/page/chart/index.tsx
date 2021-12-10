@@ -4,7 +4,9 @@ import { Card, Col, Radio, Row, Space, Typography } from 'antd'
 import { AppState } from 'app/model'
 import SenChart from './chart'
 import GroupAvatar from './GroupAvatar'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { fetchMarketChart } from 'app/helper/cgk'
+import moment from 'moment'
 
 const CHART_CONFIGS = {
   color: '#5D6CCF',
@@ -13,9 +15,20 @@ const CHART_CONFIGS = {
   tooltip: 'TVL',
   transparent: 'transparent',
 }
+const CHART_RANGE: Record<string, number> = {
+  week: 7,
+  day: 1,
+  month: 30,
+  year: 365,
+}
 const DEFAULT_TOKEN = 'UNKN'
 
 const SwapChart = () => {
+  const [chartRange, setChartRange] = useState('week')
+  const [chartData, setChartData] = useState<{ label: string; val: number }[]>(
+    [],
+  )
+
   const swapChartConfigs = {
     borderColor: CHART_CONFIGS.transparent,
     borderRadius: CHART_CONFIGS.radius,
@@ -38,6 +51,41 @@ const SwapChart = () => {
     ]
   }, [askData.mintInfo?.symbol, bidData.mintInfo?.symbol])
 
+  const fetchChartData = useCallback(async () => {
+    const askTicket = askData.mintInfo?.extensions?.coingeckoId
+    const bidTicket = bidData.mintInfo?.extensions?.coingeckoId
+    if (!askTicket || !bidTicket) return setChartData([])
+
+    const [askChart, bidChart] = await Promise.all([
+      fetchMarketChart(askTicket),
+      fetchMarketChart(bidTicket),
+    ])
+    const range = CHART_RANGE[chartRange] || 7 //day
+    const size = 10
+
+    const chartData: { label: string; val: number }[] = []
+    for (let idx = bidChart.length - 1; idx >= 0; idx--) {
+      const bidDay = bidChart[idx]
+      const askDay = askChart[askChart.length - 1 - (bidChart.length - 1 - idx)]
+      if (!bidDay || !askDay) break
+      if (chartData.length >= size) break
+      const val = +Number(bidDay.val / askDay.val).toFixed(4)
+      const dateCount = bidChart.length - 1 - idx
+      if (dateCount > -1 && dateCount % range === 0) {
+        const label = moment(bidDay.time).format('DD/MM')
+        chartData.unshift({ label, val })
+      }
+    }
+    setChartData(chartData)
+  }, [
+    askData.mintInfo?.extensions?.coingeckoId,
+    bidData.mintInfo?.extensions?.coingeckoId,
+    chartRange,
+  ])
+  useEffect(() => {
+    fetchChartData()
+  }, [fetchChartData])
+
   return (
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
       <Row gutter={[24, 24]}>
@@ -47,21 +95,26 @@ const SwapChart = () => {
               <GroupAvatar icons={icons} size={24} />
               <Typography.Text>{symbols.join('/')}</Typography.Text>
             </Space>
-            <Typography.Title level={2}>0.24 </Typography.Title>
+            <Typography.Title level={2}>
+              {chartData[chartData.length - 1]?.val}
+            </Typography.Title>
           </Space>
         </Col>
         <Col>
-          <Radio.Group defaultValue="week">
+          <Radio.Group
+            defaultValue="week"
+            onChange={(e) => setChartRange(e.target.value)}
+          >
             <Radio.Button value="day">Day</Radio.Button>
             <Radio.Button value="week">Week</Radio.Button>
             <Radio.Button value="month">Month</Radio.Button>
-            <Radio.Button value="year">Year</Radio.Button>
+            {/* <Radio.Button value="year">Year</Radio.Button> */}
           </Radio.Group>
         </Col>
         <Col span={24}>
           <SenChart
-            chartData={[12, 123, 141, 2, 512, 12, 113]}
-            labels={['01/12', '02/12', '03/12', '04/12', '05/12']}
+            chartData={chartData.map((data) => data.val)}
+            labels={chartData.map((data) => data.label)}
             configs={swapChartConfigs}
           />
         </Col>
