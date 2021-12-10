@@ -45,6 +45,12 @@ const History = () => {
     setAmountRow(amountRow + ROW_PER_PAGE)
   }
 
+  const onHandleRefeshTable = () => {
+    setIsLoading(true)
+    fetchHistory()
+    setAmountRow(ROW_PER_PAGE)
+  }
+
   return (
     <Card bordered={false} style={{ height: 472 }}>
       <Row gutter={[16, 24]}>
@@ -52,14 +58,7 @@ const History = () => {
           <Typography.Title level={5}>Swap history</Typography.Title>
         </Col>
         <Col>
-          <Button
-            onClick={() => {
-              setIsLoading(true)
-              fetchHistory()
-            }}
-          >
-            Refresh
-          </Button>
+          <Button onClick={onHandleRefeshTable}>Refresh</Button>
         </Col>
         <Col span={24}>
           <Row justify="center" gutter={[16, 9]}>

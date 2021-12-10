@@ -46,9 +46,17 @@ export const widgetConfig: WidgetConfig = {
 export const Widget = () => {
   return (
     <UIProvider appId={appId}>
-      <Provider store={model}>
-        <WidgetView />
-      </Provider>
+      <MintProvider>
+        <PoolProvider>
+          <AccountProvider>
+            <WalletProvider>
+              <Provider store={model}>
+                <WidgetView />
+              </Provider>
+            </WalletProvider>
+          </AccountProvider>
+        </PoolProvider>
+      </MintProvider>
     </UIProvider>
   )
 }
