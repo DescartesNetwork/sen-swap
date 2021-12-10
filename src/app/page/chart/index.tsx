@@ -69,7 +69,7 @@ const SwapChart = () => {
       const askDay = askChart[askChart.length - 1 - (bidChart.length - 1 - idx)]
       if (!bidDay || !askDay) break
       if (chartData.length >= size) break
-      const val = +Number(bidDay.val / askDay.val).toFixed(4)
+      const val = +Number(bidDay.val / askDay.val).toFixed(8)
       const dateCount = bidChart.length - 1 - idx
       if (dateCount > -1 && dateCount % range === 0) {
         const label = moment(bidDay.time).format('DD/MM')
@@ -85,7 +85,7 @@ const SwapChart = () => {
   useEffect(() => {
     fetchChartData()
   }, [fetchChartData])
-
+  
   return (
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
       <Row gutter={[24, 24]}>

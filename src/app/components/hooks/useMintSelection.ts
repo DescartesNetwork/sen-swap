@@ -1,5 +1,5 @@
+import { SelectionInfo } from './../selection/mintSelection'
 import { useCallback, useEffect, useState } from 'react'
-import { TokenInfo } from '@solana/spl-token-registry'
 import { account } from '@senswap/sen-js'
 
 import { useMint, usePool, useWallet } from 'senhub/providers'
@@ -9,11 +9,8 @@ const DEFAULT_INFO = {
   poolAddresses: [],
 }
 
-type MintSelection = {
+type MintSelection = SelectionInfo & {
   accountAddress?: string
-  mintInfo?: TokenInfo
-  poolAddress?: string
-  poolAddresses: string[]
 }
 
 export const useMintSelection = (mintAddress: string): MintSelection => {
