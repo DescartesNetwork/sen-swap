@@ -9,7 +9,7 @@ import { AppState } from 'app/model'
 const ConfirmSwap = () => {
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
-  console.log('bidData: ', bidData, 'askData: ', askData)
+
   return (
     <Row gutter={[16, 24]}>
       <Col span={24}>

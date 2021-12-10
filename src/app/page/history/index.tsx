@@ -15,12 +15,13 @@ const LIMIT_IN_STORE = 10
 
 const History = () => {
   const [amountRow, setAmountRow] = useState(ROW_PER_PAGE)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { historySwap } = useSelector((state: AppState) => state.history)
   const dispatch = useDispatch<AppDispatch>()
 
   const fetchHistory = useCallback(async () => {
+    setIsLoading(true)
     await dispatch(fetchHistorySwap({})).unwrap()
     setIsLoading(false)
   }, [dispatch])
@@ -46,7 +47,6 @@ const History = () => {
   }
 
   const onHandleRefeshTable = () => {
-    setIsLoading(true)
     fetchHistory()
     setAmountRow(ROW_PER_PAGE)
   }

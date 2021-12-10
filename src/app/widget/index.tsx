@@ -14,7 +14,6 @@ import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
-
   const { route } = useSelector((state: AppState) => state.route)
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
@@ -60,19 +59,20 @@ const Widget = () => {
             >
               <Space style={{ cursor: 'pointer' }} direction="vertical">
                 <Space>
-                  <IonIcon
-                    name="information-circle-outline"
-                    style={{ fontSize: 14, color: '#7A7B85' }}
-                  />
+                  <Typography.Text>
+                    <IonIcon
+                      name="information-circle-outline"
+                      style={{ color: '#7A7B85' }}
+                    />
+                  </Typography.Text>
                   <Typography.Text type="secondary">
                     Price impact
                   </Typography.Text>
                 </Space>
                 <Space>
-                  <IonIcon
-                    name="arrow-down-outline"
-                    style={{ fontSize: 14, color: '#D72311' }}
-                  />
+                  <Typography.Text style={{ color: '#D72311' }}>
+                    <IonIcon name="arrow-down-outline" />
+                  </Typography.Text>
                   <Typography.Text style={{ color: '#D72311' }}>
                     1.4%
                   </Typography.Text>
