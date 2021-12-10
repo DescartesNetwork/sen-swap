@@ -15,12 +15,13 @@ const LIMIT_IN_STORE = 10
 
 const History = () => {
   const [amountRow, setAmountRow] = useState(ROW_PER_PAGE)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { historySwap } = useSelector((state: AppState) => state.history)
   const dispatch = useDispatch<AppDispatch>()
 
   const fetchHistory = useCallback(async () => {
+    setIsLoading(true)
     await dispatch(fetchHistorySwap({})).unwrap()
     setIsLoading(false)
   }, [dispatch])
@@ -45,6 +46,11 @@ const History = () => {
     setAmountRow(amountRow + ROW_PER_PAGE)
   }
 
+  const onHandleRefeshTable = () => {
+    fetchHistory()
+    setAmountRow(ROW_PER_PAGE)
+  }
+
   return (
     <Card bordered={false} style={{ height: 472 }}>
       <Row gutter={[16, 24]}>
@@ -52,14 +58,7 @@ const History = () => {
           <Typography.Title level={5}>Swap history</Typography.Title>
         </Col>
         <Col>
-          <Button
-            onClick={() => {
-              setIsLoading(true)
-              fetchHistory()
-            }}
-          >
-            Refresh
-          </Button>
+          <Button onClick={onHandleRefeshTable}>Refresh</Button>
         </Col>
         <Col span={24}>
           <Row justify="center" gutter={[16, 9]}>
