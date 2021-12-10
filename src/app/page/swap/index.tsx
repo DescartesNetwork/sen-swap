@@ -1,16 +1,18 @@
-import { Col, Row } from 'antd'
-import SwapActions from './swapActions'
-import SwapForm from './swapForm'
+import { Card, Col, Row } from 'antd'
+import SwapReview from './swapReview'
 import SwapPoolInfo from './swapPoolInfo'
+import SwapForm from 'app/components/swap'
 
 const Swap = () => {
   return (
     <Row gutter={[24, 24]}>
       <Col span={24}>
-        <SwapForm />
+        <Card bordered={false} className="card-swap">
+          <SwapForm />
+        </Card>
       </Col>
       <Col span={24}>
-        <SwapActions />
+        <SwapReview />
       </Col>
       <Col span={24}>
         <SwapPoolInfo />
