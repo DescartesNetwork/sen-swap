@@ -1,6 +1,5 @@
 import { Col, Divider, Row } from 'antd'
 import PoweredBy from 'app/components/poweredBy'
-import RefreshButton from 'app/components/refreshButton'
 import Settings from 'app/components/settings'
 
 const SwapSettings = () => {
@@ -11,9 +10,6 @@ const SwapSettings = () => {
       </Col>
       <Col>
         <Divider type="vertical" style={{ padding: 0 }} />
-      </Col>
-      <Col>
-        <RefreshButton />
       </Col>
       <Col>
         <Settings />
