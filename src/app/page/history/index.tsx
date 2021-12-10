@@ -44,7 +44,7 @@ const History = () => {
   }
 
   return (
-    <Card bordered={false} style={{ height: 464 }}>
+    <Card bordered={false} style={{ height: 472 }}>
       <Row gutter={[16, 24]}>
         <Col>
           <Typography.Title level={5}>Swap history</Typography.Title>

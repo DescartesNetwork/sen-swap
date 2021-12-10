@@ -38,7 +38,7 @@ const SwapPoolInfo = () => {
 
   return (
     <Card bordered={false}>
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} wrap={false}>
         <Col span={11}>
           <Space direction="vertical" size={4}>
             <MintAvatar mintAddress={bidMint?.address || ''} />
