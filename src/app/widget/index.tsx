@@ -6,7 +6,7 @@ import IonIcon from 'shared/antd/ionicon'
 import PreviewSwap from 'app/components/preview'
 import ConfirmSwap from './confirmSwap'
 import SwapButton from 'app/components/swapButton'
-import Swap from 'app/components/swap'
+import SwapAction from 'app/components/swap/swapAction'
 
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
@@ -41,7 +41,7 @@ const Widget = () => {
   return (
     <Row gutter={[24, 24]} style={{ padding: '16px 4px' }}>
       <Col span={24}>
-        <Swap />
+        <SwapAction />
       </Col>
       <Col span={24}>
         <Row align="bottom">
