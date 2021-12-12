@@ -1,12 +1,11 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 
-import { Row, Col, Button } from 'antd'
-import Bid from './bid'
+import { Button, Col, Row } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
-import Ask from './ask'
-import SwapSettings from 'app/page/swap/swapSettings'
+import Ask from '../ask'
+import Bid from '../bid'
 
 import {
   BestRouteInfo,
@@ -17,12 +16,12 @@ import {
   RouteTrace,
 } from 'app/helper/router'
 import { AppDispatch, AppState } from 'app/model'
-import { usePool } from 'senhub/providers'
-import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
+import { updateBidData } from 'app/model/bid.controller'
 import { updateRouteInfo } from 'app/model/route.controller'
+import { usePool } from 'senhub/providers'
 
-const Swap = () => {
+const SwapAction = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [bestRoute, setBestRoute] = useState(new BestRouteInfo())
   const bidData = useSelector((state: AppState) => state.bid)
@@ -118,16 +117,8 @@ const Swap = () => {
   useEffect(() => {
     findRoute()
   }, [findRoute])
-
   return (
-    <Row gutter={[24, 24]}>
-      <Col span={24}>
-        <Row gutter={[8, 8]} justify="end" align="middle" wrap={false}>
-          <Col>
-            <SwapSettings />
-          </Col>
-        </Row>
-      </Col>
+    <Row>
       <Col span={24}>
         <Bid />
       </Col>
@@ -149,4 +140,4 @@ const Swap = () => {
   )
 }
 
-export default Swap
+export default SwapAction
