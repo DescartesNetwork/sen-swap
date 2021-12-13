@@ -39,60 +39,62 @@ const Widget = () => {
     !parseFloat(askData?.amount) ||
     parseFloat(askData?.amount) < 0
   return (
-    <Row gutter={[24, 24]} style={{ padding: '16px 4px' }}>
-      <Col span={24}>
-        <SwapAction />
-      </Col>
-      <Col span={24}>
-        <Row align="bottom">
-          <Col flex="auto">
-            <Popover
-              placement="bottomLeft"
-              content={
-                <Row style={{ width: 307 }}>
-                  <Col>
-                    <PreviewSwap />
-                  </Col>
-                </Row>
-              }
-              trigger="click"
-            >
-              <Space style={{ cursor: 'pointer' }} direction="vertical">
-                <Space>
-                  <Typography.Text>
-                    <IonIcon
-                      name="information-circle-outline"
-                      style={{ color: '#7A7B85' }}
-                    />
-                  </Typography.Text>
-                  <Typography.Text type="secondary">
-                    Price impact
-                  </Typography.Text>
+    <Row style={{ padding: '8px' }}>
+      <Space direction="vertical" size={20}>
+        <Col span={24}>
+          <SwapAction />
+        </Col>
+        <Col span={24}>
+          <Row align="bottom">
+            <Col flex="auto">
+              <Popover
+                placement="bottomLeft"
+                content={
+                  <Row style={{ width: 307 }}>
+                    <Col>
+                      <PreviewSwap />
+                    </Col>
+                  </Row>
+                }
+                trigger="click"
+              >
+                <Space style={{ cursor: 'pointer' }} direction="vertical">
+                  <Space>
+                    <Typography.Text>
+                      <IonIcon
+                        name="information-circle-outline"
+                        style={{ color: '#7A7B85' }}
+                      />
+                    </Typography.Text>
+                    <Typography.Text type="secondary">
+                      Price impact
+                    </Typography.Text>
+                  </Space>
+                  <Space>
+                    <Typography.Text style={{ color: '#D72311' }}>
+                      <IonIcon name="arrow-down-outline" />
+                    </Typography.Text>
+                    <Typography.Text style={{ color: '#D72311' }}>
+                      1.4%
+                    </Typography.Text>
+                  </Space>
                 </Space>
-                <Space>
-                  <Typography.Text style={{ color: '#D72311' }}>
-                    <IonIcon name="arrow-down-outline" />
-                  </Typography.Text>
-                  <Typography.Text style={{ color: '#D72311' }}>
-                    1.4%
-                  </Typography.Text>
-                </Space>
-              </Space>
-            </Popover>
-          </Col>
-          <Col>
-            <Button
-              onClick={() => setVisible(true)}
-              size="large"
-              block
-              type="primary"
-              disabled={disabled}
-            >
-              Review & Swap
-            </Button>
-          </Col>
-        </Row>
-      </Col>
+              </Popover>
+            </Col>
+            <Col>
+              <Button
+                onClick={() => setVisible(true)}
+                size="large"
+                block
+                type="primary"
+                disabled={disabled}
+              >
+                Review & Swap
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Space>
       <Modal
         title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
         onCancel={() => setVisible(false)}
