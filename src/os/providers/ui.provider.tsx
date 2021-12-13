@@ -8,6 +8,7 @@ import {
   ReactNode,
   useMemo,
   CSSProperties,
+  useEffect,
 } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -38,6 +39,11 @@ const UIContextProvider = ({
 }) => {
   const ui = useSelector((state: RootState) => state.ui)
   const provider = useMemo(() => ({ ui }), [ui])
+
+  useEffect(() => {
+    if (appId) return document.body.setAttribute('class', appId)
+  }, [appId])
+
   return (
     <Context.Provider value={provider}>
       <section

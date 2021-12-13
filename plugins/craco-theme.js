@@ -23,7 +23,7 @@ const overrideWebpackConfig = ({ context, webpackConfig, pluginOptions }) => {
     }),
   )
   const appPrefixWrap = theme.map((selector) =>
-    PrefixWrap(`#${selector} #${appId}`, {
+    PrefixWrap(`#${selector}.${appId}`, {
       ignoredSelectors: ['html'],
       whitelist: [new RegExp(`${selector}\.less$`, 'i')],
     }),
