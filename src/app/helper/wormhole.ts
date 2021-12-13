@@ -1,12 +1,8 @@
 import {
   CHAIN_ID_ETH,
   CHAIN_ID_SOLANA,
-  getForeignAssetEth,
-  getOriginalAssetSol,
 } from '@certusone/wormhole-sdk'
 import storage from 'shared/storage'
-import { ethers } from 'ethers'
-import detectEthereumProvider from '@metamask/detect-provider'
 
 import {
   EtherNetwork,
@@ -18,6 +14,7 @@ import {
   SOL_BRIDGE_ADDRESS,
   SOL_TOKEN_BRIDGE_ADDRESS,
 } from 'app/constant/solConfig'
+import { getIsWrappedAssetSol } from '@certusone/wormhole-sdk'
 
 export const getSolNetwork = () => {
   const solNetwork = storage.get('network') || 'mainnet'
@@ -49,22 +46,10 @@ export const getSolContext = () => {
 }
 
 export const checkAttestedWormhole = async (mintAddress: string) => {
-  const detectedProvider: any = await detectEthereumProvider()
-  if (!detectedProvider) return false
-  const provider = new ethers.providers.Web3Provider(detectedProvider, 'any')
-
-  const etherContext = getEtherContext()
   const solContext = getSolContext()
-  const originAsset = await getOriginalAssetSol(
+  return getIsWrappedAssetSol(
     window.sentre.splt.connection,
     solContext.tokenBridgeAddress,
     mintAddress,
   )
-  const wrappedMintAddress = await getForeignAssetEth(
-    etherContext.tokenBridgeAddress,
-    provider,
-    originAsset.chainId,
-    originAsset.assetAddress,
-  )
-  return !!wrappedMintAddress
 }
