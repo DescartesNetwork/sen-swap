@@ -43,9 +43,9 @@ const Widget = () => {
     parseFloat(askData?.amount) < 0
   return (
     <Row>
-      <Space direction="vertical" size={20}>
+      <Space direction="vertical" size={12}>
         <Col span={24}>
-          <SwapAction spacing={8} />
+          <SwapAction spacing={12} />
         </Col>
         <Col span={24}>
           <Row align="bottom">
