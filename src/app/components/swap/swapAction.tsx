@@ -21,7 +21,7 @@ import { updateBidData } from 'app/model/bid.controller'
 import { updateRouteInfo } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
 
-const SwapAction = () => {
+const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
   const [bestRoute, setBestRoute] = useState(new BestRouteInfo())
   const bidData = useSelector((state: AppState) => state.bid)
@@ -117,21 +117,18 @@ const SwapAction = () => {
   useEffect(() => {
     findRoute()
   }, [findRoute])
+
   return (
-    <Row>
+    <Row gutter={[spacing, spacing]} justify="center">
       <Col span={24}>
         <Bid />
       </Col>
-      <Col span={24}>
-        <Row gutter={[8, 8]} justify="center">
-          <Col>
-            <Button
-              size="small"
-              icon={<IonIcon name="git-compare-outline" />}
-              onClick={onSwitch}
-            />
-          </Col>
-        </Row>
+      <Col>
+        <Button
+          size="small"
+          icon={<IonIcon name="git-compare-outline" />}
+          onClick={onSwitch}
+        />
       </Col>
       <Col span={24}>
         <Ask />
