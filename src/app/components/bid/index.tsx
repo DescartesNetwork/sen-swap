@@ -35,8 +35,9 @@ const Bid = () => {
 
   // Select default
   useEffect(() => {
+    if (bidData.accountAddress) return
     dispatch(updateBidData(selectionDefault))
-  }, [dispatch, selectionDefault])
+  }, [bidData.accountAddress, dispatch, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(

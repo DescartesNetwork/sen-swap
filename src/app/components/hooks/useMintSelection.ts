@@ -21,8 +21,11 @@ export const useMintSelection = (mintAddress: string): MintSelection => {
     useState<MintSelection>(DEFAULT_INFO)
 
   const getSelectionInfo = useCallback(async () => {
-    if (!account.isAddress(mintAddress)) return setSelectionInfo(DEFAULT_INFO)
+    if (!account.isAddress(mintAddress) || !Object.keys(pools).length)
+      return setSelectionInfo(DEFAULT_INFO)
+
     const mintInfo = await tokenProvider.findByAddress(mintAddress)
+    if (!mintInfo) return setSelectionInfo(DEFAULT_INFO)
     const { splt } = window.sentre
     // get mint account
     const accountAddress = await splt.deriveAssociatedAddress(
