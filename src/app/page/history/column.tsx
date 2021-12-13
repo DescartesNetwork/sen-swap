@@ -1,8 +1,10 @@
 import { Button, Space, Typography } from 'antd'
 import { MintAvatar, MintSymbol } from 'app/shared/components/mint'
 import IonIcon from 'shared/antd/ionicon'
-import { explorer, shortenAddress } from 'shared/util'
+import { explorer, numeric, shortenAddress } from 'shared/util'
 import StatusTag from './statusTag'
+
+const FORMAT_AMOUNT = '0,00.[0000]a'
 
 export const HISTORY_COLUMN = [
   {
@@ -36,11 +38,11 @@ export const HISTORY_COLUMN = [
     width: 400,
     render: (text: string, record: any) => (
       <Space size={8}>
-        {record.amountFrom}
+        {numeric(record.amountFrom).format(FORMAT_AMOUNT)}
         <MintSymbol mintAddress={record.from} />
         <MintAvatar mintAddress={record.from} />
         <IonIcon name="arrow-forward-outline" />
-        {record.amountTo}
+        {numeric(record.amountTo).format(FORMAT_AMOUNT)}
         <MintSymbol mintAddress={record.to} />
         <MintAvatar mintAddress={record.to} />
       </Space>

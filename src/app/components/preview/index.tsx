@@ -6,18 +6,18 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { TokenInfo } from '@solana/spl-token-registry'
 import { useSelector } from 'react-redux'
-import { PoolData, utils } from '@senswap/sen-js'
+import { PoolData } from '@senswap/sen-js'
 
 import { Col, Row, Typography } from 'antd'
-
-import { slippage } from 'app/helper/oracle'
-import { AppState } from 'app/model'
-import { numeric } from 'shared/util'
 import RouteAvatar from './routeAvatar'
 import InversePrice from './inversePirce'
 import SwitchPriceRate from './switchPriceRate'
-import { TokenInfo } from '@solana/spl-token-registry'
+
+import { AppState } from 'app/model'
+import { numeric } from 'shared/util'
+import { useSlippageRate } from '../hooks/useSlippageRate'
 
 export type HopData = {
   poolData: PoolData & { address: string }
@@ -52,16 +52,9 @@ const PreviewSwap = () => {
   const { route } = useSelector((state: AppState) => state.route)
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
+  const slippageRate = useSlippageRate()
 
   const { mintInfo: bidMintInfo } = bidData
-
-  const hopLastRoute = route?.hops.at(-1) // get lasted route hop
-  const bidAmoutLastRoute = route?.amounts.at(-1) || '' // laseted route bid amount
-
-  const slippageRate = useMemo(() => {
-    if (!hopLastRoute) return 0
-    return utils.undecimalize(slippage(bidAmoutLastRoute, hopLastRoute), 9)
-  }, [bidAmoutLastRoute, hopLastRoute])
 
   const routeIcons = useMemo(() => {
     if (!route?.hops) return
@@ -90,7 +83,7 @@ const PreviewSwap = () => {
     <Row gutter={[12, 12]}>
       <Col span={24}>
         <ExtraTypography
-          label="Price impart"
+          label="Price impact"
           content={
             <Typography.Text type="danger">
               {numeric(Number(slippageRate)).format('0.[0000]%')}
@@ -112,7 +105,7 @@ const PreviewSwap = () => {
       </Col>
       <Col span={24}>
         <ExtraTypography
-          label="Slippage toleance"
+          label="Slippage Tolerance"
           content={numeric(slippageSettings).format('0.[00]%')}
         />
       </Col>

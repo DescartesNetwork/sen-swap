@@ -28,8 +28,9 @@ const Ask = () => {
 
   // Select default
   useEffect(() => {
+    if (askData.accountAddress) return
     dispatch(updateAskData(selectionDefault))
-  }, [dispatch, selectionDefault])
+  }, [askData.accountAddress, dispatch, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(

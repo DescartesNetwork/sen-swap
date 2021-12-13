@@ -24,6 +24,6 @@ export const explorer = (addressOrTxId: string): string => {
 export const numeric = (
   value?: number | string | BigInt,
 ): ReturnType<typeof numbro> => {
-  if (!value) return numbro('0')
+  if (!value || !Number.isFinite(Number(value))) return numbro('0')
   return numbro(value)
 }
