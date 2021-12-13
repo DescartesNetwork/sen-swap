@@ -4,9 +4,10 @@ import { Card, Col, Radio, Row, Space, Typography } from 'antd'
 import { AppState } from 'app/model'
 import SenChart from './chart'
 import GroupAvatar from './GroupAvatar'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchMarketChart } from 'app/helper/cgk'
 import moment from 'moment'
+import ChartEmpty from './chartEmpty'
 
 const CHART_CONFIGS = {
   color: '#5D6CCF',
@@ -85,39 +86,47 @@ const SwapChart = () => {
   useEffect(() => {
     fetchChartData()
   }, [fetchChartData])
-  
+
   return (
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
       <Row gutter={[24, 24]}>
         <Col flex="auto">
           <Space direction="vertical" size={20}>
-            <Space size={4} align="baseline">
+            <Space size={4} style={{ height: 24 }}>
               <GroupAvatar icons={icons} size={24} />
               <Typography.Text>{symbols.join('/')}</Typography.Text>
             </Space>
             <Typography.Title level={2}>
-              {chartData[chartData.length - 1]?.val}
+              {chartData.at(-1)?.val}
             </Typography.Title>
           </Space>
         </Col>
-        <Col>
-          <Radio.Group
-            defaultValue="week"
-            onChange={(e) => setChartRange(e.target.value)}
-          >
-            <Radio.Button value="day">Day</Radio.Button>
-            <Radio.Button value="week">Week</Radio.Button>
-            <Radio.Button value="month">Month</Radio.Button>
-            {/* <Radio.Button value="year">Year</Radio.Button> */}
-          </Radio.Group>
-        </Col>
-        <Col span={24}>
-          <SenChart
-            chartData={chartData.map((data) => data.val)}
-            labels={chartData.map((data) => data.label)}
-            configs={swapChartConfigs}
-          />
-        </Col>
+        {chartData && !!chartData.length ? (
+          <Fragment>
+            <Col>
+              <Radio.Group
+                defaultValue="week"
+                onChange={(e) => setChartRange(e.target.value)}
+              >
+                <Radio.Button value="day">Day</Radio.Button>
+                <Radio.Button value="week">Week</Radio.Button>
+                <Radio.Button value="month">Month</Radio.Button>
+                {/* <Radio.Button value="year">Year</Radio.Button> */}
+              </Radio.Group>
+            </Col>
+            <Col span={24}>
+              <SenChart
+                chartData={chartData?.map((data) => data.val)}
+                labels={chartData?.map((data) => data.label)}
+                configs={swapChartConfigs}
+              />
+            </Col>
+          </Fragment>
+        ) : (
+          <Col span={24}>
+            <ChartEmpty />
+          </Col>
+        )}
       </Row>
     </Card>
   )
