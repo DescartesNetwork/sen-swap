@@ -74,7 +74,7 @@ const SwapChart = () => {
     let countForDay = 0
 
     for (let idx = bidChart.length - 1; idx >= 0; idx--) {
-      if (chartRange === 'week') size = 7
+      if (chartRange === 'week' || chartRange === 'day') size = 7
       count++
       const bidDay = bidChart[idx]
       const askDay = askChart[askChart.length - 1 - (bidChart.length - 1 - idx)]
@@ -96,7 +96,7 @@ const SwapChart = () => {
           if (date !== thisDay && countForDay === 0) {
             label = moment(bidDay.time).format('DD.MMM')
             countForDay++
-          } else label = moment(bidDay.time).format('HH:mm')
+          } else label = moment(bidDay.time).format('HH:00')
 
           chartData.unshift({ label, val })
         }
