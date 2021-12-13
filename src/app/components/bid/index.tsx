@@ -17,6 +17,7 @@ import { useMintSelection } from '../hooks/useMintSelection'
 import { useMintAccount } from 'app/shared/hooks/useMintAccount'
 import useMintCgk from 'app/shared/hooks/useMintCgk'
 import configs from 'app/configs'
+import { checkAttestedWormhole } from 'app/helper/wormhole'
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -88,12 +89,8 @@ const Bid = () => {
     ;(async () => {
       const bidMintAddr = selectionInfo?.mintInfo?.address
       if (!account.isAddress(bidMintAddr)) return
-      const bidMintInfo = await getMint({ address: bidMintAddr })
-      if (!bidMintInfo[bidMintAddr]) return
-      const mintAuthorityAddr = bidMintInfo[bidMintAddr]?.mint_authority
-      if (mintAuthorityAddr === configs.wormhole.wormholeAddress)
-        return setWormholeSupported(true)
-      return setWormholeSupported(false)
+      const wormholeSupported = await checkAttestedWormhole(bidMintAddr)
+      return setWormholeSupported(wormholeSupported)
     })()
   }, [getMint, selectionInfo])
 
