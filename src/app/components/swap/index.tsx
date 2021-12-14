@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd'
-import SwapSettings from 'app/page/swap/swapSettings'
+import SwapSettings from '../settings/swapSettings'
 import SwapAction from './swapAction'
 
 const Swap = () => {

@@ -70,7 +70,7 @@ const History = () => {
                 rowClassName={(record, index) =>
                   index % 2 ? 'odd-row' : 'even-row'
                 }
-                scroll={!loading ? { x: 800, y: 280 } : {}}
+                scroll={historySwap.length ? { x: 800, y: 280 } : {}}
               />
             </Col>
             <Col>
