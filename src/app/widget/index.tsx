@@ -11,6 +11,8 @@ import SwapAction from 'app/components/swap/swapAction'
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
+import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
+import { numeric } from 'shared/util'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
@@ -18,6 +20,7 @@ const Widget = () => {
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
   const { accounts } = useAccount()
+  const slippageRate = useSlippageRate()
 
   const wrapAmount = useMemo(() => {
     const bidMint = bidData.mintInfo
@@ -37,64 +40,68 @@ const Widget = () => {
     !parseFloat(bidData.amount) ||
     parseFloat(bidData.amount) < 0 ||
     !parseFloat(askData?.amount) ||
-    parseFloat(askData?.amount) < 0
+    parseFloat(askData?.amount) < 0 ||
+    slippageRate * 100 > 12.5
+
   return (
-    <Row style={{ padding: '8px' }}>
-      <Space direction="vertical" size={20}>
-        <Col span={24}>
-          <SwapAction />
-        </Col>
-        <Col span={24}>
-          <Row align="bottom">
-            <Col flex="auto">
-              <Popover
-                placement="bottomLeft"
-                content={
-                  <Row style={{ width: 307 }}>
-                    <Col>
-                      <PreviewSwap />
-                    </Col>
-                  </Row>
-                }
-                trigger="click"
+    <Row gutter={[12, 12]}>
+      <Col span={24}>
+        <SwapAction spacing={12} />
+      </Col>
+      <Col span={24}>
+        <Row align="bottom">
+          <Col flex="auto">
+            <Popover
+              placement="bottomLeft"
+              content={
+                <Row style={{ width: 307 }}>
+                  <Col>
+                    <PreviewSwap />
+                  </Col>
+                </Row>
+              }
+              trigger="click"
+            >
+              <Space
+                style={{ cursor: 'pointer' }}
+                direction="vertical"
+                size={4}
               >
-                <Space style={{ cursor: 'pointer' }} direction="vertical">
-                  <Space>
-                    <Typography.Text>
-                      <IonIcon
-                        name="information-circle-outline"
-                        style={{ color: '#7A7B85' }}
-                      />
-                    </Typography.Text>
-                    <Typography.Text type="secondary">
-                      Price impact
-                    </Typography.Text>
-                  </Space>
-                  <Space>
-                    <Typography.Text style={{ color: '#D72311' }}>
-                      <IonIcon name="arrow-down-outline" />
-                    </Typography.Text>
-                    <Typography.Text style={{ color: '#D72311' }}>
-                      1.4%
-                    </Typography.Text>
-                  </Space>
+                <Space>
+                  <Typography.Text>
+                    <IonIcon
+                      name="information-circle-outline"
+                      style={{ color: '#7A7B85' }}
+                    />
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    Price impact
+                  </Typography.Text>
                 </Space>
-              </Popover>
-            </Col>
-            <Col>
-              <Button
-                onClick={() => setVisible(true)}
-                size="large"
-                block
-                type="primary"
-                disabled={disabled}
-              >
-                Review & Swap
-              </Button>
-            </Col>
-          </Row>
-        </Col>
-      </Space>
+                <Space>
+                  <Typography.Text style={{ color: '#D72311' }}>
+                    <IonIcon name="arrow-down-outline" />
+                  </Typography.Text>
+                  <Typography.Text style={{ color: '#D72311' }}>
+                    {numeric(Number(slippageRate)).format('0.[0000]%')}
+                  </Typography.Text>
+                </Space>
+              </Space>
+            </Popover>
+          </Col>
+          <Col>
+            <Button
+              onClick={() => setVisible(true)}
+              size="large"
+              block
+              type="primary"
+              disabled={disabled}
+            >
+              Review & Swap
+            </Button>
+          </Col>
+        </Row>
+      </Col>
       <Modal
         title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
         onCancel={() => setVisible(false)}
