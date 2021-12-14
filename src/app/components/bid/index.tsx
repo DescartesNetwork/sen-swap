@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
-import { Row, Col, Typography, Button, Space, Tooltip, Tag } from 'antd'
+import { Row, Col, Typography, Button, Space, Tooltip } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
+import WormHoleSupported from '../wormHoleSupported'
 import Selection from '../selection'
 
-import { useWallet } from 'senhub/providers'
+import { useMint, useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
-import { randomColor } from 'shared/helper'
 import { AppDispatch, AppState } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
 import NumericInput from 'app/shared/components/numericInput'
@@ -17,8 +17,7 @@ import { useMintSelection } from '../hooks/useMintSelection'
 import { useMintAccount } from 'app/shared/hooks/useMintAccount'
 import useMintCgk from 'app/shared/hooks/useMintCgk'
 import configs from 'app/configs'
-
-const WORMHOLE_COLOR = '#F9575E'
+import { checkAttestedWormhole } from 'app/helper/wormhole'
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -26,6 +25,8 @@ const Bid = () => {
     wallet: { address: walletAddress, lamports },
   } = useWallet()
   const bidData = useSelector((state: AppState) => state.bid)
+  const { getMint } = useMint()
+  const [wormholeSupported, setWormholeSupported] = useState(false)
 
   const { balance, decimals, mint, amount } = useMintAccount(
     bidData.accountAddress,
@@ -84,26 +85,25 @@ const Bid = () => {
   // calculator
   const totalValue = cgkData.price * Number(bidData.amount)
 
+  useEffect(() => {
+    ;(async () => {
+      const bidMintAddr = selectionInfo?.mintInfo?.address
+      if (!account.isAddress(bidMintAddr)) return
+      const wormholeSupported = await checkAttestedWormhole(bidMintAddr)
+      return setWormholeSupported(wormholeSupported)
+    })()
+  }, [getMint, selectionInfo])
+
   return (
     <Row gutter={[8, 8]}>
       <Col flex="auto">
         <Typography.Text>From</Typography.Text>
       </Col>
-      <Col>
-        <Space size={4}>
-          <Typography.Text type="secondary">Supported</Typography.Text>
-          <Tag
-            style={{
-              margin: 0,
-              borderRadius: 4,
-              color: randomColor(WORMHOLE_COLOR),
-            }}
-            color={randomColor(WORMHOLE_COLOR, 0.2)}
-          >
-            Wormhole Bridge
-          </Tag>
-        </Space>
-      </Col>
+      {wormholeSupported && (
+        <Col>
+          <WormHoleSupported />
+        </Col>
+      )}
       <Col span={24}>
         <NumericInput
           placeholder="0"

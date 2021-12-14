@@ -22,7 +22,7 @@ const {
 
 export const Page = () => {
   return (
-    <UIProvider appId={appId}>
+    <UIProvider appId={appId} antd>
       <MintProvider>
         <PoolProvider>
           <AccountProvider>
@@ -45,7 +45,7 @@ export const widgetConfig: WidgetConfig = {
 
 export const Widget = () => {
   return (
-    <UIProvider appId={appId}>
+    <UIProvider appId={appId} antd>
       <MintProvider>
         <PoolProvider>
           <AccountProvider>
