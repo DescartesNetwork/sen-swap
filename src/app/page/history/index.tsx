@@ -28,7 +28,6 @@ const History = () => {
 
   useEffect(() => {
     fetchHistory()
-    return () => setLoading(false)
   }, [fetchHistory])
 
   const onHandleViewMore = () => {
