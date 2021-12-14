@@ -38,11 +38,16 @@ const UIContextProvider = ({
 }) => {
   const ui = useSelector((state: RootState) => state.ui)
   const provider = useMemo(() => ({ ui }), [ui])
+
   return (
     <Context.Provider value={provider}>
       <section
         id={appId}
-        style={{ height: '100%', backgroundColor: 'transparent', ...style }}
+        style={{
+          height: '100%',
+          backgroundColor: 'transparent',
+          ...style,
+        }}
       >
         {antd ? (
           <ConfigProvider
