@@ -22,7 +22,7 @@ const {
 
 export const Page = () => {
   return (
-    <UIProvider appId={appId} antd>
+    <UIProvider appId={appId}>
       <MintProvider>
         <PoolProvider>
           <AccountProvider>
