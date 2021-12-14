@@ -16,7 +16,7 @@ const Mint = ({
 }) => {
   return (
     <Card
-      className="card-child"
+      className={`card-child${active ? ' active' : ''}`}
       bodyStyle={{ padding: `8px 16px`, cursor: 'pointer' }}
       bordered={active}
       onClick={onClick}

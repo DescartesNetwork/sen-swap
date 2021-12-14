@@ -12,3 +12,20 @@
 .card-input {
   border: 1px solid;
 }
+.active {
+  border-color: #f9575e !important;
+}
+
+@media (max-width: 992px) {
+  .chart-radio-btn {
+    .sentre-radio-button-wrapper {
+      border: none !important;
+      padding: 0 6px !important;
+      box-shadow: none !important;
+      &::before,
+      &::after {
+        display: none !important;
+      }
+    }
+  }
+}

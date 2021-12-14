@@ -1,13 +1,13 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import moment from 'moment'
 
 import { Card, Col, Radio, Row, Space, Typography } from 'antd'
 import { AppState } from 'app/model'
 import SenChart from './chart'
 import GroupAvatar from './GroupAvatar'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { fetchMarketChart } from 'app/helper/cgk'
-import moment from 'moment'
 import ChartEmpty from './chartEmpty'
+import { fetchMarketChart } from 'app/helper/cgk'
 
 const CHART_CONFIGS = {
   color: '#5D6CCF',
@@ -91,42 +91,45 @@ const SwapChart = () => {
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
       <Row gutter={[24, 24]}>
         <Col flex="auto">
-          <Space direction="vertical" size={20}>
-            <Space size={4} style={{ height: 24 }}>
-              <GroupAvatar icons={icons} size={24} />
-              <Typography.Text>{symbols.join('/')}</Typography.Text>
-            </Space>
-            <Typography.Title level={2}>
-              {chartData.at(-1)?.val}
-            </Typography.Title>
-          </Space>
-        </Col>
-        {chartData && !!chartData.length ? (
-          <Fragment>
-            <Col>
-              <Radio.Group
-                defaultValue="week"
-                onChange={(e) => setChartRange(e.target.value)}
-              >
-                <Radio.Button value="day">Day</Radio.Button>
-                <Radio.Button value="week">Week</Radio.Button>
-                <Radio.Button value="month">Month</Radio.Button>
-                {/* <Radio.Button value="year">Year</Radio.Button> */}
-              </Radio.Group>
+          <Row gutter={[20, 20]}>
+            <Col flex="auto">
+              <Space size={4} align="center">
+                <GroupAvatar icons={icons} size={24} />
+                <Typography.Text>{symbols.join('/')}</Typography.Text>
+              </Space>
             </Col>
+            {chartData && !!chartData.length && (
+              <Col>
+                <Radio.Group
+                  defaultValue="week"
+                  onChange={(e) => setChartRange(e.target.value)}
+                  className="chart-radio-btn"
+                >
+                  <Radio.Button value="day">Day</Radio.Button>
+                  <Radio.Button value="week">Week</Radio.Button>
+                  <Radio.Button value="month">Month</Radio.Button>
+                  {/* <Radio.Button value="year">Year</Radio.Button> */}
+                </Radio.Group>
+              </Col>
+            )}
             <Col span={24}>
-              <SenChart
-                chartData={chartData?.map((data) => data.val)}
-                labels={chartData?.map((data) => data.label)}
-                configs={swapChartConfigs}
-              />
+              <Typography.Title level={2}>
+                {chartData.at(-1)?.val}
+              </Typography.Title>
             </Col>
-          </Fragment>
-        ) : (
-          <Col span={24}>
+          </Row>
+        </Col>
+        <Col span={24}>
+          {chartData && !!chartData.length ? (
+            <SenChart
+              chartData={chartData?.map((data) => data.val)}
+              labels={chartData?.map((data) => data.label)}
+              configs={swapChartConfigs}
+            />
+          ) : (
             <ChartEmpty />
-          </Col>
-        )}
+          )}
+        </Col>
       </Row>
     </Card>
   )
