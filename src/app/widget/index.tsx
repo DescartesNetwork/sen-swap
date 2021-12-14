@@ -11,6 +11,8 @@ import SwapAction from 'app/components/swap/swapAction'
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
+import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
+import { numeric } from 'shared/util'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
@@ -18,6 +20,7 @@ const Widget = () => {
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
   const { accounts } = useAccount()
+  const slippageRate = useSlippageRate()
 
   const wrapAmount = useMemo(() => {
     const bidMint = bidData.mintInfo
@@ -37,11 +40,13 @@ const Widget = () => {
     !parseFloat(bidData.amount) ||
     parseFloat(bidData.amount) < 0 ||
     !parseFloat(askData?.amount) ||
-    parseFloat(askData?.amount) < 0
+    parseFloat(askData?.amount) < 0 ||
+    slippageRate * 100 > 12.5
+
   return (
-    <Row gutter={[24, 24]} style={{ padding: '16px 4px' }}>
+    <Row gutter={[12, 12]}>
       <Col span={24}>
-        <SwapAction />
+        <SwapAction spacing={12} />
       </Col>
       <Col span={24}>
         <Row align="bottom">
@@ -57,7 +62,11 @@ const Widget = () => {
               }
               trigger="click"
             >
-              <Space style={{ cursor: 'pointer' }} direction="vertical">
+              <Space
+                style={{ cursor: 'pointer' }}
+                direction="vertical"
+                size={4}
+              >
                 <Space>
                   <Typography.Text>
                     <IonIcon
@@ -74,7 +83,7 @@ const Widget = () => {
                     <IonIcon name="arrow-down-outline" />
                   </Typography.Text>
                   <Typography.Text style={{ color: '#D72311' }}>
-                    1.4%
+                    {numeric(Number(slippageRate)).format('0.[0000]%')}
                   </Typography.Text>
                 </Space>
               </Space>

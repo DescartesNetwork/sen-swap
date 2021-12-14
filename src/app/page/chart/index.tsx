@@ -8,10 +8,33 @@ import SenChart from './chart'
 import GroupAvatar from './GroupAvatar'
 import ChartEmpty from './chartEmpty'
 import { ChartParamsCGK, fetchMarketChart } from 'app/helper/cgk'
+import { numeric } from 'shared/util'
 
-type ChartProperties = {
-  range: number
-  size: number
+type ChartData = { label: string; val: number }
+enum Interval {
+  day = 'day',
+  week = 'week',
+  month = 'month',
+  year = 'year',
+}
+const CHART_DATA_CONFIG: Record<
+  Interval,
+  {
+    amount: number
+    unit: moment.unitOfTime.DurationConstructor
+    format: string
+  }
+> = {
+  day: { amount: 4, unit: 'hours', format: 'HH:00' },
+  week: { amount: 1, unit: 'days', format: 'DD.MMM' },
+  month: { amount: 5, unit: 'days', format: 'DD.MMM' },
+  year: { amount: 2, unit: 'months', format: 'DD.MMM' },
+}
+const MARKET_CONFIG: Record<Interval, ChartParamsCGK> = {
+  day: { days: 1, interval: 'hourly' },
+  week: { days: 7, interval: 'daily' },
+  month: { days: 31, interval: 'daily' },
+  year: { days: 365, interval: 'daily' },
 }
 
 const CHART_CONFIGS = {
@@ -21,16 +44,11 @@ const CHART_CONFIGS = {
   tooltip: 'TVL',
   transparent: 'transparent',
 }
-const CHART_RANGE: Record<string, ChartParamsCGK & ChartProperties> = {
-  week: { day: 'max', interval: 'daily', range: 1, size: 7 },
-  day: { day: '1', interval: 'hourly', range: 4, size: 7 },
-  month: { day: 'max', interval: 'daily', range: 6, size: 6 },
-  year: { day: 'max', interval: 'daily', range: 60, size: 6 },
-}
+
 const DEFAULT_TOKEN = 'UNKN'
 
 const SwapChart = () => {
-  const [chartRange, setChartRange] = useState('year')
+  const [interval, setInterval] = useState(Interval.week)
   const [chartData, setChartData] = useState<{ label: string; val: number }[]>(
     [],
   )
@@ -57,76 +75,99 @@ const SwapChart = () => {
     ]
   }, [askData.mintInfo?.symbol, bidData.mintInfo?.symbol])
 
+  const parseChartDay = useCallback(
+    (marketData: { time: number; val: number }[]) => {
+      const chartData: ChartData[] = []
+      const { format, amount, unit } = CHART_DATA_CONFIG[interval]
+      let displayTime = moment()
+      // parser data
+      for (const data of marketData.reverse()) {
+        const chartTime = moment(data.time).format(format)
+        if (chartTime === displayTime.format(format)) {
+          const now = moment().format(format)
+          let label = chartTime
+          if (chartTime === now) label = moment().format('HH:mm')
+          if (displayTime)
+            chartData.unshift({
+              label: label,
+              val: data.val,
+            })
+          displayTime = displayTime.subtract(amount, unit)
+        } else if (chartTime === '00:00') {
+          chartData.unshift({
+            label: displayTime.format('DD.MMM'),
+            val: data.val,
+          })
+        }
+      }
+      setChartData(chartData)
+    },
+    [interval],
+  )
+
+  const parseChartDaily = useCallback(
+    (marketData: { time: number; val: number }[]) => {
+      const chartData: ChartData[] = []
+      const { format, amount, unit } = CHART_DATA_CONFIG[interval]
+      let displayTime = moment()
+      // parser data
+      for (const data of marketData.reverse()) {
+        const chartTime = moment(data.time).format(format)
+        if (chartTime === displayTime.format(format)) {
+          displayTime = displayTime.subtract(amount, unit)
+          chartData.unshift({
+            label: chartTime,
+            val: data.val,
+          })
+          continue
+        }
+      }
+      setChartData(chartData)
+    },
+    [interval],
+  )
+
   const fetchChartData = useCallback(async () => {
+    // fetch data market from coingecko
     const askTicket = askData.mintInfo?.extensions?.coingeckoId
     const bidTicket = bidData.mintInfo?.extensions?.coingeckoId
     if (!askTicket || !bidTicket) return setChartData([])
 
-    const [askChart, bidChart] = await Promise.all([
-      fetchMarketChart(askTicket, CHART_RANGE[chartRange]),
-      fetchMarketChart(bidTicket, CHART_RANGE[chartRange]),
+    const marketConfig = MARKET_CONFIG[interval]
+    const [bidChartData, askChartData] = await Promise.all([
+      fetchMarketChart(bidTicket, marketConfig),
+      fetchMarketChart(askTicket, marketConfig),
     ])
-    const range = CHART_RANGE[chartRange].range
-    let size = CHART_RANGE[chartRange].size
-
-    const chartData: { label: string; val: number }[] = []
-    const thisDay = moment(bidChart[bidChart.length - 1].time).format('DD')
-
-    let count = range
-    let isYesterday = false
-
-    for (let idx = bidChart.length - 1; idx >= 0; idx--) {
-      count++
-      const bidDay = bidChart[idx]
-      const askDay = askChart[askChart.length - 1 - (bidChart.length - 1 - idx)]
-      if (!bidDay || !askDay) break
-      if (chartData.length >= size) break
-      const val = +Number(bidDay.val / askDay.val).toFixed(8)
-      const dateCount = bidChart.length - 1 - idx
-      const getDate = moment(bidDay.time).format('DD')
-      const getDateMonth = moment(bidDay.time).format('DD/MM')
-
-      if (
-        chartRange === 'year' &&
-        dateCount > -1 &&
-        getDate === thisDay &&
-        count >= range
-      ) {
-        const label = moment(bidDay.time).format('DD/MM')
-        chartData.unshift({ label, val })
-        count = 0
-      }
-
-      if (chartRange !== 'year' && dateCount > -1 && dateCount % range === 0) {
-        let label = ''
-        if (chartRange === 'day' && getDate !== thisDay && !isYesterday) {
-          label = moment(bidDay.time).format('DD.MMM')
-          isYesterday = true
-          chartData.unshift({ label, val })
-          continue
-        }
-        if (chartRange === 'day') label = moment(bidDay.time).format('HH:00')
-
-        if (chartRange === 'week' && getDateMonth === chartData[0]?.label) {
-          label = getDateMonth
-          chartData[0].label = ''
-        }
-
-        if (chartRange === 'month' || chartRange === 'week')
-          label = getDateMonth
-
-        chartData.unshift({ label, val })
-      }
+    // parser market data
+    const marketData: { time: number; val: number }[] = []
+    for (let idx = bidChartData.length - 1; idx >= 0; idx--) {
+      const bidChart = bidChartData[idx]
+      const askChart =
+        askChartData[askChartData.length - bidChartData.length + idx]
+      if (!bidChart || !askChart) continue
+      marketData.unshift({
+        time: bidChart.time,
+        val: bidChart.val / askChart.val,
+      })
     }
-    setChartData(chartData)
+    if (interval === Interval.day) return parseChartDay(marketData)
+    return parseChartDaily(marketData)
   }, [
     askData.mintInfo?.extensions?.coingeckoId,
     bidData.mintInfo?.extensions?.coingeckoId,
-    chartRange,
+    interval,
+    parseChartDaily,
+    parseChartDay,
   ])
+
   useEffect(() => {
     fetchChartData()
   }, [fetchChartData])
+
+  const price = chartData.at(-1)?.val || 0
+  const priceUI = numeric(price).format(
+    price > 1 ? '0,0.[00]' : '0,0.[00000000]',
+  )
 
   return (
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
@@ -142,20 +183,20 @@ const SwapChart = () => {
             {chartData && !!chartData.length && (
               <Col>
                 <Radio.Group
-                  defaultValue="year"
-                  onChange={(e) => setChartRange(e.target.value)}
+                  defaultValue={Interval.week}
+                  onChange={(e) => setInterval(e.target.value)}
                   className="chart-radio-btn"
                 >
-                  <Radio.Button value="day">1D</Radio.Button>
-                  <Radio.Button value="week">1W</Radio.Button>
-                  <Radio.Button value="month">1M</Radio.Button>
-                  <Radio.Button value="year">1Y</Radio.Button>
+                  <Radio.Button value={Interval.day}>1D</Radio.Button>
+                  <Radio.Button value={Interval.week}>1W</Radio.Button>
+                  <Radio.Button value={Interval.month}>1M</Radio.Button>
+                  <Radio.Button value={Interval.year}>1Y</Radio.Button>
                 </Radio.Group>
               </Col>
             )}
             <Col span={24}>
               <Typography.Title level={2}>
-                {chartData.at(-1)?.val}
+                {price ? priceUI : ''}
               </Typography.Title>
             </Col>
           </Row>

@@ -10,7 +10,7 @@ export interface MintInfo {
 }
 
 export type ChartParamsCGK = {
-  day: string
+  days: number
   interval: string
 }
 
@@ -58,7 +58,7 @@ export const fetchMarketChart = async (
   try {
     const data: any = await axios({
       method: 'get',
-      url: `https://api.coingecko.com/api/v3/coins/${ticket}/market_chart?vs_currency=usd&days=${params.day}&interval=${params.interval}`,
+      url: `https://api.coingecko.com/api/v3/coins/${ticket}/market_chart?vs_currency=usd&days=${params.days}&interval=${params.interval}`,
     })
     const priceData: [number /*time*/, number /*price*/][] = data.data.prices
     return priceData.map((data) => ({ time: data[0], val: data[1] }))
