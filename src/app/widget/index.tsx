@@ -40,7 +40,9 @@ const Widget = () => {
     !parseFloat(bidData.amount) ||
     parseFloat(bidData.amount) < 0 ||
     !parseFloat(askData?.amount) ||
-    parseFloat(askData?.amount) < 0
+    parseFloat(askData?.amount) < 0 ||
+    slippageRate * 100 > 12.5
+
   return (
     <Row>
       <Space direction="vertical" size={12}>
@@ -61,7 +63,11 @@ const Widget = () => {
                 }
                 trigger="click"
               >
-                <Space style={{ cursor: 'pointer' }} direction="vertical">
+                <Space
+                  style={{ cursor: 'pointer' }}
+                  direction="vertical"
+                  size={4}
+                >
                   <Space>
                     <Typography.Text>
                       <IonIcon
