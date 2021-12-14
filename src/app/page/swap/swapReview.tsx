@@ -33,8 +33,9 @@ const SwapActions = () => {
     return bid - bidBalance
   }, [accounts, bidAccountAddr, bidAmount, bidMint])
 
+  const hightPriceImpact = slippageRate * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
   const disabled =
-    (Number(slippageRate) * 100 >= 12.5) || // just swap when the slippage rate is smaller than 12.5%
+    hightPriceImpact ||
     !hops.length ||
     !parseFloat(bidAmount) ||
     parseFloat(bidAmount) < 0 ||
@@ -51,7 +52,12 @@ const SwapActions = () => {
           <SwapInfo />
         </Col>
         <Col span={24}>
-          <SwapButton hops={hops} wrapAmount={wrapAmount} disabled={disabled} />
+          <SwapButton
+            hops={hops}
+            wrapAmount={wrapAmount}
+            disabled={disabled}
+            hightImpact={hightPriceImpact}
+          />
         </Col>
       </Row>
     </Card>
