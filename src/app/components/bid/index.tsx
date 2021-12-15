@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
-import { Row, Col, Typography, Button, Space, Tooltip } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import { Row, Col, Typography, Button } from 'antd'
 import WormHoleSupported from '../wormHoleSupported'
 import Selection from '../selection'
 
@@ -15,7 +14,6 @@ import NumericInput from 'app/shared/components/numericInput'
 import { SelectionInfo } from '../selection/mintSelection'
 import { useMintSelection } from '../hooks/useMintSelection'
 import { useMintAccount } from 'app/shared/hooks/useMintAccount'
-import useMintCgk from 'app/shared/hooks/useMintCgk'
 import configs from 'app/configs'
 import { checkAttestedWormhole } from 'app/helper/wormhole'
 
@@ -31,7 +29,6 @@ const Bid = () => {
   const { balance, decimals, mint, amount } = useMintAccount(
     bidData.accountAddress,
   )
-  const cgkData = useMintCgk(bidData.mintInfo?.address)
   const selectionDefault = useMintSelection(configs.swap.bidDefault)
 
   // Select default
@@ -82,9 +79,6 @@ const Bid = () => {
     return dispatch(updateBidData({ accountAddress, ...selectionInfo }))
   }
 
-  // calculator
-  const totalValue = cgkData.price * Number(bidData.amount)
-
   useEffect(() => {
     ;(async () => {
       const bidMintAddr = selectionInfo?.mintInfo?.address
@@ -126,29 +120,11 @@ const Bid = () => {
           max={balanceTransfer}
         />
       </Col>
-      <Col span={24}>
-        <Row gutter={[4, 4]} style={{ fontSize: 12, marginLeft: 2 }}>
-          <Col flex="auto">
-            {cgkData.price ? (
-              <Tooltip title="The estimation is based on CoinGecko API.">
-                <Space size={4}>
-                  <IonIcon name="information-circle-outline" />
-                  <Typography.Text type="secondary">
-                    {numeric(bidData.amount).format('0,0.[0000]')}{' '}
-                    {selectionInfo.mintInfo?.symbol || 'TOKEN'} ~ $
-                    {numeric(totalValue).format('0,0.[00]a')}
-                  </Typography.Text>
-                </Space>
-              </Tooltip>
-            ) : null}
-          </Col>
-          <Col>
-            <Typography.Text type="secondary">
-              Available: {numeric(balanceTransfer || 0).format('0,0.[00]')}{' '}
-              {selectionInfo.mintInfo?.symbol || 'TOKEN'}
-            </Typography.Text>
-          </Col>
-        </Row>
+      <Col span={24} style={{ textAlign: 'right', fontSize: 12 }}>
+        <Typography.Text type="secondary">
+          Available: {numeric(balanceTransfer || 0).format('0,0.[00]')}{' '}
+          {selectionInfo.mintInfo?.symbol || 'TOKEN'}
+        </Typography.Text>
       </Col>
     </Row>
   )

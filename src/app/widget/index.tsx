@@ -53,13 +53,7 @@ const Widget = () => {
           <Col flex="auto">
             <Popover
               placement="bottomLeft"
-              content={
-                <Row style={{ width: 307 }}>
-                  <Col>
-                    <PreviewSwap />
-                  </Col>
-                </Row>
-              }
+              content={<PreviewSwap />}
               trigger="click"
             >
               <Space
