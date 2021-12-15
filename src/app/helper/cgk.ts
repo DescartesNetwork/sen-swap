@@ -9,6 +9,11 @@ export interface MintInfo {
   decimals: number
 }
 
+export type ChartParamsCGK = {
+  days: number
+  interval: string
+}
+
 const DEFAULT_TOKEN_INFO = {
   address: '',
   chainId: 0,
@@ -46,11 +51,14 @@ const cgk = {
 }
 export default cgk
 
-export const fetchMarketChart = async (ticket: string) => {
+export const fetchMarketChart = async (
+  ticket: string,
+  params: ChartParamsCGK,
+) => {
   try {
     const data: any = await axios({
       method: 'get',
-      url: `https://api.coingecko.com/api/v3/coins/${ticket}/market_chart?vs_currency=usd&days=max&interval=daily`,
+      url: `https://api.coingecko.com/api/v3/coins/${ticket}/market_chart?vs_currency=usd&days=${params.days}&interval=${params.interval}`,
     })
     const priceData: [number /*time*/, number /*price*/][] = data.data.prices
     return priceData.map((data) => ({ time: data[0], val: data[1] }))

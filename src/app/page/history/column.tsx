@@ -33,25 +33,37 @@ export const HISTORY_COLUMN = [
   },
 
   {
-    title: 'AMOUNT',
-    dataIndex: 'amount',
-    width: 400,
-    render: (text: string, record: any) => (
-      <Space size={8}>
-        {numeric(record.amountFrom).format(FORMAT_AMOUNT)}
-        <MintSymbol mintAddress={record.from} />
-        <MintAvatar mintAddress={record.from} />
-        <IonIcon name="arrow-forward-outline" />
-        {numeric(record.amountTo).format(FORMAT_AMOUNT)}
-        <MintSymbol mintAddress={record.to} />
-        <MintAvatar mintAddress={record.to} />
-      </Space>
-    ),
+    title: 'BID',
+    dataIndex: 'bid',
+    render: (text: string, record: any) =>
+      !record.from ? (
+        '--'
+      ) : (
+        <Space size={8}>
+          <MintAvatar mintAddress={record.from} />
+          {numeric(record.amountFrom).format(FORMAT_AMOUNT)}
+          <MintSymbol mintAddress={record.from} />
+        </Space>
+      ),
+  },
+  {
+    title: 'ASK',
+    dataIndex: 'ask',
+    render: (text: string, record: any) =>
+      !record.to ? (
+        '--'
+      ) : (
+        <Space size={8}>
+          <MintAvatar mintAddress={record.to} />
+          {numeric(record.amountTo).format(FORMAT_AMOUNT)}
+          <MintSymbol mintAddress={record.to} />
+        </Space>
+      ),
   },
   {
     title: 'STATUS',
     dataIndex: 'status',
     width: 100,
-    render: (text: string) => <StatusTag tag="success" />,
+    render: (text: string, record: any) => <StatusTag tag={record.status} />,
   },
 ]

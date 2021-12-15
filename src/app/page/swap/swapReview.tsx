@@ -8,6 +8,7 @@ import SwapInfo from 'app/components/preview'
 
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
+import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
 
 const SwapActions = () => {
   const { route } = useSelector((state: AppState) => state.route)
@@ -18,6 +19,7 @@ const SwapActions = () => {
   } = useSelector((state: AppState) => state.bid)
   const { amount: askAmount } = useSelector((state: AppState) => state.ask)
   const { accounts } = useAccount()
+  const slippageRate = useSlippageRate()
 
   const hops = route?.hops || []
 
@@ -31,7 +33,9 @@ const SwapActions = () => {
     return bid - bidBalance
   }, [accounts, bidAccountAddr, bidAmount, bidMint])
 
+  const tooHightImpact = slippageRate * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
   const disabled =
+    tooHightImpact ||
     !hops.length ||
     !parseFloat(bidAmount) ||
     parseFloat(bidAmount) < 0 ||
@@ -48,7 +52,12 @@ const SwapActions = () => {
           <SwapInfo />
         </Col>
         <Col span={24}>
-          <SwapButton hops={hops} wrapAmount={wrapAmount} disabled={disabled} />
+          <SwapButton
+            hops={hops}
+            wrapAmount={wrapAmount}
+            disabled={disabled}
+            hightImpact={tooHightImpact}
+          />
         </Col>
       </Row>
     </Card>

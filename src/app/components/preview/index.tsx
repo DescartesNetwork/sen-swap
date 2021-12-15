@@ -110,9 +110,6 @@ const PreviewSwap = () => {
         />
       </Col>
       <Col span={24}>
-        <ExtraTypography label="Protocol Fee" content="0.25%" />
-      </Col>
-      <Col span={24}>
         <ExtraTypography
           label="Route"
           content={<RouteAvatar icons={routeIcons} />}
