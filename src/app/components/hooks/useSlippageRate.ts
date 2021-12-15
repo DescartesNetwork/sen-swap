@@ -8,8 +8,9 @@ import { AppState } from 'app/model'
 export const useSlippageRate = () => {
   const { route } = useSelector((state: AppState) => state.route)
   const bidData = useSelector((state: AppState) => state.bid)
+  const askMount = useSelector((state: AppState) => state.ask)
 
-  const { amount = '', amounts = [], hops = [] } = route || {}
+  const { amounts = [], hops = [] } = route || {}
   const slippageRate = useMemo(() => {
     let newAmount = bidData.amount
     hops.forEach((hop, i) => {
@@ -17,7 +18,7 @@ export const useSlippageRate = () => {
       const newPoolData = { ...poolData }
       const srcAmount = amounts[i]
       const srcDecimals = srcMintInfo.decimals
-      const dstAmount = amounts[i + 1] || amount
+      const dstAmount = amounts[i + 1] || askMount.amount
       const dstDecimals = dstMintInfo.decimals
       if (srcMintInfo.address === poolData.mint_a) {
         newPoolData.reserve_a += utils.decimalize(srcAmount, srcDecimals)
@@ -28,8 +29,8 @@ export const useSlippageRate = () => {
       }
       newAmount = curve(newAmount, { ...hop, poolData: newPoolData })
     })
-    return 1 - Number(newAmount) / Number(amount)
-  }, [amount, amounts, bidData.amount, hops])
+    return 1 - Number(newAmount) / Number(askMount.amount)
+  }, [amounts, askMount.amount, bidData.amount, hops])
 
   return slippageRate
 }
