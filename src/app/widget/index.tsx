@@ -40,8 +40,8 @@ const Widget = () => {
     !parseFloat(bidData.amount) ||
     parseFloat(bidData.amount) < 0 ||
     !parseFloat(askData?.amount) ||
-    parseFloat(askData?.amount) < 0 ||
-    slippageRate * 100 > 12.5
+    parseFloat(askData?.amount) < 0
+  const tooHightImpact = slippageRate * 100 > 12.5
 
   return (
     <Row gutter={[12, 12]}>
@@ -109,8 +109,9 @@ const Widget = () => {
           <SwapButton
             hops={route?.hops || []}
             wrapAmount={wrapAmount}
-            disabled={disabled}
             onCallback={() => setVisible(false)}
+            hightImpact={tooHightImpact}
+            disabled={disabled || tooHightImpact}
           />
         }
         visible={visible}

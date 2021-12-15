@@ -51,7 +51,7 @@ const History = () => {
   }
 
   return (
-    <Card bordered={false} style={{ height: 472 }}>
+    <Card bordered={false} style={{ height: 438 }}>
       <Row gutter={[16, 24]}>
         <Col flex="auto">
           <Typography.Title level={5}>Swap history</Typography.Title>
@@ -61,7 +61,7 @@ const History = () => {
         </Col>
         <Col span={24}>
           <Row justify="center" gutter={[16, 9]}>
-            <Col span={24} style={{ height: 336 }}>
+            <Col span={24} style={{ height: 310 }}>
               <Table
                 columns={HISTORY_COLUMN}
                 dataSource={historySwap.slice(0, amountRow)}
@@ -70,7 +70,7 @@ const History = () => {
                 rowClassName={(record, index) =>
                   index % 2 ? 'odd-row' : 'even-row'
                 }
-                scroll={historySwap.length ? { x: 800, y: 280 } : {}}
+                scroll={historySwap.length ? { x: 800, y: 260 } : {}}
               />
             </Col>
             <Col>
