@@ -11,7 +11,7 @@ import { AppDispatch, AppState } from 'app/model'
 import './index.less'
 
 const ROW_PER_PAGE = 5
-const LIMIT_IN_STORE = 10
+const LIMIT_IN_STORE = 15
 
 const History = () => {
   const [amountRow, setAmountRow] = useState(ROW_PER_PAGE)
