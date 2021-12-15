@@ -30,33 +30,47 @@ export class TransLogService {
   async collect(
     programId: string,
     configs: OptionsFetchSignature,
+    funcFilter?: (transLog: TransLog) => boolean,
   ): Promise<TransLog[]> {
-    const confirmedTrans = await this.solana.fetchTransactions(
-      programId,
-      configs,
-    )
-    const transLogs: Array<TransLog> = []
-    for (const trans of confirmedTrans) {
-      const log = this.parseTransLog(trans)
-      if (log) transLogs.push(log)
+    let { lastSignature, limit } = configs
+
+    let isStop = false
+    let transLogs: Array<TransLog> = []
+    let lastSignatureTmp = lastSignature
+
+    while (!isStop) {
+      const confirmedTrans: ParsedConfirmedTransaction[] =
+        await this.solana.fetchTransactions(programId, {
+          ...configs,
+          lastSignature: lastSignatureTmp,
+        })
+
+      for (const trans of confirmedTrans) {
+        lastSignatureTmp = trans.transaction.signatures[0]
+        const log = this.parseTransLog(trans)
+        if (log) transLogs.push(log)
+      }
+
+      if (funcFilter) {
+        transLogs = transLogs.filter((trans) => funcFilter(trans))
+
+        if (!confirmedTrans.length || isStop) break
+        if (limit && transLogs.length >= limit) {
+          isStop = true
+          break
+        }
+      } else break
     }
     return transLogs
   }
-
   private parseTransLog(
     confirmedTrans: ParsedConfirmedTransaction,
   ): TransLog | undefined {
     const { blockTime, meta, transaction } = confirmedTrans
     if (!blockTime || !meta) return
-    const {
-      postTokenBalances,
-      preTokenBalances,
-      err,
-      postBalances,
-      preBalances,
-    } = meta
+    const { postTokenBalances, preTokenBalances, postBalances, preBalances } =
+      meta
     const { signatures, message } = transaction
-    if (err !== null) return
 
     const innerInstructionData = meta.innerInstructions?.[0]?.instructions || []
     const instructionData = message.instructions[0] || []
