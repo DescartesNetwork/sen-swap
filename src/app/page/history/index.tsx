@@ -11,24 +11,23 @@ import { AppDispatch, AppState } from 'app/model'
 import './index.less'
 
 const ROW_PER_PAGE = 5
-const LIMIT_IN_STORE = 10
+const LIMIT_IN_STORE = 15
 
 const History = () => {
   const [amountRow, setAmountRow] = useState(ROW_PER_PAGE)
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const { historySwap } = useSelector((state: AppState) => state.history)
   const dispatch = useDispatch<AppDispatch>()
 
   const fetchHistory = useCallback(async () => {
-    setIsLoading(true)
+    setLoading(true)
     await dispatch(fetchHistorySwap({})).unwrap()
-    setIsLoading(false)
+    setLoading(false)
   }, [dispatch])
 
   useEffect(() => {
     fetchHistory()
-    return () => setIsLoading(false)
   }, [fetchHistory])
 
   const onHandleViewMore = () => {
@@ -52,7 +51,7 @@ const History = () => {
   }
 
   return (
-    <Card bordered={false} style={{ height: 472 }}>
+    <Card bordered={false} style={{ height: 438 }}>
       <Row gutter={[16, 24]}>
         <Col flex="auto">
           <Typography.Title level={5}>Swap history</Typography.Title>
@@ -62,16 +61,16 @@ const History = () => {
         </Col>
         <Col span={24}>
           <Row justify="center" gutter={[16, 9]}>
-            <Col span={24} style={{ height: 336 }}>
+            <Col span={24} style={{ height: 310 }}>
               <Table
                 columns={HISTORY_COLUMN}
                 dataSource={historySwap.slice(0, amountRow)}
-                loading={isLoading}
+                loading={loading}
                 pagination={false}
                 rowClassName={(record, index) =>
                   index % 2 ? 'odd-row' : 'even-row'
                 }
-                scroll={{ x: 800, y: 280 }}
+                scroll={historySwap.length ? { x: 800, y: 260 } : {}}
               />
             </Col>
             <Col>

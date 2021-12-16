@@ -3,7 +3,7 @@ import { TokenInfo } from '@solana/spl-token-registry'
 import { account } from '@senswap/sen-js'
 import LazyLoad from 'react-lazyload'
 
-import { Row, Col, Typography } from 'antd'
+import { Row, Col, Typography, Divider } from 'antd'
 import Search from './search'
 import Mint from './mint'
 
@@ -104,6 +104,9 @@ const MintSelection = ({
     <Row gutter={[16, 16]}>
       <Col span={24}>
         <Typography.Title level={5}>Token Selection</Typography.Title>
+      </Col>
+      <Col span={24}>
+        <Divider style={{ margin: 0 }} />
       </Col>
       <Col span={24}>
         <Search onChange={onMints} isSupportedMint={isSupportedMint} />

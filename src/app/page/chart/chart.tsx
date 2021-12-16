@@ -79,7 +79,7 @@ const SenChart = ({
                 },
                 ticks: {
                   display: !disableAxe,
-                  beginAtZero: true,
+                  beginAtZero: false,
                   maxTicksLimit: 8,
                   callback: function (value, index, values) {
                     return numeric(value).format('0,0.[0]a')

@@ -15,11 +15,13 @@ const SwapButton = ({
   onCallback = () => {},
   disabled = false,
   wrapAmount = BigInt(0),
+  hightImpact = false,
 }: {
   hops: HopData[]
   onCallback?: () => void
   disabled?: boolean
   wrapAmount: bigint
+  hightImpact?: boolean
 }) => {
   const [loading, setLoading] = useState(false)
   const bidData = useSelector((state: AppState) => state.bid)
@@ -107,7 +109,7 @@ const SwapButton = ({
       loading={loading}
       block
     >
-      Swap
+      {hightImpact ? 'Too Hight Price Impact' : 'Swap'}
     </Button>
   )
 }

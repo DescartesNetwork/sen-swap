@@ -19,6 +19,7 @@ const Widget = () => {
   const { route } = useSelector((state: AppState) => state.route)
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
+  const { advanced } = useSelector((state: AppState) => state.settings)
   const { accounts } = useAccount()
   const slippageRate = useSlippageRate()
 
@@ -35,69 +36,73 @@ const Widget = () => {
     return bidAmount - bidBalance
   }, [accounts, bidData.accountAddress, bidData.amount, bidData.mintInfo])
 
+  const tooHightImpact = !advanced && slippageRate * 100 > 12.5
   const disabled =
     !route?.hops.length ||
     !parseFloat(bidData.amount) ||
     parseFloat(bidData.amount) < 0 ||
     !parseFloat(askData?.amount) ||
     parseFloat(askData?.amount) < 0
+
   return (
-    <Row>
-      <Space direction="vertical" size={12}>
-        <Col span={24}>
-          <SwapAction spacing={12} />
-        </Col>
-        <Col span={24}>
-          <Row align="bottom">
-            <Col flex="auto">
-              <Popover
-                placement="bottomLeft"
-                content={
-                  <Row style={{ width: 307 }}>
-                    <Col>
-                      <PreviewSwap />
-                    </Col>
-                  </Row>
-                }
-                trigger="click"
+    <Row gutter={[12, 12]}>
+      <Col span={24}>
+        <SwapAction spacing={12} />
+      </Col>
+      <Col span={24}>
+        <Row align="bottom">
+          <Col flex="auto">
+            <Popover
+              placement="bottomLeft"
+              content={
+                <Row style={{ width: 307 }}>
+                  <Col>
+                    <PreviewSwap />
+                  </Col>
+                </Row>
+              }
+              trigger="click"
+            >
+              <Space
+                style={{ cursor: 'pointer' }}
+                direction="vertical"
+                size={4}
               >
-                <Space style={{ cursor: 'pointer' }} direction="vertical">
-                  <Space>
-                    <Typography.Text>
-                      <IonIcon
-                        name="information-circle-outline"
-                        style={{ color: '#7A7B85' }}
-                      />
-                    </Typography.Text>
-                    <Typography.Text type="secondary">
-                      Price impact
-                    </Typography.Text>
-                  </Space>
-                  <Space>
-                    <Typography.Text style={{ color: '#D72311' }}>
-                      <IonIcon name="arrow-down-outline" />
-                    </Typography.Text>
-                    <Typography.Text style={{ color: '#D72311' }}>
-                      {numeric(Number(slippageRate)).format('0.[0000]%')}
-                    </Typography.Text>
-                  </Space>
+                <Space>
+                  <Typography.Text>
+                    <IonIcon
+                      name="information-circle-outline"
+                      style={{ color: '#7A7B85' }}
+                    />
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    Price impact
+                  </Typography.Text>
                 </Space>
-              </Popover>
-            </Col>
-            <Col>
-              <Button
-                onClick={() => setVisible(true)}
-                size="large"
-                block
-                type="primary"
-                disabled={disabled}
-              >
-                Review & Swap
-              </Button>
-            </Col>
-          </Row>
-        </Col>
-      </Space>
+                <Space>
+                  <Typography.Text style={{ color: '#D72311' }}>
+                    <IonIcon name="arrow-down-outline" />
+                  </Typography.Text>
+                  <Typography.Text style={{ color: '#D72311' }}>
+                    {numeric(Number(slippageRate)).format('0.[0000]%')}
+                  </Typography.Text>
+                </Space>
+              </Space>
+            </Popover>
+          </Col>
+          <Col>
+            <Button
+              onClick={() => setVisible(true)}
+              size="large"
+              block
+              type="primary"
+              disabled={disabled}
+            >
+              Review & Swap
+            </Button>
+          </Col>
+        </Row>
+      </Col>
       <Modal
         title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
         onCancel={() => setVisible(false)}
@@ -105,8 +110,9 @@ const Widget = () => {
           <SwapButton
             hops={route?.hops || []}
             wrapAmount={wrapAmount}
-            disabled={disabled}
             onCallback={() => setVisible(false)}
+            hightImpact={tooHightImpact}
+            disabled={disabled || tooHightImpact}
           />
         }
         visible={visible}

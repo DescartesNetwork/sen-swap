@@ -150,6 +150,7 @@ export const findBestRouteFromBid = async (
   let bestRoute = new BestRouteInfo()
   for (let route of routes) {
     const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
+    if (!hops.length) continue
     let amount = bidData.amount
     const amounts = new Array<string>()
 
@@ -177,26 +178,28 @@ export const findBestRouteFromAsk = async (
 ): Promise<BestRouteInfo> => {
   let bestRoute = new BestRouteInfo()
   for (let route of routes) {
-    const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
-    const reversedHops = [...hops].reverse()
-    let amount = askData.amount
-    const amounts = new Array<string>()
+    try {
+      const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
+      if (!hops.length) continue
+      const reversedHops = [...hops].reverse()
+      let amount = askData.amount
+      const amounts = new Array<string>()
 
-    for (const reversedHop of reversedHops) {
-      amount = inverseCurve(amount, reversedHop)
-      if (Number(amount) < 0) break
-      amounts.unshift(amount)
-    }
-    if (Number(amount) < 0) continue
-
-    const minBidAmount = Number(bestRoute.amount)
-    if (!minBidAmount || Number(amount) < minBidAmount) {
-      bestRoute = {
-        hops,
-        amounts,
-        amount,
+      for (const reversedHop of reversedHops) {
+        amount = inverseCurve(amount, reversedHop)
+        if (Number(amount) < 0) break
+        amounts.unshift(amount)
       }
-    }
+      if (Number(amount) < 0) continue
+      const minBidAmount = Number(bestRoute.amount)
+      if (!minBidAmount || Number(amount) < minBidAmount) {
+        bestRoute = {
+          hops,
+          amounts,
+          amount,
+        }
+      }
+    } catch (error) {}
   }
   return bestRoute
 }
