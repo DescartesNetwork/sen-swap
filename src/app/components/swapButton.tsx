@@ -109,7 +109,7 @@ const SwapButton = ({
       loading={loading}
       block
     >
-      {hightImpact ? 'Price Impact Too Hight' : 'Swap'}
+      {hightImpact ? 'Too Hight Price Impact' : 'Swap'}
     </Button>
   )
 }

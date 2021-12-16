@@ -18,6 +18,7 @@ const SwapActions = () => {
     accountAddress: bidAccountAddr,
   } = useSelector((state: AppState) => state.bid)
   const { amount: askAmount } = useSelector((state: AppState) => state.ask)
+  const { advanced } = useSelector((state: AppState) => state.settings)
   const { accounts } = useAccount()
   const slippageRate = useSlippageRate()
 
@@ -33,7 +34,7 @@ const SwapActions = () => {
     return bid - bidBalance
   }, [accounts, bidAccountAddr, bidAmount, bidMint])
 
-  const tooHightImpact = slippageRate * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
+  const tooHightImpact = !advanced && slippageRate * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
   const disabled =
     tooHightImpact ||
     !hops.length ||

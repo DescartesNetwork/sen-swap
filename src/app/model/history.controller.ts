@@ -84,7 +84,6 @@ export const fetchHistorySwap = createAsyncThunk<
       const programId = transLog.programId
 
       if (programId !== swapAddress) continue
-      //if (!firstAction.destination || !lastAction?.destination) continue
 
       const time = new Date(transLog.blockTime * 1000)
 
