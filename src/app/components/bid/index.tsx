@@ -64,7 +64,7 @@ const Bid = () => {
     [dispatch],
   )
   // All in :)))
-  const onMax = () => onAmount(balance)
+  const onMax = () => onAmount(balanceTransfer)
 
   // Update bid data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
@@ -87,6 +87,15 @@ const Bid = () => {
       return setWormholeSupported(wormholeSupported)
     })()
   }, [getMint, selectionInfo])
+
+  // clear input when select new account
+  useEffect(() => {
+    ;(() => {
+      const selectedMintAddress = selectionInfo.mintInfo?.address
+      if (account.isAddress(selectedMintAddress))
+        return dispatch(updateBidData({ amount: '', prioritized: true }))
+    })()
+  }, [dispatch, selectionInfo.mintInfo?.address])
 
   return (
     <Row gutter={[8, 8]}>
