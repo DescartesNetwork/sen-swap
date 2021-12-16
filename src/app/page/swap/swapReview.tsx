@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { Card, Col, Row, Typography } from 'antd'
@@ -9,8 +9,10 @@ import SwapInfo from 'app/components/preview'
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
 import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
+import { updateBidData } from 'app/model/bid.controller'
 
 const SwapActions = () => {
+  const dispatch = useDispatch()
   const { route } = useSelector((state: AppState) => state.route)
   const {
     amount: bidAmount,
@@ -58,6 +60,9 @@ const SwapActions = () => {
             wrapAmount={wrapAmount}
             disabled={disabled}
             hightImpact={tooHightImpact}
+            onCallback={() =>
+              dispatch(updateBidData({ amount: '', prioritized: true }))
+            }
           />
         </Col>
       </Row>
