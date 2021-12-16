@@ -120,7 +120,7 @@ const Bid = () => {
           max={balanceTransfer}
         />
       </Col>
-      <Col flex="auto"/>
+      <Col flex="auto" />
       <Col className="caption">
         <Typography.Text type="secondary">
           Available: {numeric(balanceTransfer || 0).format('0,0.[00]')}{' '}
