@@ -120,7 +120,8 @@ const Bid = () => {
           max={balanceTransfer}
         />
       </Col>
-      <Col span={24} style={{ textAlign: 'right', fontSize: 12 }}>
+      <Col flex="auto"></Col>
+      <Col className="caption">
         <Typography.Text type="secondary">
           Available: {numeric(balanceTransfer || 0).format('0,0.[00]')}{' '}
           {selectionInfo.mintInfo?.symbol || 'TOKEN'}
