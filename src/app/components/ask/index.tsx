@@ -57,7 +57,7 @@ const Ask = () => {
   }
 
   return (
-    <Row gutter={[8, 8]} justify="end">
+    <Row gutter={[8, 8]}>
       <Col span={24}>
         <Typography.Text>To</Typography.Text>
       </Col>
