@@ -38,7 +38,7 @@ const MARKET_CONFIG: Record<Interval, ChartParamsCGK> = {
 }
 
 const CHART_CONFIGS = {
-  color: '#5D6CCF',
+  color: '#3E8C6A',
   radius: 0,
   hitRadius: 14,
   tooltip: 'TVL',
@@ -66,12 +66,12 @@ const SwapChart = () => {
   const askData = useSelector((state: AppState) => state.ask)
 
   const icons = useMemo(() => {
-    return [bidData.mintInfo?.logoURI, askData.mintInfo?.logoURI]
+    return [askData.mintInfo?.logoURI, bidData.mintInfo?.logoURI]
   }, [askData.mintInfo?.logoURI, bidData.mintInfo?.logoURI])
   const symbols = useMemo(() => {
     return [
-      bidData.mintInfo?.symbol || DEFAULT_TOKEN,
       askData.mintInfo?.symbol || DEFAULT_TOKEN,
+      bidData.mintInfo?.symbol || DEFAULT_TOKEN,
     ]
   }, [askData.mintInfo?.symbol, bidData.mintInfo?.symbol])
 
