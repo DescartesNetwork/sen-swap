@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd'
-import SwapSettings from '../settings/swapSettings'
+import Settings from '../settings'
 import SwapAction from './swapAction'
 
 const Swap = () => {
@@ -8,7 +8,7 @@ const Swap = () => {
       <Col span={24}>
         <Row gutter={[8, 8]} justify="end" align="middle" wrap={false}>
           <Col>
-            <SwapSettings />
+            <Settings />
           </Col>
         </Row>
       </Col>

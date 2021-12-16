@@ -19,6 +19,7 @@ const Widget = () => {
   const { route } = useSelector((state: AppState) => state.route)
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
+  const { advanced } = useSelector((state: AppState) => state.settings)
   const { accounts } = useAccount()
   const slippageRate = useSlippageRate()
 
@@ -35,13 +36,13 @@ const Widget = () => {
     return bidAmount - bidBalance
   }, [accounts, bidData.accountAddress, bidData.amount, bidData.mintInfo])
 
+  const tooHightImpact = !advanced && slippageRate * 100 > 12.5
   const disabled =
     !route?.hops.length ||
     !parseFloat(bidData.amount) ||
     parseFloat(bidData.amount) < 0 ||
     !parseFloat(askData?.amount) ||
     parseFloat(askData?.amount) < 0
-  const tooHightImpact = slippageRate * 100 > 12.5
 
   return (
     <Row gutter={[12, 12]}>
