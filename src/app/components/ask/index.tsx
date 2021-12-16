@@ -72,7 +72,7 @@ const Ask = () => {
           }
         />
       </Col>
-      <Col flex="auto"></Col>
+      <Col flex="auto" />
       <Col className="caption">
         <Typography.Text type="secondary">
           Available: {numeric(balance || 0).format('0,0.[00]')}{' '}
