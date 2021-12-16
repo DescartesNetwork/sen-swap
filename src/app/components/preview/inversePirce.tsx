@@ -11,7 +11,7 @@ const InversePrice = ({
   askData?: AskState
 }) => {
   const price = numeric(
-    Number(bidData?.amount) / Number(askData?.amount),
+    Number(askData?.amount) / Number(bidData?.amount),
   ).format('0,0.[000000]')
   const symbols = `${askData?.mintInfo?.symbol}/${bidData?.mintInfo?.symbol}`
   return (
