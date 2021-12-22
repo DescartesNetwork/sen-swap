@@ -33,7 +33,7 @@ const Bid = () => {
 
   // Select default
   useEffect(() => {
-    if (bidData.accountAddress) return
+    if (account.isAddress(bidData.accountAddress)) return
     dispatch(updateBidData(selectionDefault))
   }, [bidData.accountAddress, dispatch, selectionDefault])
 
@@ -70,6 +70,9 @@ const Bid = () => {
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
     const { splt } = window.sentre
     const { address: mintAddress } = selectionInfo.mintInfo || {}
+    // clear field input when select new token
+    dispatch(updateBidData({ amount: '', prioritized: true }))
+
     if (!account.isAddress(mintAddress))
       return dispatch(updateBidData({ ...selectionInfo }))
     const accountAddress = await splt.deriveAssociatedAddress(
@@ -87,15 +90,6 @@ const Bid = () => {
       return setWormholeSupported(wormholeSupported)
     })()
   }, [getMint, selectionInfo])
-
-  // clear input when select new account
-  useEffect(() => {
-    ;(() => {
-      const selectedMintAddress = selectionInfo.mintInfo?.address
-      if (account.isAddress(selectedMintAddress))
-        return dispatch(updateBidData({ amount: '', prioritized: true }))
-    })()
-  }, [dispatch, selectionInfo.mintInfo?.address])
 
   return (
     <Row gutter={[8, 8]}>

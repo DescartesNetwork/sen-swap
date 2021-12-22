@@ -25,7 +25,7 @@ const Ask = () => {
 
   // Select default
   useEffect(() => {
-    if (askData.accountAddress) return
+    if (account.isAddress(askData.accountAddress)) return
     dispatch(updateAskData(selectionDefault))
   }, [askData.accountAddress, dispatch, selectionDefault])
 

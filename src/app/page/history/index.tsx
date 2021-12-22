@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Card, Col, Row, Typography, Table, Button } from 'antd'
@@ -12,6 +12,7 @@ import './index.less'
 
 const ROW_PER_PAGE = 5
 const LIMIT_IN_STORE = 15
+const TABLE_HEIGHT = 462
 
 const History = () => {
   const [amountRow, setAmountRow] = useState(ROW_PER_PAGE)
@@ -50,8 +51,12 @@ const History = () => {
     setAmountRow(ROW_PER_PAGE)
   }
 
+  const style = useMemo(() => {
+    return amountRow > 5 ? { height: 'auto' } : { height: TABLE_HEIGHT }
+  }, [amountRow])
+
   return (
-    <Card bordered={false} style={{ height: 438 }}>
+    <Card bordered={false} style={{ ...style }}>
       <Row gutter={[16, 24]}>
         <Col flex="auto">
           <Typography.Title level={5}>Swap history</Typography.Title>
@@ -61,7 +66,7 @@ const History = () => {
         </Col>
         <Col span={24}>
           <Row justify="center" gutter={[16, 9]}>
-            <Col span={24} style={{ height: 310 }}>
+            <Col span={24} style={{ minHeight: 310 }}>
               <Table
                 columns={HISTORY_COLUMN}
                 dataSource={historySwap.slice(0, amountRow)}
@@ -70,7 +75,7 @@ const History = () => {
                 rowClassName={(record, index) =>
                   index % 2 ? 'odd-row' : 'even-row'
                 }
-                scroll={historySwap.length ? { x: 800, y: 260 } : {}}
+                scroll={historySwap.length ? { x: 800 } : {}}
               />
             </Col>
             <Col>
