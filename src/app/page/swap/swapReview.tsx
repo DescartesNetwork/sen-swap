@@ -54,6 +54,7 @@ const SwapActions = () => {
         <Col span={24}>
           <SwapInfo />
         </Col>
+        <Col span={24} /> {/* Safe sapce */}
         <Col span={24}>
           <SwapButton
             hops={hops}
