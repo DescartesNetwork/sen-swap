@@ -1,5 +1,6 @@
 import { useMemo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 
 import { Row, Col, Typography } from 'antd'
@@ -14,21 +15,22 @@ import NumericInput from 'app/shared/components/numericInput'
 import { useMintAccount } from 'app/shared/hooks/useMintAccount'
 import configs from 'app/configs'
 import { useMintSelection } from '../hooks/useMintSelection'
+import { SenLpState } from 'app/constant/senLpState'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { wallet } = useWallet()
   const askData = useSelector((state: AppState) => state.ask)
-
+  const { state } = useLocation<SenLpState>()
   const { balance } = useMintAccount(askData.accountAddress)
   const selectionDefault = useMintSelection(configs.swap.askDefault)
-  const isBestRoute = true
+  const poolAdress = state?.poolAddress
 
   // Select default
   useEffect(() => {
-    if (askData.accountAddress || !isBestRoute) return
+    if (askData.accountAddress || poolAdress) return
     dispatch(updateAskData(selectionDefault))
-  }, [askData.accountAddress, dispatch, isBestRoute, selectionDefault])
+  }, [askData.accountAddress, dispatch, poolAdress, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(

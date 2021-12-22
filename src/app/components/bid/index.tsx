@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { Row, Col, Typography, Button } from 'antd'
@@ -16,6 +17,7 @@ import { useMintSelection } from '../hooks/useMintSelection'
 import { useMintAccount } from 'app/shared/hooks/useMintAccount'
 import configs from 'app/configs'
 import { checkAttestedWormhole } from 'app/helper/wormhole'
+import { SenLpState } from 'app/constant/senLpState'
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -25,19 +27,19 @@ const Bid = () => {
   const bidData = useSelector((state: AppState) => state.bid)
   const { getMint } = useMint()
   const [wormholeSupported, setWormholeSupported] = useState(false)
-
   const { balance, decimals, mint, amount } = useMintAccount(
     bidData.accountAddress,
   )
   const selectionDefault = useMintSelection(configs.swap.bidDefault)
-  const isBestRoute = true
+  const { state } = useLocation<SenLpState>()
+  const poolAdress = state?.poolAddress
 
   // Select default
   useEffect(() => {
-    if (bidData.accountAddress || !isBestRoute) return
+    if (bidData.accountAddress || poolAdress) return
     console.log('check bid')
     dispatch(updateBidData(selectionDefault))
-  }, [bidData.accountAddress, dispatch, isBestRoute, selectionDefault])
+  }, [bidData.accountAddress, dispatch, poolAdress, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(

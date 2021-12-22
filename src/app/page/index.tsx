@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 import { Row, Col } from 'antd'
 import SwapChart from './chart'
@@ -12,22 +13,23 @@ import { useMintSelection } from 'app/components/hooks/useMintSelection'
 import { AppDispatch } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
+import { SenLpState } from 'app/constant/senLpState'
 
 const Page = () => {
   const { pools } = usePool()
   const dispatch = useDispatch<AppDispatch>()
+  const { state } = useLocation<SenLpState>()
   const [bid, setBid] = useState('')
   const [ask, setAsk] = useState('')
-  const isBestRoute = true
-  const mintAddress = '7SfA8UuMAr3QFyB24hwhapwQhtNXwN6ap1kchmedNgQm'
+  const poolAdress = state?.poolAddress
 
   const checkIsBestRoute = useCallback(() => {
-    if (isBestRoute) return
-    const poolData = pools[mintAddress]
+    if (!poolAdress) return
+    const poolData = pools[poolAdress]
     if (!poolData) return
     setBid(poolData?.mint_a)
     setAsk(poolData?.mint_b)
-  }, [isBestRoute, pools])
+  }, [poolAdress, pools])
 
   useEffect(() => {
     checkIsBestRoute()
@@ -38,8 +40,6 @@ const Page = () => {
 
   useEffect(() => {
     if (!bidData.accountAddress || !askData.accountAddress) return
-    // dispatch(updateBidData(bidData))
-
     dispatch(updateBidData(bidData))
     dispatch(updateAskData(askData))
   }, [askData, bidData, dispatch])

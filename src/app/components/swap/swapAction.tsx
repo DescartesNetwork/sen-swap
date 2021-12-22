@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 
 import { Button, Col, Row } from 'antd'
@@ -20,6 +21,7 @@ import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateRouteInfo } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
+import { SenLpState } from 'app/constant/senLpState'
 
 const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -27,8 +29,9 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
   const { pools } = usePool()
-  const mintAddress = '7SfA8UuMAr3QFyB24hwhapwQhtNXwN6ap1kchmedNgQm'
-  const isBestRoute = true
+  const { state } = useLocation<SenLpState>()
+  const poolAdress = state?.poolAddress
+  const isBestRoute = state?.isBestRoute
 
   /**
    * Switch tokens
@@ -94,9 +97,9 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     if (!routes.length) return setBestRoute(bestRoute)
 
     //
-    if (!isBestRoute)
+    if (isBestRoute === false)
       routes = routes.filter(
-        (route) => route.pools.length === 1 && route.pools[0] === mintAddress,
+        (route) => route.pools.length === 1 && route.pools[0] === poolAdress,
       )
 
     if (askPriority < bidPriority) {
@@ -104,7 +107,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     } else
       bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, isBestRoute, pools])
+  }, [askData, bidData, isBestRoute, poolAdress, pools])
 
   const updateRoute = useCallback(() => {
     const bidPriority = bidData.priority

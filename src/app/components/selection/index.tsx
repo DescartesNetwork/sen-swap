@@ -1,9 +1,11 @@
 import { useState, Fragment, useEffect } from 'react'
 import { forceCheck } from 'react-lazyload'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import { Row, Col, Avatar, Space, Typography, Divider, Modal } from 'antd'
 import MintSelection, { SelectionInfo } from './mintSelection'
 import IonIcon from 'shared/antd/ionicon'
+import { SenLpState } from 'app/constant/senLpState'
 
 const Selection = ({
   value,
@@ -13,13 +15,17 @@ const Selection = ({
   onChange: (value: SelectionInfo) => void
 }) => {
   const [visible, setVisible] = useState(false)
-
+  const history = useHistory()
+  const { state } = useLocation<SenLpState>()
   useEffect(() => {
     if (visible) setTimeout(forceCheck, 500)
   }, [visible])
 
   const onSelection = (selectionInfo: SelectionInfo) => {
     setVisible(false)
+    if (state) {
+      history.replace({ ...history.location, state: {} })
+    }
     return onChange(selectionInfo)
   }
 
