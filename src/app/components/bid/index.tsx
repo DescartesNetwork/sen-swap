@@ -30,12 +30,14 @@ const Bid = () => {
     bidData.accountAddress,
   )
   const selectionDefault = useMintSelection(configs.swap.bidDefault)
+  const isBestRoute = true
 
   // Select default
   useEffect(() => {
-    if (bidData.accountAddress) return
+    if (bidData.accountAddress || !isBestRoute) return
+    console.log('check bid')
     dispatch(updateBidData(selectionDefault))
-  }, [bidData.accountAddress, dispatch, selectionDefault])
+  }, [bidData.accountAddress, dispatch, isBestRoute, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(

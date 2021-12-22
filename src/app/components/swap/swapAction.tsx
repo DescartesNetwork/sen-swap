@@ -27,6 +27,9 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
   const { pools } = usePool()
+  const mintAddress = '7SfA8UuMAr3QFyB24hwhapwQhtNXwN6ap1kchmedNgQm'
+  const isBestRoute = true
+
   /**
    * Switch tokens
    */
@@ -56,7 +59,6 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
       amount: askAmount,
       priority: askPriority,
     } = askData
-
     const { address: bidMintAddress } = bidMintInfo || {}
     const bidPools = bidPoolAddresses.map((address) => ({
       address,
@@ -91,12 +93,18 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     // No available route
     if (!routes.length) return setBestRoute(bestRoute)
 
+    //
+    if (!isBestRoute)
+      routes = routes.filter(
+        (route) => route.pools.length === 1 && route.pools[0] === mintAddress,
+      )
+
     if (askPriority < bidPriority) {
       bestRoute = await findBestRouteFromBid(pools, routes, bidData, askData)
     } else
       bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, pools])
+  }, [askData, bidData, isBestRoute, pools])
 
   const updateRoute = useCallback(() => {
     const bidPriority = bidData.priority

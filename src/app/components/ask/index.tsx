@@ -22,12 +22,13 @@ const Ask = () => {
 
   const { balance } = useMintAccount(askData.accountAddress)
   const selectionDefault = useMintSelection(configs.swap.askDefault)
+  const isBestRoute = true
 
   // Select default
   useEffect(() => {
-    if (askData.accountAddress) return
+    if (askData.accountAddress || !isBestRoute) return
     dispatch(updateAskData(selectionDefault))
-  }, [askData.accountAddress, dispatch, selectionDefault])
+  }, [askData.accountAddress, dispatch, isBestRoute, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(
