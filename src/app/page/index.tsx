@@ -29,7 +29,7 @@ const Page = () => {
 
   /** Check state when user come from sen LP */
   const checkIsSenLpCome = useCallback(() => {
-    if (!poolAdress) return
+    if (!account.isAddress(poolAdress)) return
     const poolData = pools[poolAdress]
     if (!poolData) return
     setBid(poolData?.mint_a)
