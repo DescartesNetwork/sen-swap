@@ -21,16 +21,16 @@ const conf: Record<Net, Conf> = {
    * Staging configurations
    */
   testnet: {
-    bidDefault: '',
-    askDefault: '',
+    bidDefault: '2z6Ci38Cx6PyL3tFrT95vbEeB3izqpoLdxxBkJk2euyj',
+    askDefault: '5YwUkPdXLoujGkZuo9B4LsLKj3hdkDcfP4derpspifSJ',
   },
 
   /**
    * Production configurations
    */
   mainnet: {
-    bidDefault: '',
-    askDefault: '',
+    bidDefault: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    askDefault: 'SENBBKVCM7homnf5RX9zqpf1GFe935hnbU4uVzY1Y6M',
   },
 }
 

@@ -28,7 +28,11 @@ const Ask = () => {
 
   // Select default
   useEffect(() => {
-    if (askData.accountAddress || poolAdress) return
+    if (
+      account.isAddress(askData.accountAddress) ||
+      account.isAddress(poolAdress)
+    )
+      return
     dispatch(updateAskData(selectionDefault))
   }, [askData.accountAddress, dispatch, poolAdress, selectionDefault])
 

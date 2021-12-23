@@ -46,7 +46,7 @@ const Page = () => {
   }, [askData, bidData, dispatch])
 
   return (
-    <Row gutter={[24, 24]}>
+    <Row gutter={[24, 24]} style={{ paddingBottom: 12 }}>
       <Col lg={8} md={12} xs={24}>
         <Swap />
       </Col>
