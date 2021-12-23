@@ -25,9 +25,8 @@ const Selection = ({
     setVisible(false)
 
     // Clear state of senlp come to
-    if (state) {
-      history.replace({ ...history.location, state: {} })
-    }
+    if (state) history.replace({ ...history.location, state: {} })
+
     return onChange(selectionInfo)
   }
 
