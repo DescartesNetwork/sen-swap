@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 
 import { Button, Col, Row } from 'antd'
@@ -20,6 +21,7 @@ import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateRouteInfo } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
+import { SenLpState } from 'app/constant/senLpState'
 
 const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -27,6 +29,10 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
   const { pools } = usePool()
+  const { state } = useLocation<SenLpState>()
+  const poolAdress = state?.poolAddress
+  const originalRoute = state?.originalRoute
+
   /**
    * Switch tokens
    */
@@ -56,7 +62,6 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
       amount: askAmount,
       priority: askPriority,
     } = askData
-
     const { address: bidMintAddress } = bidMintInfo || {}
     const bidPools = bidPoolAddresses.map((address) => ({
       address,
@@ -91,12 +96,18 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     // No available route
     if (!routes.length) return setBestRoute(bestRoute)
 
+    //when user select original route from senlp
+    if (originalRoute)
+      routes = routes.filter(
+        (route) => route.pools.length === 1 && route.pools[0] === poolAdress,
+      )
+
     if (askPriority < bidPriority) {
       bestRoute = await findBestRouteFromBid(pools, routes, bidData, askData)
     } else
       bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, pools])
+  }, [askData, bidData, originalRoute, poolAdress, pools])
 
   const updateRoute = useCallback(() => {
     const bidPriority = bidData.priority
