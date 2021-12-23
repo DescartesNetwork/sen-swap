@@ -23,6 +23,7 @@ const Page = () => {
   const [ask, setAsk] = useState('')
   const poolAdress = state?.poolAddress
 
+  /** Check state when user come from sen LP */
   const checkIsBestRoute = useCallback(() => {
     if (!poolAdress) return
     const poolData = pools[poolAdress]

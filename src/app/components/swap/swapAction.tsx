@@ -96,7 +96,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     // No available route
     if (!routes.length) return setBestRoute(bestRoute)
 
-    //
+    //when user select original route from senlp
     if (isBestRoute === false)
       routes = routes.filter(
         (route) => route.pools.length === 1 && route.pools[0] === poolAdress,

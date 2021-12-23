@@ -23,6 +23,8 @@ const Selection = ({
 
   const onSelection = (selectionInfo: SelectionInfo) => {
     setVisible(false)
+
+    // Clear state of senlp come to
     if (state) {
       history.replace({ ...history.location, state: {} })
     }
