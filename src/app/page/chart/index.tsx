@@ -131,7 +131,7 @@ const SwapChart = () => {
     // fetch data market from coingecko
     const askTicket = askData.mintInfo?.extensions?.coingeckoId
     const bidTicket = bidData.mintInfo?.extensions?.coingeckoId
-    // return
+    // return when bid & ask address is same
     const compareAddress = bidData.accountAddress === askData.accountAddress
     if (!askTicket || !bidTicket || compareAddress) return setChartData([])
 
@@ -154,7 +154,15 @@ const SwapChart = () => {
     }
     if (interval === Interval.day) return parseChartDay(marketData)
     return parseChartDaily(marketData)
-  }, [askData, bidData, interval, parseChartDaily, parseChartDay])
+  }, [
+    askData.accountAddress,
+    askData.mintInfo?.extensions?.coingeckoId,
+    bidData.accountAddress,
+    bidData.mintInfo?.extensions?.coingeckoId,
+    interval,
+    parseChartDaily,
+    parseChartDay,
+  ])
 
   useEffect(() => {
     fetchChartData()
