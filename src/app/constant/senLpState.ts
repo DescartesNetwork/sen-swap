@@ -1,4 +1,4 @@
 export type SenLpState = {
   poolAddress?: string
-  isBestRoute?: boolean
+  origianlRoute?: boolean
 }

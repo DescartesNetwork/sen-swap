@@ -31,7 +31,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const { pools } = usePool()
   const { state } = useLocation<SenLpState>()
   const poolAdress = state?.poolAddress
-  const isBestRoute = state?.isBestRoute
+  const origianlRoute = state?.origianlRoute
 
   /**
    * Switch tokens
@@ -97,7 +97,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     if (!routes.length) return setBestRoute(bestRoute)
 
     //when user select original route from senlp
-    if (isBestRoute === false)
+    if (origianlRoute)
       routes = routes.filter(
         (route) => route.pools.length === 1 && route.pools[0] === poolAdress,
       )
@@ -107,7 +107,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     } else
       bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, isBestRoute, poolAdress, pools])
+  }, [askData, bidData, origianlRoute, poolAdress, pools])
 
   const updateRoute = useCallback(() => {
     const bidPriority = bidData.priority
