@@ -26,9 +26,9 @@ const CHART_DATA_CONFIG: Record<
   }
 > = {
   day: { amount: 4, unit: 'hours', format: 'HH:00' },
-  week: { amount: 1, unit: 'days', format: 'DD.MMM' },
-  month: { amount: 5, unit: 'days', format: 'DD.MMM' },
-  year: { amount: 2, unit: 'months', format: 'DD.MMM' },
+  week: { amount: 1, unit: 'days', format: 'MMM DD' },
+  month: { amount: 5, unit: 'days', format: 'MMM DD' },
+  year: { amount: 2, unit: 'months', format: 'MMM DD' },
 }
 const MARKET_CONFIG: Record<Interval, ChartParamsCGK> = {
   day: { days: 1, interval: 'hourly' },
@@ -95,7 +95,7 @@ const SwapChart = () => {
           displayTime = displayTime.subtract(amount, unit)
         } else if (chartTime === '00:00') {
           chartData.unshift({
-            label: displayTime.format('DD.MMM'),
+            label: displayTime.format('MMM DD'),
             val: data.val,
           })
         }
@@ -131,7 +131,9 @@ const SwapChart = () => {
     // fetch data market from coingecko
     const askTicket = askData.mintInfo?.extensions?.coingeckoId
     const bidTicket = bidData.mintInfo?.extensions?.coingeckoId
-    if (!askTicket || !bidTicket) return setChartData([])
+    // return when bid & ask address is same
+    const compareAddress = bidData.accountAddress === askData.accountAddress
+    if (!askTicket || !bidTicket || compareAddress) return setChartData([])
 
     const marketConfig = MARKET_CONFIG[interval]
     const [bidChartData, askChartData] = await Promise.all([
@@ -153,7 +155,9 @@ const SwapChart = () => {
     if (interval === Interval.day) return parseChartDay(marketData)
     return parseChartDaily(marketData)
   }, [
+    askData.accountAddress,
     askData.mintInfo?.extensions?.coingeckoId,
+    bidData.accountAddress,
     bidData.mintInfo?.extensions?.coingeckoId,
     interval,
     parseChartDaily,
