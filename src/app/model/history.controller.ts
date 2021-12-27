@@ -87,7 +87,7 @@ export const fetchHistorySwap = createAsyncThunk<
 
       const time = new Date(transLog.blockTime * 1000)
 
-      historyItem.time = moment(time).format('DD MMM, YYYY HH:mm')
+      historyItem.time = moment(time).format('MMM DD, YYYY HH:mm')
       historyItem.amountFrom = firstAction.destination
         ? Number(
             utils.undecimalize(
