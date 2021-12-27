@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
+import { account } from '@senswap/sen-js'
+import { MouseEvent } from 'react'
 
 import { Button, Card, Col, Row, Space, Typography } from 'antd'
 import AppIcon from 'os/components/appIcon'
@@ -7,21 +9,53 @@ import Verification from 'os/components/verification'
 
 import { RootState } from 'os/store'
 import { installApp } from 'os/store/page.reducer'
+import { openWallet } from 'os/store/wallet.reducer'
+import { updateVisited } from 'os/store/flags.reducer'
+
+const ActionButton = ({
+  appIds,
+  appId,
+  onOpen = () => {},
+  onInstall,
+}: {
+  appIds: AppIds
+  appId: string
+  onOpen: (e: MouseEvent<HTMLButtonElement>) => void
+  onInstall: (e: MouseEvent<HTMLButtonElement>) => void
+}) => {
+  return appIds.includes(appId) ? (
+    <Button type="ghost" size="small" onClick={onOpen}>
+      Open
+    </Button>
+  ) : (
+    <Button type="primary" onClick={onInstall} size="small">
+      Install
+    </Button>
+  )
+}
 
 const AppCardInfo = ({ appId }: { appId: string }) => {
   const history = useHistory()
   const dispatch = useDispatch()
   const { register, appIds } = useSelector((state: RootState) => state.page)
+  const { address: walletAddress } = useSelector(
+    (state: RootState) => state.wallet,
+  )
   const manifest = register[appId]
+  const connected = account.isAddress(walletAddress)
 
-  const onInstall = (e: any) => {
+  const onInstall = async (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
-    return dispatch(installApp(appId))
+    if (!connected) return dispatch(openWallet())
+    if (appId) {
+      await dispatch(updateVisited(true))
+      return dispatch(installApp(appId))
+    }
   }
 
-  const onOpen = (e: any, appId: string) => {
+  const onOpen = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
-    return history.push(`/app/${appId}`)
+    if (appId) return history.push(`/app/${appId}`)
   }
 
   return (
@@ -52,19 +86,12 @@ const AppCardInfo = ({ appId }: { appId: string }) => {
             </Space>
           </Col>
           <Col>
-            {appIds.includes(appId) ? (
-              <Button
-                type="ghost"
-                size="small"
-                onClick={(e) => onOpen(e, appId)}
-              >
-                Open
-              </Button>
-            ) : (
-              <Button type="primary" onClick={onInstall} size="small">
-                Install
-              </Button>
-            )}
+            <ActionButton
+              appIds={appIds}
+              appId={appId}
+              onOpen={onOpen}
+              onInstall={onInstall}
+            />
           </Col>
         </Row>
       </Card>
