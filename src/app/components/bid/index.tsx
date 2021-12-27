@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { Row, Col, Typography, Button } from 'antd'
@@ -16,6 +17,7 @@ import { useMintSelection } from '../hooks/useMintSelection'
 import { useMintAccount } from 'app/shared/hooks/useMintAccount'
 import configs from 'app/configs'
 import { checkAttestedWormhole } from 'app/helper/wormhole'
+import { SenLpState } from 'app/constant/senLpState'
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -25,17 +27,22 @@ const Bid = () => {
   const bidData = useSelector((state: AppState) => state.bid)
   const { getMint } = useMint()
   const [wormholeSupported, setWormholeSupported] = useState(false)
-
   const { balance, decimals, mint, amount } = useMintAccount(
     bidData.accountAddress,
   )
   const selectionDefault = useMintSelection(configs.swap.bidDefault)
+  const { state } = useLocation<SenLpState>()
+  const poolAdress = state?.poolAddress
 
   // Select default
   useEffect(() => {
-    if (account.isAddress(bidData.accountAddress)) return
+    if (
+      account.isAddress(bidData.accountAddress) ||
+      account.isAddress(poolAdress)
+    )
+      return
     dispatch(updateBidData(selectionDefault))
-  }, [bidData.accountAddress, dispatch, selectionDefault])
+  }, [bidData.accountAddress, dispatch, poolAdress, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(
@@ -48,7 +55,7 @@ const Bid = () => {
 
   // Compute human-readable balance
   const balanceTransfer = useMemo((): string => {
-    if (mint !== DEFAULT_WSOL) return balance
+    if (mint !== DEFAULT_WSOL || decimals < 1) return balance
     // So estimate max = 0.01 fee -> multi transaction.
     const estimateFee = utils.decimalize(0.01, decimals)
     const max = lamports + amount - estimateFee

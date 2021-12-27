@@ -131,7 +131,9 @@ const SwapChart = () => {
     // fetch data market from coingecko
     const askTicket = askData.mintInfo?.extensions?.coingeckoId
     const bidTicket = bidData.mintInfo?.extensions?.coingeckoId
-    if (!askTicket || !bidTicket) return setChartData([])
+    // return when bid & ask address is same
+    const compareAddress = bidData.accountAddress === askData.accountAddress
+    if (!askTicket || !bidTicket || compareAddress) return setChartData([])
 
     const marketConfig = MARKET_CONFIG[interval]
     const [bidChartData, askChartData] = await Promise.all([
@@ -153,7 +155,9 @@ const SwapChart = () => {
     if (interval === Interval.day) return parseChartDay(marketData)
     return parseChartDaily(marketData)
   }, [
+    askData.accountAddress,
     askData.mintInfo?.extensions?.coingeckoId,
+    bidData.accountAddress,
     bidData.mintInfo?.extensions?.coingeckoId,
     interval,
     parseChartDaily,
