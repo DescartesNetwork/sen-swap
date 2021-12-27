@@ -55,7 +55,7 @@ const Bid = () => {
 
   // Compute human-readable balance
   const balanceTransfer = useMemo((): string => {
-    if (mint !== DEFAULT_WSOL) return balance
+    if (mint !== DEFAULT_WSOL || decimals < 1) return balance
     // So estimate max = 0.01 fee -> multi transaction.
     const estimateFee = utils.decimalize(0.01, decimals)
     const max = lamports + amount - estimateFee
