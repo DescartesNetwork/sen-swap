@@ -1,12 +1,15 @@
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
+import { account } from '@senswap/sen-js'
 
 import { Button, Col, Row } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 
 import { RootDispatch, RootState } from 'os/store'
 import { installApp, uninstallApp } from 'os/store/page.reducer'
+import { openWallet } from 'os/store/wallet.reducer'
+import { updateVisited } from 'os/store/flags.reducer'
 
 const AppInstall = ({
   installed,
@@ -17,6 +20,7 @@ const AppInstall = ({
 }) => {
   const dispatch = useDispatch<RootDispatch>()
   const { infix } = useSelector((state: RootState) => state.ui)
+  const { address } = useSelector((state: RootState) => state.wallet)
   const history = useHistory()
 
   const to = () => history.push(`/app/${appId}`)
@@ -25,6 +29,12 @@ const AppInstall = ({
   const setFloatElement = () => {
     if (isMobile) return 'start'
     return 'end'
+  }
+
+  const onInstall = async () => {
+    if (!account.isAddress(address)) return dispatch(openWallet())
+    await dispatch(updateVisited(true))
+    return dispatch(installApp(appId))
   }
 
   return (
@@ -57,7 +67,7 @@ const AppInstall = ({
           <Button
             type="primary"
             icon={<IonIcon name="cloud-download-outline" />}
-            onClick={() => dispatch(installApp(appId))}
+            onClick={onInstall}
             block={isMobile}
           >
             Install
