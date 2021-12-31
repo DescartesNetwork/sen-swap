@@ -48,7 +48,7 @@ const SwapPoolInfo = () => {
   const bidCgk = useMintCgk(bidMint?.address)
 
   const { dstMintInfo: askMintInfo, poolData: askPoolData } =
-    route?.hops.at(-1) || {}
+    route?.hops[route?.hops.length - 1] || {}
   const { srcMintInfo: bidMintInfo, poolData: bidPoolData } =
     route?.hops[0] || {}
 

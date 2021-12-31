@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { TokenInfo } from '@solana/spl-token-registry'
 import { account } from '@senswap/sen-js'
-import LazyLoad from 'react-lazyload'
+import LazyLoad from '@senswap/react-lazyload'
 
 import { Row, Col, Typography, Divider } from 'antd'
 import Search from './search'
