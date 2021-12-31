@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import useTokenProvider from 'app/shared/hooks/useTokenProvider'
+import useTokenProvider from 'app/hooks/useTokenProvider'
 import { shortenAddress } from 'shared/util'
 
 const MintName = ({ mintAddress }: { mintAddress: string }) => {

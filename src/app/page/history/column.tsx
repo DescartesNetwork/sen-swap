@@ -1,8 +1,9 @@
 import { Button, Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from 'app/shared/components/mint'
+import { MintAvatar, MintSymbol } from 'app/components/mint'
 import IonIcon from 'shared/antd/ionicon'
-import { explorer, numeric, shortenAddress } from 'shared/util'
 import StatusTag from './statusTag'
+
+import { explorer, numeric, shortenAddress } from 'shared/util'
 
 const FORMAT_AMOUNT = '0,00.[0000]a'
 

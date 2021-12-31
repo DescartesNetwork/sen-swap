@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux'
 import { account, PoolData, utils } from '@senswap/sen-js'
 
 import { Card, Col, Divider, Row, Space, Typography } from 'antd'
-import { MintAvatar } from 'app/shared/components/mint'
+import { MintAvatar } from 'app/components/mint'
 
 import { AppState } from 'app/model'
 import { extractReserve } from 'app/helper/router'
 import { numeric } from 'shared/util'
-import useMintCgk from 'app/shared/hooks/useMintCgk'
+import useMintCgk from 'app/hooks/useMintCgk'
 
 const MintPoolInfo = ({
   mintAddress = '',

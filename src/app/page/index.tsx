@@ -9,12 +9,11 @@ import Swap from './swap'
 import History from './history'
 
 import { usePool } from 'senhub/providers'
-import { useMintSelection } from 'app/components/hooks/useMintSelection'
+import { useMintSelection } from 'app/hooks/useMintSelection'
 import { AppDispatch } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
 import { SenLpState } from 'app/constant/senLpState'
-
 import 'app/static/styles/index.less'
 
 const Page = () => {

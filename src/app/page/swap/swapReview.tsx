@@ -8,7 +8,7 @@ import SwapInfo from 'app/components/preview'
 
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
-import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
+import { useSlippageRate } from 'app/hooks/useSlippageRate'
 import { updateBidData } from 'app/model/bid.controller'
 
 const SwapActions = () => {
