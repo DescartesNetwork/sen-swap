@@ -1,6 +1,6 @@
 import { useState, Fragment, useEffect } from 'react'
-import { forceCheck } from 'react-lazyload'
 import { useHistory, useLocation } from 'react-router-dom'
+import { forceCheck } from '@senswap/react-lazyload'
 
 import { Row, Col, Avatar, Space, Typography, Divider, Modal } from 'antd'
 import MintSelection, { SelectionInfo } from './mintSelection'

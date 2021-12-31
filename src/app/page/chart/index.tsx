@@ -168,7 +168,7 @@ const SwapChart = () => {
     fetchChartData()
   }, [fetchChartData])
 
-  const price = chartData.at(-1)?.val || 0
+  const price = chartData[chartData.length - 1]?.val || 0
   const priceUI = numeric(price).format(
     price > 1 ? '0,0.[00]' : '0,0.[00000000]',
   )

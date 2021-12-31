@@ -1,5 +1,5 @@
 import TokenProvider from 'os/providers/tokenProvider'
-import { fetchCGK } from 'shared/helper'
+import { fetchCGK } from 'shared/util'
 import axios from 'axios'
 
 export interface MintInfo {

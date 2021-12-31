@@ -1,5 +1,5 @@
 import { Space, Tag, Typography } from 'antd'
-import { randomColor } from 'shared/helper'
+import { randomColor } from 'shared/util'
 
 const WORMHOLE_COLOR = '#F9575E'
 
