@@ -6,15 +6,15 @@ import { account } from '@senswap/sen-js'
 import { Row, Col, Typography } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
 import Selection from '../selection'
+import NumericInput from 'shared/antd/numericInput'
 
+import configs from 'app/configs'
 import { useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
-import NumericInput from 'app/shared/components/numericInput'
-import { useMintAccount } from 'app/shared/hooks/useMintAccount'
-import configs from 'app/configs'
-import { useMintSelection } from '../hooks/useMintSelection'
+import { useMintAccount } from 'app/hooks/useMintAccount'
+import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
 
 const Ask = () => {
@@ -72,7 +72,7 @@ const Ask = () => {
         <NumericInput
           placeholder="0"
           value={askData.amount}
-          onChange={onAmount}
+          onValue={onAmount}
           size="large"
           prefix={
             <Selection value={selectionInfo} onChange={onSelectionInfo} />

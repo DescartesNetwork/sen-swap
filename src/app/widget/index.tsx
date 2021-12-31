@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { Row, Col, Typography, Space, Button, Popover, Modal } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
@@ -10,8 +11,7 @@ import SwapAction from 'app/components/swap/swapAction'
 
 import { AppState } from 'app/model'
 import { useAccount } from 'senhub/providers'
-import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
-import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
+import { useSlippageRate } from 'app/hooks/useSlippageRate'
 import { numeric } from 'shared/util'
 
 const Widget = () => {

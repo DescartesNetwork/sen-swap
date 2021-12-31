@@ -6,16 +6,16 @@ import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { Row, Col, Typography, Button } from 'antd'
 import WormHoleSupported from '../wormHoleSupported'
 import Selection from '../selection'
+import NumericInput from 'shared/antd/numericInput'
 
+import configs from 'app/configs'
 import { useMint, useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
 import { AppDispatch, AppState } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
-import NumericInput from 'app/shared/components/numericInput'
 import { SelectionInfo } from '../selection/mintSelection'
-import { useMintSelection } from '../hooks/useMintSelection'
-import { useMintAccount } from 'app/shared/hooks/useMintAccount'
-import configs from 'app/configs'
+import { useMintSelection } from 'app/hooks/useMintSelection'
+import { useMintAccount } from 'app/hooks/useMintAccount'
 import { checkAttestedWormhole } from 'app/helper/wormhole'
 import { SenLpState } from 'app/constant/senLpState'
 
@@ -112,7 +112,7 @@ const Bid = () => {
         <NumericInput
           placeholder="0"
           value={bidData.amount}
-          onChange={onAmount}
+          onValue={onAmount}
           size="large"
           prefix={
             <Selection value={selectionInfo} onChange={onSelectionInfo} />

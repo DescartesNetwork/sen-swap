@@ -104,8 +104,10 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
 
     if (askPriority < bidPriority) {
       bestRoute = await findBestRouteFromBid(pools, routes, bidData, askData)
-    } else
+    } else {
       bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
+    }
+
     return setBestRoute(bestRoute)
   }, [askData, bidData, originalRoute, poolAdress, pools])
 

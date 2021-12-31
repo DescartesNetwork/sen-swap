@@ -16,7 +16,7 @@ const MintAvatar = ({
 }) => {
   const tokens = useTokenProvider(mintAddress)
   return (
-    <Avatar.Group style={{ display: 'block' }} >
+    <Avatar.Group style={{ display: 'block' }}>
       {tokens.map((token, i) => (
         <Avatar
           key={token?.address || i}

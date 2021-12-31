@@ -187,11 +187,13 @@ export const findBestRouteFromAsk = async (
 
       for (const reversedHop of reversedHops) {
         amount = inverseCurve(amount, reversedHop)
-        if (Number(amount) < 0) break
+        if (Number(amount) <= 0) break
         amounts.unshift(amount)
       }
-      if (Number(amount) < 0) continue
+
+      if (Number(amount) <= 0) continue
       const minBidAmount = Number(bestRoute.amount)
+
       if (!minBidAmount || Number(amount) < minBidAmount) {
         bestRoute = {
           hops,

@@ -17,7 +17,7 @@ import SwitchPriceRate from './switchPriceRate'
 
 import { AppState } from 'app/model'
 import { numeric } from 'shared/util'
-import { useSlippageRate } from '../hooks/useSlippageRate'
+import { useSlippageRate } from 'app/hooks/useSlippageRate'
 
 export type HopData = {
   poolData: PoolData & { address: string }
