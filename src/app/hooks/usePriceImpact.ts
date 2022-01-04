@@ -27,6 +27,7 @@ const usePriceImpact = () => {
   })
   const currentPrice =
     (decimalizedPrice * 10 ** bidMintInfo.decimals) / 10 ** askMintInfo.decimals
+  if (!currentPrice) return 0
   const priceImpact = (currentPrice - nextPrice) / currentPrice
 
   return Math.max(priceImpact, 0)
