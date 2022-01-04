@@ -5,6 +5,7 @@ import { extractReserve } from './router'
 export const ORACLE = Swap.oracle
 
 export const curve = (bidAmount: bigint, hopData: HopData): bigint => {
+  if (!bidAmount) return BigInt(0)
   const { srcMintAddress, dstMintAddress, poolData } = hopData
   const { fee_ratio, tax_ratio } = poolData
   const bidReserve = extractReserve(srcMintAddress, poolData)
@@ -22,10 +23,13 @@ export const curve = (bidAmount: bigint, hopData: HopData): bigint => {
 }
 
 export const inverseCurve = (askAmount: bigint, data: HopData): bigint => {
+  if (!askAmount) return BigInt(0)
   const { srcMintAddress, dstMintAddress, poolData } = data
   const { fee_ratio, tax_ratio } = poolData
   const bidReserve = extractReserve(srcMintAddress, poolData)
   const askReserve = extractReserve(dstMintAddress, poolData)
+  if (!bidReserve || !askReserve) return BigInt(0)
+
   const bidAmount = ORACLE.inverseSwap(
     askAmount,
     bidReserve,
