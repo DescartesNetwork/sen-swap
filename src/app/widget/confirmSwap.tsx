@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux'
 
-import { Avatar, Col, Divider, Row, Space, Typography } from 'antd'
+import { Row, Col, Divider, Space, Typography } from 'antd'
 import PreviewSwap from 'app/components/preview'
 import IonIcon from 'shared/antd/ionicon'
+import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
 import { AppState } from 'app/model'
 
@@ -17,12 +18,12 @@ const ConfirmSwap = () => {
           <Col>
             <Space direction="vertical">
               <Typography.Text>From</Typography.Text>
-              <Typography.Text>
-                <Space>
-                  <Avatar src={bidData.mintInfo?.logoURI} />
-                  {bidData.mintInfo?.symbol}
-                </Space>
-              </Typography.Text>
+              <Space>
+                <MintAvatar mintAddress={bidData.mintInfo?.address || ''} />
+                <Typography.Text>
+                  <MintSymbol mintAddress={bidData.mintInfo?.address || ''} />
+                </Typography.Text>
+              </Space>
               <Typography.Title level={4}>{bidData.amount}</Typography.Title>
             </Space>
           </Col>
@@ -33,8 +34,10 @@ const ConfirmSwap = () => {
             <Space direction="vertical">
               <Typography.Text>To</Typography.Text>
               <Space>
-                <Avatar src={askData.mintInfo?.logoURI} />
-                {askData.mintInfo?.symbol}
+                <MintAvatar mintAddress={askData.mintInfo?.address || ''} />
+                <Typography.Text>
+                  <MintSymbol mintAddress={askData.mintInfo?.address || ''} />
+                </Typography.Text>
               </Space>
               <Typography.Title level={4}>{askData.amount}</Typography.Title>
             </Space>

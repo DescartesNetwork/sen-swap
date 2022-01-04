@@ -2,9 +2,11 @@ import { useState, Fragment, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { forceCheck } from '@senswap/react-lazyload'
 
-import { Row, Col, Avatar, Space, Typography, Divider, Modal } from 'antd'
-import MintSelection, { SelectionInfo } from './mintSelection'
+import { Row, Col, Space, Typography, Divider, Modal } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
+import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import MintSelection, { SelectionInfo } from './mintSelection'
+
 import { SenLpState } from 'app/constant/senLpState'
 
 const Selection = ({
@@ -30,19 +32,13 @@ const Selection = ({
     return onChange(selectionInfo)
   }
 
-  const { logoURI, symbol } = value?.mintInfo || {}
+  const mintAddress = value?.mintInfo?.address || ''
   return (
     <Fragment>
       <Space style={{ cursor: 'pointer' }} onClick={() => setVisible(true)}>
-        <Avatar
-          size={24}
-          src={logoURI}
-          style={{ backgroundColor: '#2D3355', border: 'none' }}
-        >
-          <IonIcon name="diamond-outline" />
-        </Avatar>
-        <Typography.Text type="secondary" style={{ margin: 0 }}>
-          {symbol || 'TOKEN'}
+        <MintAvatar mintAddress={mintAddress} />
+        <Typography.Text type="secondary">
+          <MintSymbol mintAddress={mintAddress} />
         </Typography.Text>
         <Divider type="vertical" style={{ marginLeft: 4 }} />
       </Space>

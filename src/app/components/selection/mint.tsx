@@ -1,16 +1,12 @@
-import { Row, Col, Space, Avatar, Typography, Card, Divider } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import { Row, Col, Space, Typography, Card, Divider } from 'antd'
+import { MintAvatar, MintName, MintSymbol } from 'shared/antd/mint'
 
 const Mint = ({
-  logoURI,
-  symbol,
-  name,
+  mintAddress,
   onClick,
   active = false,
 }: {
-  logoURI: string | undefined
-  symbol: string
-  name: string
+  mintAddress: string
   onClick: () => void
   active?: boolean
 }) => {
@@ -25,20 +21,16 @@ const Mint = ({
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Space size={12} style={{ marginLeft: -4 }}>
-            <Avatar
-              src={logoURI}
-              size={32}
-              style={{ backgroundColor: '#2D3355', border: 'none' }}
-            >
-              <IonIcon name="diamond-outline" />
-            </Avatar>
-            <Typography.Text style={{ margin: 0 }}>{symbol}</Typography.Text>
+            <MintAvatar mintAddress={mintAddress} size={32} />
+            <Typography.Text style={{ margin: 0 }}>
+              <MintSymbol mintAddress={mintAddress} />
+            </Typography.Text>
             <Divider type="vertical" style={{ margin: 0 }} />
             <Typography.Text
               type="secondary"
               style={{ margin: 0, fontSize: 12 }}
             >
-              {name}
+              <MintName mintAddress={mintAddress} />
             </Typography.Text>
           </Space>
         </Col>

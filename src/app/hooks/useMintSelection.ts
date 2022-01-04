@@ -40,7 +40,6 @@ export const useMintSelection = (mintAddress: string): MintSelection => {
     setSelectionInfo({
       accountAddress,
       mintInfo,
-      poolAddress: '',
       poolAddresses,
     })
   }, [mintAddress, pools, tokenProvider, wallet.address])

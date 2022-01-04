@@ -7,7 +7,7 @@ let timeoutId: ReturnType<typeof setTimeout> | undefined
 
 /**
  * Numeric Input
- * - Check balance based on max
+ * - Check balance based on the max
  * - Only accept numeric characters
  * @remarks The props of input follows the same as https://ant.design/components/input/#API. Extra & Overrided props
  * @param max - Maximum
@@ -19,7 +19,6 @@ const NumericInput = forwardRef(
       max,
       onValue = () => {},
       onChange = () => {},
-      onBlur = () => {},
       ...props
     }: InputProps & {
       onValue?: (val: string) => void
@@ -67,11 +66,6 @@ const NumericInput = forwardRef(
       >
         <Input
           {...props}
-          onBlur={(e) => {
-            onBlur(e)
-            const value = Number(e.target.value)
-            if (e.target.value) onAmount(value ? value.toString() : '')
-          }}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             onChange(e)
             setCursor(e.target.selectionStart)

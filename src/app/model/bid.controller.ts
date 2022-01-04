@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { TokenInfo } from '@solana/spl-token-registry'
+import { LiteMintInfo } from 'app/components/preview'
 
 export type State = {
   amount: string // Desired amount
   accountAddress: string // Associated account to the selected token
-  mintInfo?: TokenInfo // Selected token
+  mintInfo: LiteMintInfo // Selected token
   poolAddresses: string[] // List of available pools
   priority: number
 }
@@ -12,6 +12,10 @@ export type State = {
 const NAME = 'bid'
 const initialState: State = {
   amount: '',
+  mintInfo: {
+    address: '',
+    decimals: 0,
+  },
   accountAddress: '',
   poolAddresses: [],
   priority: 0,
@@ -32,7 +36,7 @@ export const updateBidData = createAsyncThunk<
       bid: { priority: prevPriority },
       ask: { priority: refPriority },
     } = getState()
-    if (Number(bidData.amount) < 0) bidData.amount = undefined
+    if (Number(bidData.amount) < 0) bidData.amount = ''
     const priority = reset ? 0 : prioritized ? refPriority + 1 : prevPriority
     return { ...bidData, priority }
   },

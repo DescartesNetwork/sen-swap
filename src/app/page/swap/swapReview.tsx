@@ -7,36 +7,34 @@ import SwapButton from 'app/components/swapButton'
 import SwapInfo from 'app/components/preview'
 
 import { AppState } from 'app/model'
-import { useAccount } from 'senhub/providers'
-import { useSlippageRate } from 'app/hooks/useSlippageRate'
+import usePriceImpact from 'app/hooks/usePriceImpact'
 import { updateBidData } from 'app/model/bid.controller'
+import useBalance from 'app/hooks/useBalance'
 
 const SwapActions = () => {
   const dispatch = useDispatch()
-  const { route } = useSelector((state: AppState) => state.route)
   const {
-    amount: bidAmount,
-    mintInfo: bidMint,
-    accountAddress: bidAccountAddr,
-  } = useSelector((state: AppState) => state.bid)
+    route: { hops },
+    bid: {
+      amount: bidAmount,
+      mintInfo: bidMintInfo,
+      accountAddress: bidAccountAddress,
+    },
+  } = useSelector((state: AppState) => state)
   const { amount: askAmount } = useSelector((state: AppState) => state.ask)
   const { advanced } = useSelector((state: AppState) => state.settings)
-  const { accounts } = useAccount()
-  const slippageRate = useSlippageRate()
-
-  const hops = route?.hops || []
+  const priceImpact = usePriceImpact()
+  const bidBalance = useBalance(bidAccountAddress)
 
   const wrapAmount = useMemo(() => {
-    const { amount: bidAccountAmount } = accounts[bidAccountAddr] || {}
-    const bidBalance = bidAccountAmount || BigInt(0)
-    if (!bidMint || !Number(bidAmount) || bidMint.address !== DEFAULT_WSOL)
+    if (!Number(bidAmount) || bidMintInfo.address !== DEFAULT_WSOL)
       return BigInt(0)
-    const bid = utils.decimalize(bidAmount, bidMint.decimals)
-    if (bid <= bidBalance) return BigInt(0)
-    return bid - bidBalance
-  }, [accounts, bidAccountAddr, bidAmount, bidMint])
+    const amount = utils.decimalize(bidAmount, bidMintInfo.decimals)
+    if (amount <= bidBalance) return BigInt(0)
+    return amount - bidBalance
+  }, [bidBalance, bidAmount, bidMintInfo])
 
-  const tooHightImpact = !advanced && slippageRate * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
+  const tooHightImpact = !advanced && priceImpact * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
   const disabled =
     tooHightImpact ||
     !hops.length ||
