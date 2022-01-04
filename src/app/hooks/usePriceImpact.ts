@@ -13,8 +13,7 @@ const usePriceImpact = () => {
     ask: { amount: askAmount, mintInfo: askMintInfo },
   } = useSelector((state: AppState) => state)
 
-  if (!Number(bidAmount)) return 0
-
+  if (!Number(bidAmount) || !Number(askAmount)) return 0
   const nextPrice = Number(askAmount) / Number(bidAmount)
   let decimalizedPrice = 1
   hops.forEach(({ srcMintAddress, dstMintAddress, poolData }) => {
@@ -28,7 +27,9 @@ const usePriceImpact = () => {
   })
   const currentPrice =
     (decimalizedPrice * 10 ** bidMintInfo.decimals) / 10 ** askMintInfo.decimals
-  const priceImpact = (currentPrice - nextPrice) / currentPrice
+  const priceImpact = currentPrice
+    ? (currentPrice - nextPrice) / currentPrice
+    : 0
 
   return Math.max(priceImpact, 0)
 }
