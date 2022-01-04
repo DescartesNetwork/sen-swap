@@ -72,7 +72,15 @@ const SwapButton = ({
       (askAmount * (DECIMALS - utils.decimalize(slippage, 9))) / DECIMALS
     // Execute swap
     return await swap.route(bidAmount, limit, routingAddresses, wallet)
-  }, [hops, bidMintInfo, askMintInfo, slippage, walletAddress])
+  }, [
+    hops,
+    bidMintInfo,
+    askMintInfo,
+    slippage,
+    walletAddress,
+    _bidAmount,
+    _askAmount,
+  ])
 
   const handleWrapSol = async () => {
     if (!wrapAmount) return
