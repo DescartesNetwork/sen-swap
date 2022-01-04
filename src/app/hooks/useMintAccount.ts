@@ -4,7 +4,7 @@ import { utils } from '@senswap/sen-js'
 import { useAccount, useWallet } from 'senhub/providers'
 
 import { SOL_ADDRESS } from 'app/constant/sol'
-import useMintDecimals from './useMintDecimals'
+import useMintDecimals from 'shared/hooks/useMintDecimals'
 
 export const useMintAccount = (accountAddr: string) => {
   const { accounts } = useAccount()
@@ -18,7 +18,7 @@ export const useMintAccount = (accountAddr: string) => {
     return accounts[accountAddr] || {}
   }, [accountAddr, accounts, wallet.address, wallet.lamports])
 
-  const decimals = useMintDecimals(mint)
+  const decimals = useMintDecimals(mint) || 0
   const mintInfo = useMemo(() => {
     return {
       balance: utils.undecimalize(amount, decimals),

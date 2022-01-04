@@ -1,25 +1,40 @@
-import { Fragment, ReactNode } from 'react'
+import { Fragment, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 
-import { Avatar, Space } from 'antd'
+import { Space } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 
-const RouteAvatar = ({
-  icons = ['', ''],
-  size = 24,
-  defaultIcon = <IonIcon size={size} name="help-outline" />,
-}: {
-  icons?: (string | undefined)[]
-  defaultIcon?: ReactNode
-  size?: number
-}) => {
+import { AppState } from 'app/model'
+import { account } from '@senswap/sen-js'
+import { MintAvatar } from 'shared/antd/mint'
+
+const RouteAvatar = () => {
+  const {
+    bid: { mintInfo },
+    route: { route },
+  } = useSelector((state: AppState) => state)
+
+  const srcMintAddress = mintInfo?.address
+  const chainMintAddresses = useMemo(() => {
+    if (!route?.hops || !account.isAddress(srcMintAddress)) return []
+    let list = [srcMintAddress]
+    for (const hop of route?.hops) {
+      const {
+        dstMintInfo: { address },
+      } = hop
+      if (account.isAddress(address)) list.push(address)
+    }
+    return list
+  }, [srcMintAddress, route?.hops])
+
   return (
     <Space>
-      {icons?.map((icon, idx) => (
-        <Fragment key={idx}>
-          <Avatar src={icon} size={size}>
-            {defaultIcon}
-          </Avatar>
-          {icons.length > idx + 1 && <IonIcon name="chevron-forward-outline" />}
+      {chainMintAddresses?.map((mintAddress, i) => (
+        <Fragment key={i}>
+          <MintAvatar mintAddress={mintAddress} />
+          {chainMintAddresses.length > i + 1 && (
+            <IonIcon name="chevron-forward-outline" />
+          )}
         </Fragment>
       ))}
     </Space>

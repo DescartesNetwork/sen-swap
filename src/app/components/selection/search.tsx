@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Card, Input, Button } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 
-import { TokenInfo } from '@solana/spl-token-registry'
 import { useMint } from 'senhub/providers'
 
 const KEYSIZE = 3
@@ -13,7 +12,7 @@ const Search = ({
   isSupportedMint,
   disabled = false,
 }: {
-  onChange: (data: TokenInfo[] | null) => void
+  onChange: (data: string[] | undefined) => void
   isSupportedMint: (mintAddress: string) => boolean
   disabled?: boolean
 }) => {
@@ -21,9 +20,11 @@ const Search = ({
   const { tokenProvider } = useMint()
 
   const search = useCallback(async () => {
-    if (!keyword || keyword.length < KEYSIZE) return onChange(null)
+    if (!keyword || keyword.length < KEYSIZE) return onChange(undefined)
     const raw = await tokenProvider.find(keyword)
-    const data = raw.filter(({ address }) => isSupportedMint(address))
+    const data = raw
+      .filter(({ address }) => isSupportedMint(address))
+      .map(({ address }) => address)
     return onChange(data)
   }, [keyword, tokenProvider, onChange, isSupportedMint])
 

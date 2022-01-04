@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { TokenInfo } from '@solana/spl-token-registry'
+import { LiteMintInfo } from 'app/components/preview'
 
 export type State = {
   amount: string // Desired amount
   accountAddress: string // Associated account to the selected token
-  mintInfo?: TokenInfo // Selected token
+  mintInfo?: LiteMintInfo // Selected token
   poolAddresses: string[] // List of available pools
   priority: number
 }

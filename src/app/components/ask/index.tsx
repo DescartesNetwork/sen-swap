@@ -7,6 +7,7 @@ import { Row, Col, Typography } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
+import { MintSymbol } from 'shared/antd/mint'
 
 import configs from 'app/configs'
 import { useWallet } from 'senhub/providers'
@@ -83,7 +84,7 @@ const Ask = () => {
       <Col className="caption">
         <Typography.Text type="secondary">
           Available: {numeric(balance || 0).format('0,0.[00]')}{' '}
-          {selectionInfo.mintInfo?.symbol || 'TOKEN'}
+          <MintSymbol mintAddress={selectionInfo.mintInfo?.address || ''} />
         </Typography.Text>
       </Col>
     </Row>

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { account, PoolData, utils } from '@senswap/sen-js'
 
 import { Card, Col, Divider, Row, Space, Typography } from 'antd'
-import { MintAvatar } from 'app/components/mint'
+import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
 import { AppState } from 'app/model'
 import { extractReserve } from 'app/helper/router'
@@ -11,15 +11,13 @@ import { numeric } from 'shared/util'
 import useMintCgk from 'app/hooks/useMintCgk'
 
 const MintPoolInfo = ({
-  mintAddress = '',
+  mintAddress,
   tvl = '',
-  symbol = '',
   price,
   format = '0,0.[00]a',
 }: {
-  mintAddress?: string
+  mintAddress: string
   tvl?: string | number
-  symbol?: string
   price?: number
   format?: string
 }) => {
@@ -31,7 +29,9 @@ const MintPoolInfo = ({
         <Typography.Title level={5}>
           {numeric(tvl).format(format)}
         </Typography.Title>
-        <Typography.Title level={5}>{symbol}</Typography.Title>
+        <Typography.Title level={5}>
+          <MintSymbol mintAddress={mintAddress} />
+        </Typography.Title>
       </Space>
       <Typography.Text className="caption" type="secondary">
         ~ ${numeric(price).format(format)}
@@ -73,9 +73,8 @@ const SwapPoolInfo = () => {
       <Row gutter={[16, 16]} wrap={false}>
         <Col span={11}>
           <MintPoolInfo
-            mintAddress={bidMint?.address}
+            mintAddress={bidMint?.address || ''}
             tvl={bidTVL}
-            symbol={bidMint?.symbol}
             price={bidTVL * bidCgk.price}
           />
         </Col>
@@ -84,9 +83,8 @@ const SwapPoolInfo = () => {
         </Col>
         <Col span={11}>
           <MintPoolInfo
-            mintAddress={askMint?.address}
+            mintAddress={askMint?.address || ''}
             tvl={askTVL}
-            symbol={askMint?.symbol}
             price={askTVL * askCgk.price}
           />
         </Col>
