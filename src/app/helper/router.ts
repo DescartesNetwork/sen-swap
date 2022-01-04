@@ -66,14 +66,6 @@ export const buildPoolGraph = (pools: Record<string, PoolData>): GraphPool => {
   return graph
 }
 
-// export const findAllHops = (
-//   graph: GraphPool,
-//   bidMintAddress: string,
-//   askMintAddress: string,
-// ) => {
-
-// }
-
 // because of Solana is limiting the number of calculation unit, so the system
 // must limit the list pool of root. Currently, the system set 3 pools in route
 export const findAllRoute = (
