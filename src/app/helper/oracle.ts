@@ -41,10 +41,12 @@ export const inverseCurve = (askAmount: bigint, data: HopData): bigint => {
 }
 
 export const slippage = (bidAmount: bigint, data: HopData): bigint => {
+  if (!bidAmount) return BigInt(0)
   const { srcMintAddress, dstMintAddress, poolData } = data
   const { fee_ratio, tax_ratio } = poolData
   const bidReserve = extractReserve(srcMintAddress, poolData)
   const askReserve = extractReserve(dstMintAddress, poolData)
+  if (!bidReserve || !askReserve) return BigInt(0)
 
   const slippage = ORACLE.slippage(
     bidAmount,
