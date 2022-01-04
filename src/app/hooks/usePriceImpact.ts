@@ -30,7 +30,7 @@ const usePriceImpact = () => {
     (decimalizedPrice * 10 ** bidMintInfo.decimals) / 10 ** askMintInfo.decimals
   const priceImpact = (currentPrice - nextPrice) / currentPrice
 
-  return priceImpact
+  return Math.max(priceImpact, 0)
 }
 
 export default usePriceImpact

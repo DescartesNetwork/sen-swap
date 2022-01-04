@@ -79,16 +79,13 @@ export const findAllRoute = (
     mints: [bidMintAddress],
     pools: [],
   }
-  if (pools.length === LIMIT_POOL_IN_ROUTE) return
+  if (pools.length >= LIMIT_POOL_IN_ROUTE) return
   const mapPool = graph.get(bidMintAddress)
-  mapPool?.forEach((pool, poolAddress) => {
-    if (pools.includes(poolAddress)) return
-
+  mapPool?.forEach((poolData, poolAddress) => {
     const srcMintAddress = bidMintAddress
     const dstMintAddress =
-      srcMintAddress === pool.mint_a ? pool.mint_b : pool.mint_a
-    if (mints.includes(dstMintAddress)) return
-
+      srcMintAddress === poolData.mint_a ? poolData.mint_b : poolData.mint_a
+    if (pools.includes(poolAddress) || mints.includes(dstMintAddress)) return
     const newPathTrace = {
       pools: [...pools, poolAddress],
       mints: [...mints, dstMintAddress],
@@ -101,11 +98,9 @@ export const findAllRoute = (
 const parseHops = async (
   mapPoolData: Record<string, PoolData>,
   pools: string[],
-  bidData: BidState,
-  askData: AskState,
+  bidMintAddress: string,
+  askMintAddress: string,
 ): Promise<HopData[]> => {
-  const bidMintAddress = bidData.mintInfo?.address
-  const askMintAddress = askData.mintInfo?.address
   if (!account.isAddress(bidMintAddress) || !account.isAddress(askMintAddress))
     return []
 
@@ -136,7 +131,12 @@ export const findBestRouteFromBid = async (
 ): Promise<RouteInfo> => {
   let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
   for (let route of routes) {
-    const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
+    const hops = await parseHops(
+      mapPoolData,
+      route.pools,
+      bidData.mintInfo.address,
+      askData.mintInfo.address,
+    )
     if (!hops.length) continue
     let amount = utils.decimalize(bidData.amount, bidData.mintInfo.decimals)
     const amounts = new Array<bigint>()
@@ -159,7 +159,12 @@ export const findBestRouteFromAsk = async (
 ): Promise<RouteInfo> => {
   let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
   for (let route of routes) {
-    const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
+    const hops = await parseHops(
+      mapPoolData,
+      route.pools,
+      bidData.mintInfo.address,
+      askData.mintInfo.address,
+    )
     if (!hops.length) continue
     const reversedHops = [...hops].reverse()
     let amount = utils.decimalize(askData.amount, askData.mintInfo.decimals)

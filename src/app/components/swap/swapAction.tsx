@@ -120,7 +120,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
         updateAskData({
           amount: utils.undecimalize(
             bestRoute.amount,
-            askData.mintInfo?.decimals || 0,
+            askData.mintInfo.decimals,
           ),
         }),
       )
@@ -130,7 +130,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
         updateBidData({
           amount: utils.undecimalize(
             bestRoute.amount,
-            bidData.mintInfo?.decimals || 0,
+            bidData.mintInfo.decimals,
           ),
         }),
       )
