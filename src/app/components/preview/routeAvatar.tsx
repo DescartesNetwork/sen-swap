@@ -19,10 +19,8 @@ const RouteAvatar = () => {
     if (!route?.hops || !account.isAddress(srcMintAddress)) return []
     let list = [srcMintAddress]
     for (const hop of route?.hops) {
-      const {
-        dstMintInfo: { address },
-      } = hop
-      if (account.isAddress(address)) list.push(address)
+      const { dstMintAddress } = hop
+      if (account.isAddress(dstMintAddress)) list.push(dstMintAddress)
     }
     return list
   }, [srcMintAddress, route?.hops])

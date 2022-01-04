@@ -42,15 +42,16 @@ const MintPoolInfo = ({
 
 const SwapPoolInfo = () => {
   const { route } = useSelector((state: AppState) => state.route)
-  const askMint = useSelector((state: AppState) => state.ask.mintInfo)
-  const bidMint = useSelector((state: AppState) => state.bid.mintInfo)
-  const askCgk = useMintCgk(askMint?.address)
-  const bidCgk = useMintCgk(bidMint?.address)
+  const {
+    bid: { mintInfo: bidMintInfo },
+    ask: { mintInfo: askMintInfo },
+  } = useSelector((state: AppState) => state)
+  const bidCgk = useMintCgk(bidMintInfo?.address)
+  const askCgk = useMintCgk(askMintInfo?.address)
 
-  const { dstMintInfo: askMintInfo, poolData: askPoolData } =
-    route?.hops[route?.hops.length - 1] || {}
-  const { srcMintInfo: bidMintInfo, poolData: bidPoolData } =
-    route?.hops[0] || {}
+  const { poolData: askPoolData } =
+    route?.hops[route?.hops.length || 0 - 1] || {}
+  const { poolData: bidPoolData } = route?.hops[0] || {}
 
   const getMintTVL = (mintAddr?: string, poolData?: PoolData) => {
     if (!account.isAddress(mintAddr) || !poolData) return BigInt(0)
@@ -58,14 +59,22 @@ const SwapPoolInfo = () => {
   }
 
   const askTVL = useMemo(() => {
-    if (!askMintInfo?.decimals) return 0
-    const ask = getMintTVL(askMintInfo?.address, askPoolData)
-    return Number(utils.undecimalize(ask, askMintInfo.decimals))
+    try {
+      if (!askMintInfo?.decimals) return 0
+      const ask = getMintTVL(askMintInfo?.address, askPoolData)
+      return Number(utils.undecimalize(ask, askMintInfo.decimals))
+    } catch (er) {
+      return 0
+    }
   }, [askMintInfo?.address, askMintInfo?.decimals, askPoolData])
   const bidTVL = useMemo(() => {
-    if (!bidMintInfo?.decimals) return 0
-    const bid = getMintTVL(bidMintInfo?.address, bidPoolData)
-    return Number(utils.undecimalize(bid, bidMintInfo.decimals))
+    try {
+      if (!bidMintInfo?.decimals) return 0
+      const bid = getMintTVL(bidMintInfo?.address, bidPoolData)
+      return Number(utils.undecimalize(bid, bidMintInfo.decimals))
+    } catch (er) {
+      return 0
+    }
   }, [bidMintInfo?.address, bidMintInfo?.decimals, bidPoolData])
 
   return (
@@ -73,7 +82,7 @@ const SwapPoolInfo = () => {
       <Row gutter={[16, 16]} wrap={false}>
         <Col span={11}>
           <MintPoolInfo
-            mintAddress={bidMint?.address || ''}
+            mintAddress={bidMintInfo?.address || ''}
             tvl={bidTVL}
             price={bidTVL * bidCgk.price}
           />
@@ -83,7 +92,7 @@ const SwapPoolInfo = () => {
         </Col>
         <Col span={11}>
           <MintPoolInfo
-            mintAddress={askMint?.address || ''}
+            mintAddress={askMintInfo?.address || ''}
             tvl={askTVL}
             price={askTVL * askCgk.price}
           />

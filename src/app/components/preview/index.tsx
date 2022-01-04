@@ -17,8 +17,8 @@ export type LiteMintInfo = {
 
 export type HopData = {
   poolData: PoolData & { address: string }
-  srcMintInfo: LiteMintInfo
-  dstMintInfo: LiteMintInfo
+  srcMintAddress: string
+  dstMintAddress: string
 }
 
 const ExtraTypography = ({

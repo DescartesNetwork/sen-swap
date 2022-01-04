@@ -24,8 +24,10 @@ const SwapButton = ({
   hightImpact?: boolean
 }) => {
   const [loading, setLoading] = useState(false)
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
+  const {
+    bid: { amount: _bidAmount, mintInfo: bidMintInfo },
+    ask: { amount: _askAmount, mintInfo: askMintInfo },
+  } = useSelector((state: AppState) => state)
   const { slippage } = useSelector((state: AppState) => state.settings)
   const {
     wallet: { address: walletAddress },
@@ -41,8 +43,8 @@ const SwapButton = ({
     const routingAddresses = await Promise.all(
       hops.map(
         async ({
-          srcMintInfo: { address: srcMintAddress },
-          dstMintInfo: { address: dstMintAddress },
+          srcMintAddress,
+          dstMintAddress,
           poolData: { address: poolAddress },
         }) => {
           const srcAddress = await splt.deriveAssociatedAddress(
@@ -62,19 +64,15 @@ const SwapButton = ({
       ),
     )
     // Compute limit
-    const {
-      srcMintInfo: { decimals: bidDecimals },
-    } = hops[0]
-    const bidAmount = utils.decimalize(bidData.amount, bidDecimals)
-    const {
-      dstMintInfo: { decimals: askDecimals },
-    } = hops[hops.length - 1]
-    const askAmount = utils.decimalize(askData.amount, askDecimals)
+    const bidDecimals = bidMintInfo?.decimals || 0
+    const bidAmount = utils.decimalize(_bidAmount, bidDecimals)
+    const askDecimals = askMintInfo?.decimals || 0
+    const askAmount = utils.decimalize(_askAmount, askDecimals)
     const limit =
       (askAmount * (DECIMALS - utils.decimalize(slippage, 9))) / DECIMALS
     // Execute swap
     return await swap.route(bidAmount, limit, routingAddresses, wallet)
-  }, [hops, bidData, askData, slippage, walletAddress])
+  }, [hops, bidMintInfo, askMintInfo, slippage, walletAddress])
 
   const handleWrapSol = async () => {
     if (!wrapAmount) return

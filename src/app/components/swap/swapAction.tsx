@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { account } from '@senswap/sen-js'
+import { account, utils } from '@senswap/sen-js'
 
 import { Button, Col, Row } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
@@ -9,7 +9,6 @@ import Ask from '../ask'
 import Bid from '../bid'
 
 import {
-  BestRouteInfo,
   buildPoolGraph,
   findAllRoute,
   findBestRouteFromAsk,
@@ -19,13 +18,17 @@ import {
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
-import { updateRouteInfo } from 'app/model/route.controller'
+import { RouteInfo, updateRouteInfo } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
 import { SenLpState } from 'app/constant/senLpState'
 
 const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const [bestRoute, setBestRoute] = useState(new BestRouteInfo())
+  const [bestRoute, setBestRoute] = useState<RouteInfo>({
+    hops: [],
+    amounts: [],
+    amount: BigInt(0),
+  })
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
   const { pools } = usePool()
@@ -72,7 +75,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
       address,
       ...pools[address],
     }))
-    let bestRoute = new BestRouteInfo()
+    let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
 
     if (
       (!Number(bidAmount) && !Number(askAmount)) ||
@@ -115,13 +118,34 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     const bidPriority = bidData.priority
     const askPriority = askData.priority
     if (askPriority < bidPriority) {
-      dispatch(updateAskData({ amount: bestRoute.amount }))
+      dispatch(
+        updateAskData({
+          amount: utils.undecimalize(
+            bestRoute.amount,
+            askData.mintInfo?.decimals || 0,
+          ),
+        }),
+      )
     }
     if (bidPriority < askPriority) {
-      dispatch(updateBidData({ amount: bestRoute.amount }))
+      dispatch(
+        updateBidData({
+          amount: utils.undecimalize(
+            bestRoute.amount,
+            bidData.mintInfo?.decimals || 0,
+          ),
+        }),
+      )
     }
     dispatch(updateRouteInfo({ route: { ...bestRoute } }))
-  }, [askData.priority, bestRoute, bidData.priority, dispatch])
+  }, [
+    askData.priority,
+    bestRoute,
+    bidData.priority,
+    dispatch,
+    bidData.mintInfo?.decimals,
+    askData.mintInfo?.decimals,
+  ])
 
   useEffect(() => {
     updateRoute()

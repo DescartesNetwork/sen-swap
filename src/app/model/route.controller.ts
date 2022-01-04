@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { HopData } from 'app/components/preview/index'
 
-type RouteInfo = {
+export type RouteInfo = {
   hops: HopData[]
-  amounts: string[]
-  amount: string
+  amounts: bigint[]
+  amount: bigint
 }
 
 export type State = {
   route?: RouteInfo
 }
 const ROUTE_DEFAULT = {
-  amount: '',
+  amount: BigInt(0),
   amounts: [],
   hops: [],
 }

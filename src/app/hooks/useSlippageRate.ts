@@ -1,36 +1,32 @@
-import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { utils } from '@senswap/sen-js'
 
-import { curve } from 'app/helper/oracle'
 import { AppState } from 'app/model'
 
+const PRECISION = 9
+
 export const useSlippageRate = () => {
-  const { route } = useSelector((state: AppState) => state.route)
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askMount = useSelector((state: AppState) => state.ask)
+  const {
+    route: { route },
+    bid: { amount: bidAmount, mintInfo: bidMintInfo },
+    ask: { amount: askAmount, mintInfo: askMintInfo },
+  } = useSelector((state: AppState) => state)
 
-  const { amounts = [], hops = [] } = route || {}
-  const slippageRate = useMemo(() => {
-    let newAmount = bidData.amount
-    hops.forEach((hop, i) => {
-      const { dstMintInfo, srcMintInfo, poolData } = hop
-      const newPoolData = { ...poolData }
-      const srcAmount = amounts[i]
-      const srcDecimals = srcMintInfo.decimals
-      const dstAmount = amounts[i + 1] || askMount.amount
-      const dstDecimals = dstMintInfo.decimals
-      if (srcMintInfo.address === poolData.mint_a) {
-        newPoolData.reserve_a += utils.decimalize(srcAmount, srcDecimals)
-        newPoolData.reserve_b -= utils.decimalize(dstAmount, dstDecimals)
-      } else {
-        newPoolData.reserve_b += utils.decimalize(srcAmount, srcDecimals)
-        newPoolData.reserve_a -= utils.decimalize(dstAmount, dstDecimals)
-      }
-      newAmount = curve(newAmount, { ...hop, poolData: newPoolData })
-    })
-    return 1 - Number(newAmount) / Number(askMount.amount)
-  }, [amounts, askMount.amount, bidData.amount, hops])
+  const nextPrice = Number(askAmount) / Number(bidAmount)
+  let decimalizedPrice = 1
+  console.log('hopPrice')
+  route?.hops.forEach(({ poolData }) => {
+    const { reserve_a, reserve_b } = poolData
+    const hopPrice = utils.undecimalize(
+      (reserve_b * BigInt(10 ** PRECISION)) / reserve_a,
+      PRECISION,
+    )
+    decimalizedPrice = decimalizedPrice * Number(hopPrice)
+  })
+  const currentPrice =
+    (decimalizedPrice * 10 ** (bidMintInfo?.decimals || 0)) /
+    10 ** (askMintInfo?.decimals || 0)
+  const priceImpact = (currentPrice - nextPrice) / currentPrice
 
-  return slippageRate
+  return priceImpact
 }

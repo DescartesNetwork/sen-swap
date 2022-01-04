@@ -1,26 +1,20 @@
-import { account, PoolData } from '@senswap/sen-js'
+import { account, PoolData, utils } from '@senswap/sen-js'
 
 import { curve } from './oracle'
 import { State as BidState } from 'app/model/bid.controller'
 import { State as AskState } from 'app/model/ask.controller'
 import { inverseCurve } from './oracle'
 import { HopData } from 'app/components/preview/index'
-import TokenProvider from 'os/providers/tokenProvider'
+import { RouteInfo } from 'app/model/route.controller'
 
 const POOL_ACTIVITY_STATUS = 1
 const LIMIT_POOL_IN_ROUTE = 3
-const TOKEN_PROVIDER = new TokenProvider()
 
 export type ExtendedPoolData = PoolData & { address: string }
 export type GraphPool = Map<string, Map<string, PoolData>>
 export type RouteTrace = {
   pools: string[]
   mints: string[]
-}
-export class BestRouteInfo {
-  hops: HopData[] = []
-  amounts: string[] = []
-  amount: string = ''
 }
 
 /**
@@ -122,18 +116,12 @@ const parseHops = async (
   for (const poolAddress of pools) {
     const poolData = mapPoolData[poolAddress]
     const { mint_a, mint_b } = poolData
-
     if (srcMintAddress !== mint_a && srcMintAddress !== mint_b) return []
-
     dstMintAddress = srcMintAddress === mint_a ? mint_b : mint_a
-    const srcMintInfo = await TOKEN_PROVIDER.findByAddress(srcMintAddress)
-    const dstMintInfo = await TOKEN_PROVIDER.findByAddress(dstMintAddress)
-    if (!srcMintInfo || !dstMintInfo) return []
-
     const hop: HopData = {
       poolData: { address: poolAddress, ...poolData },
-      srcMintInfo,
-      dstMintInfo,
+      srcMintAddress,
+      dstMintAddress,
     }
     srcMintAddress = dstMintAddress
     hops.push(hop)
@@ -146,20 +134,23 @@ export const findBestRouteFromBid = async (
   routes: RouteTrace[],
   bidData: BidState,
   askData: AskState,
-): Promise<BestRouteInfo> => {
-  let bestRoute = new BestRouteInfo()
+): Promise<RouteInfo> => {
+  let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
   for (let route of routes) {
     const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
     if (!hops.length) continue
-    let amount = bidData.amount
-    const amounts = new Array<string>()
+    let amount = utils.decimalize(
+      bidData.amount,
+      bidData.mintInfo?.decimals || 0,
+    )
+    const amounts = new Array<bigint>()
 
     hops.forEach((hop) => {
       amounts.push(amount)
       amount = curve(amount, hop)
     })
-    const maxAskAmount = Number(bestRoute.amount)
-    if (Number(amount) > maxAskAmount) {
+    const maxAskAmount = bestRoute.amount
+    if (amount > maxAskAmount) {
       bestRoute = {
         hops,
         amounts,
@@ -175,26 +166,29 @@ export const findBestRouteFromAsk = async (
   routes: RouteTrace[],
   bidData: BidState,
   askData: AskState,
-): Promise<BestRouteInfo> => {
-  let bestRoute = new BestRouteInfo()
+): Promise<RouteInfo> => {
+  let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
   for (let route of routes) {
     try {
       const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
       if (!hops.length) continue
       const reversedHops = [...hops].reverse()
-      let amount = askData.amount
-      const amounts = new Array<string>()
+      let amount = utils.decimalize(
+        askData.amount,
+        askData.mintInfo?.decimals || 0,
+      )
+      const amounts = new Array<bigint>()
 
       for (const reversedHop of reversedHops) {
         amount = inverseCurve(amount, reversedHop)
-        if (Number(amount) <= 0) break
+        if (amount <= BigInt(0)) break
         amounts.unshift(amount)
       }
 
-      if (Number(amount) <= 0) continue
-      const minBidAmount = Number(bestRoute.amount)
+      if (amount <= BigInt(0)) continue
+      const minBidAmount = bestRoute.amount
 
-      if (!minBidAmount || Number(amount) < minBidAmount) {
+      if (amount < minBidAmount) {
         bestRoute = {
           hops,
           amounts,
