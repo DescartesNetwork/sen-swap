@@ -13,8 +13,7 @@ const usePriceImpact = () => {
     ask: { amount: askAmount, mintInfo: askMintInfo },
   } = useSelector((state: AppState) => state)
 
-  if (!Number(bidAmount)) return 0
-
+  if (!Number(bidAmount) || !Number(askAmount)) return 0
   const nextPrice = Number(askAmount) / Number(bidAmount)
   let decimalizedPrice = 1
   hops.forEach(({ srcMintAddress, dstMintAddress, poolData }) => {
