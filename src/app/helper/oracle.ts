@@ -1,4 +1,4 @@
-import { utils, Swap } from '@senswap/sen-js'
+import { Swap } from '@senswap/sen-js'
 import { HopData } from 'app/components/preview/index'
 import { extractReserve } from './router'
 
