@@ -41,17 +41,16 @@ const MintPoolInfo = ({
 }
 
 const SwapPoolInfo = () => {
-  const { route } = useSelector((state: AppState) => state.route)
   const {
+    route: { hops },
     bid: { mintInfo: bidMintInfo },
     ask: { mintInfo: askMintInfo },
   } = useSelector((state: AppState) => state)
   const bidCgk = useMintCgk(bidMintInfo?.address)
   const askCgk = useMintCgk(askMintInfo?.address)
 
-  const { poolData: askPoolData } =
-    route?.hops[route?.hops.length || 0 - 1] || {}
-  const { poolData: bidPoolData } = route?.hops[0] || {}
+  const { poolData: askPoolData } = hops[hops.length || 0 - 1] || {}
+  const { poolData: bidPoolData } = hops[0] || {}
 
   const getMintTVL = (mintAddr?: string, poolData?: PoolData) => {
     if (!account.isAddress(mintAddr) || !poolData) return BigInt(0)

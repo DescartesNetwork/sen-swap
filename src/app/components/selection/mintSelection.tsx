@@ -11,7 +11,6 @@ import { LiteMintInfo } from '../preview'
 
 export type SelectionInfo = {
   mintInfo?: LiteMintInfo
-  poolAddress?: string
   poolAddresses: string[]
 }
 
@@ -58,12 +57,9 @@ const MintSelection = ({
     [pools],
   )
 
-  /**
-   * Render mint list
-   */
-  const mintList = useMemo(() => {
-    // Return data to parent
-    const onMint = async (mintAddress: string) => {
+  // Return data to parent
+  const onMint = useCallback(
+    async (mintAddress: string) => {
       const poolAddresses = getAvailablePoolAddresses(mintAddress)
       const decimals = await getDecimals(mintAddress)
       return onChange({
@@ -71,29 +67,11 @@ const MintSelection = ({
           address: mintAddress,
           decimals,
         },
-        poolAddress: undefined,
         poolAddresses,
       })
-    }
-    return (
-      <Row gutter={[16, 16]}>
-        {mintAddresses.map((mintAddress, i) => {
-          const { address: currentMintAddress } = value.mintInfo || {}
-          return (
-            <Col span={24} key={i}>
-              <LazyLoad height={48} overflow>
-                <Mint
-                  mintAddress={mintAddress}
-                  onClick={() => onMint(mintAddress)}
-                  active={currentMintAddress === mintAddress}
-                />
-              </LazyLoad>
-            </Col>
-          )
-        })}
-      </Row>
-    )
-  }, [getAvailablePoolAddresses, onChange, mintAddresses, value, getDecimals])
+    },
+    [getAvailablePoolAddresses, onChange, getDecimals],
+  )
 
   return (
     <Row gutter={[16, 16]}>
@@ -108,7 +86,24 @@ const MintSelection = ({
       </Col>
       <Col span={24}>
         <Row gutter={[16, 16]} style={{ height: 300, overflow: 'auto' }}>
-          <Col span={24}>{mintList}</Col>
+          <Col span={24}>
+            <Row gutter={[16, 16]}>
+              {mintAddresses.map((mintAddress, i) => {
+                const { address: currentMintAddress } = value.mintInfo || {}
+                return (
+                  <Col span={24} key={i}>
+                    <LazyLoad height={48} overflow>
+                      <Mint
+                        mintAddress={mintAddress}
+                        onClick={() => onMint(mintAddress)}
+                        active={currentMintAddress === mintAddress}
+                      />
+                    </LazyLoad>
+                  </Col>
+                )
+              })}
+            </Row>
+          </Col>
         </Row>
       </Col>
     </Row>

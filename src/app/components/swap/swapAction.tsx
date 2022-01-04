@@ -18,7 +18,7 @@ import {
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
-import { RouteInfo, updateRouteInfo } from 'app/model/route.controller'
+import { RouteInfo, updateRoute } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
 import { SenLpState } from 'app/constant/senLpState'
 
@@ -114,7 +114,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     return setBestRoute(bestRoute)
   }, [askData, bidData, originalRoute, poolAdress, pools])
 
-  const updateRoute = useCallback(() => {
+  const setRoute = useCallback(() => {
     const bidPriority = bidData.priority
     const askPriority = askData.priority
     if (askPriority < bidPriority) {
@@ -137,7 +137,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
         }),
       )
     }
-    dispatch(updateRouteInfo({ route: { ...bestRoute } }))
+    dispatch(updateRoute({ ...bestRoute }))
   }, [
     askData.priority,
     bestRoute,
@@ -148,8 +148,8 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   ])
 
   useEffect(() => {
-    updateRoute()
-  }, [updateRoute])
+    setRoute()
+  }, [setRoute])
 
   useEffect(() => {
     findRoute()

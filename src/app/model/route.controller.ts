@@ -7,9 +7,7 @@ export type RouteInfo = {
   amount: bigint
 }
 
-export type State = {
-  route?: RouteInfo
-}
+export type State = RouteInfo
 const ROUTE_DEFAULT = {
   amount: BigInt(0),
   amounts: [],
@@ -17,20 +15,20 @@ const ROUTE_DEFAULT = {
 }
 const NAME = 'route'
 const initialState: State = {
-  route: ROUTE_DEFAULT,
+  ...ROUTE_DEFAULT,
 }
 
 /**
  * Actions
  */
-export const updateRouteInfo = createAsyncThunk<
-  State,
-  { route: RouteInfo },
+export const updateRoute = createAsyncThunk<
+  Partial<State>,
+  Partial<State>,
   { state: any }
->(`${NAME}/updateRouteInfo`, async ({ route }, { getState }) => {
-  const { route: routeState } = getState()
-  if (!route) return { route: routeState }
-  return { route }
+>(`${NAME}/updateRoute`, async (route, { getState }) => {
+  const { route: prevRoute } = getState()
+  if (!route) return { ...prevRoute }
+  return { ...prevRoute, ...route }
 })
 
 /**
@@ -43,7 +41,7 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) =>
     void builder.addCase(
-      updateRouteInfo.fulfilled,
+      updateRoute.fulfilled,
       (state, { payload }) => void Object.assign(state, payload),
     ),
 })

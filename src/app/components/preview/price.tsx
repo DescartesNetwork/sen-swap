@@ -17,7 +17,10 @@ const Price = () => {
 
   const bidMintAddress = bidMintInfo?.address || ''
   const askMintAddress = askMintInfo?.address || ''
-  const price = numeric(Number(bidAmount) / Number(askAmount)).format(
+  const price = numeric(Number(askAmount) / Number(bidAmount)).format(
+    '0,0.[000000]',
+  )
+  const reversedPrice = numeric(Number(bidAmount) / Number(askAmount)).format(
     '0,0.[000000]',
   )
 
@@ -29,7 +32,7 @@ const Price = () => {
         shape="circle"
         icon={<IonIcon name="swap-horizontal-outline" />}
       />
-      <Typography.Text>{price}</Typography.Text>
+      <Typography.Text>{!reversed ? price : reversedPrice}</Typography.Text>
       <Typography.Text>
         {!reversed ? (
           <MintSymbol mintAddress={bidMintAddress} />

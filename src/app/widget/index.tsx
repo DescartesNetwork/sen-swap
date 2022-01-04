@@ -10,39 +10,40 @@ import SwapButton from 'app/components/swapButton'
 import SwapAction from 'app/components/swap/swapAction'
 
 import { AppState } from 'app/model'
-import { useAccount } from 'senhub/providers'
-import { useSlippageRate } from 'app/hooks/useSlippageRate'
+import usePriceImpact from 'app/hooks/usePriceImpact'
 import { numeric } from 'shared/util'
+import useBalance from 'app/hooks/useBalance'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
-  const { route } = useSelector((state: AppState) => state.route)
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
-  const { advanced } = useSelector((state: AppState) => state.settings)
-  const { accounts } = useAccount()
-  const slippageRate = useSlippageRate()
+  const {
+    route,
+    bid: {
+      amount: bidAmount,
+      mintInfo: bidMintInfo,
+      accountAddress: bidAccountAddress,
+    },
+    ask: { amount: askAmount },
+    settings: { advanced },
+  } = useSelector((state: AppState) => state)
+  const priceImpact = usePriceImpact()
+  const bidBalance = useBalance(bidAccountAddress)
 
   const wrapAmount = useMemo(() => {
-    const bidMint = bidData.mintInfo
-    const bidAccount = accounts[bidData.accountAddress]
-    const bidBalance = bidAccount?.amount || BigInt(0)
+    if (!bidMintInfo || !Number(bidAmount)) return BigInt(0)
+    if (bidMintInfo.address !== DEFAULT_WSOL) return BigInt(0)
+    const amount = utils.decimalize(bidAmount, bidMintInfo.decimals)
+    if (amount <= bidBalance) return BigInt(0)
+    return amount - bidBalance
+  }, [bidAmount, bidMintInfo, bidBalance])
 
-    if (!bidMint || !Number(bidData.amount)) return BigInt(0)
-    if (bidMint.address !== DEFAULT_WSOL) return BigInt(0)
-
-    const bidAmount = utils.decimalize(bidData.amount, bidMint.decimals)
-    if (bidAmount <= bidBalance) return BigInt(0)
-    return bidAmount - bidBalance
-  }, [accounts, bidData.accountAddress, bidData.amount, bidData.mintInfo])
-
-  const tooHightImpact = !advanced && slippageRate * 100 > 12.5
+  const tooHightImpact = !advanced && priceImpact * 100 > 12.5
   const disabled =
     !route?.hops.length ||
-    !parseFloat(bidData.amount) ||
-    parseFloat(bidData.amount) < 0 ||
-    !parseFloat(askData?.amount) ||
-    parseFloat(askData?.amount) < 0
+    !parseFloat(bidAmount) ||
+    parseFloat(bidAmount) < 0 ||
+    !parseFloat(askAmount) ||
+    parseFloat(askAmount) < 0
 
   return (
     <Row gutter={[12, 12]}>
@@ -78,7 +79,7 @@ const Widget = () => {
                     <IonIcon name="arrow-down-outline" />
                   </Typography.Text>
                   <Typography.Text style={{ color: '#D72311' }}>
-                    {numeric(Number(slippageRate)).format('0.[0000]%')}
+                    {numeric(Number(priceImpact)).format('0.[0000]%')}
                   </Typography.Text>
                 </Space>
               </Space>
