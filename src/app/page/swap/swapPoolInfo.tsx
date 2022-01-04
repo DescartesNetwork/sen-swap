@@ -50,11 +50,15 @@ const SwapPoolInfo = () => {
   const askCgk = useMintCgk(askMintInfo?.address)
 
   const { poolData: bidPoolData } = hops[0] || {}
-  const { poolData: askPoolData } = hops[(hops.length || 0) - 1] || {}
+  const { poolData: askPoolData } = hops[hops.length - 1] || {}
 
-  const getMintTVL = (mintAddr?: string, poolData?: PoolData) => {
-    if (!account.isAddress(mintAddr) || !poolData) return BigInt(0)
-    return extractReserve(mintAddr, poolData)
+  const getMintTVL = (mintAddress?: string, poolData?: PoolData) => {
+    try {
+      if (!account.isAddress(mintAddress) || !poolData) return BigInt(0)
+      return extractReserve(mintAddress, poolData)
+    } catch (er) {
+      return BigInt(0)
+    }
   }
 
   // Bid TVL

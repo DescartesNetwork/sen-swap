@@ -29,8 +29,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
     amounts: [],
     amount: BigInt(0),
   })
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
+  const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
   const { pools } = usePool()
   const { state } = useLocation<SenLpState>()
   const poolAdress = state?.poolAddress
@@ -55,60 +54,59 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const findRoute = useCallback(async () => {
     const {
       poolAddresses: bidPoolAddresses,
-      mintInfo: bidMintInfo,
+      mintInfo: { address: bidMintAddress },
       amount: bidAmount,
       priority: bidPriority,
     } = bidData
     const {
       poolAddresses: askPoolAddresses,
-      mintInfo: askMintInfo,
+      mintInfo: { address: askMintAddress },
       amount: askAmount,
       priority: askPriority,
     } = askData
-    const { address: bidMintAddress } = bidMintInfo || {}
+
     const bidPools = bidPoolAddresses.map((address) => ({
       address,
       ...pools[address],
     }))
-    const { address: askMintAddress } = askMintInfo || {}
     const askPools = askPoolAddresses.map((address) => ({
       address,
       ...pools[address],
     }))
-    let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
 
+    // Initialize an instance for the best route
+    // The best route return a route that user can receive maximum ask amount when swap
+    let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
+    // Return empty default
     if (
       (!Number(bidAmount) && !Number(askAmount)) ||
       !account.isAddress(bidMintAddress) ||
       !account.isAddress(askMintAddress) ||
       !bidPools.length ||
-      !askPools.length ||
-      !bidMintInfo
+      !askPools.length
     )
       return setBestRoute(bestRoute)
-    // Use mode to find best route this mean the system find best route for end user.
-    // the best route return a route that user can receive maximum ask amount when swap
-    let routes = new Array<RouteTrace>()
-
-    const pathTrace: RouteTrace = {
-      mints: [bidMintAddress],
-      pools: [],
-    }
-    const graph = buildPoolGraph(pools)
-    findAllRoute(routes, graph, bidMintAddress, askMintAddress, pathTrace)
+    // All possible routes
+    let allRoutes = new Array<RouteTrace>()
+    findAllRoute(
+      allRoutes,
+      buildPoolGraph(pools),
+      bidMintAddress,
+      askMintAddress,
+    )
     // No available route
-    if (!routes.length) return setBestRoute(bestRoute)
+    if (!allRoutes.length) return setBestRoute(bestRoute)
 
-    //when user select original route from senlp
+    // When user select original route from senlp
     if (originalRoute)
-      routes = routes.filter(
-        (route) => route.pools.length === 1 && route.pools[0] === poolAdress,
+      allRoutes = allRoutes.filter(
+        ({ pools }) => pools.length === 1 && pools[0] === poolAdress,
       )
 
     if (askPriority < bidPriority) {
-      bestRoute = await findBestRouteFromBid(pools, routes, bidData, askData)
+      bestRoute = await findBestRouteFromBid(pools, allRoutes, bidData, askData)
     } else {
-      bestRoute = await findBestRouteFromAsk(pools, routes, bidData, askData)
+      bestRoute = await findBestRouteFromAsk(pools, allRoutes, bidData, askData)
     }
 
     return setBestRoute(bestRoute)

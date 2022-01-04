@@ -66,36 +66,43 @@ export const buildPoolGraph = (pools: Record<string, PoolData>): GraphPool => {
   return graph
 }
 
+// export const findAllHops = (
+//   graph: GraphPool,
+//   bidMintAddress: string,
+//   askMintAddress: string,
+// ) => {
+
+// }
+
 // because of Solana is limiting the number of calculation unit, so the system
 // must limit the list pool of root. Currently, the system set 3 pools in route
 export const findAllRoute = (
   routes: Array<RouteTrace>,
   graph: GraphPool,
-  startMint: string,
-  endMint: string,
-  pathTrace: RouteTrace,
+  bidMintAddress: string,
+  askMintAddress: string,
+  pathTrace?: RouteTrace,
 ) => {
-  const { pools, mints } = pathTrace
+  const { pools, mints } = pathTrace || {
+    mints: [bidMintAddress],
+    pools: [],
+  }
   if (pools.length === LIMIT_POOL_IN_ROUTE) return
-  const mapPool = graph.get(startMint)
+  const mapPool = graph.get(bidMintAddress)
   mapPool?.forEach((pool, poolAddress) => {
     if (pools.includes(poolAddress)) return
 
-    let { mint_b: askMint } = pool
-    if (pool.mint_a !== startMint) {
-      askMint = pool.mint_a
-    }
-    if (mints.includes(askMint)) return
+    const srcMintAddress = bidMintAddress
+    const dstMintAddress =
+      srcMintAddress === pool.mint_a ? pool.mint_b : pool.mint_a
+    if (mints.includes(dstMintAddress)) return
 
     const newPathTrace = {
       pools: [...pools, poolAddress],
-      mints: [...mints, askMint],
+      mints: [...mints, dstMintAddress],
     }
-    if (askMint === endMint) {
-      routes.push(newPathTrace)
-      return
-    }
-    findAllRoute(routes, graph, askMint, endMint, newPathTrace)
+    if (dstMintAddress === askMintAddress) return routes.push(newPathTrace)
+    findAllRoute(routes, graph, dstMintAddress, askMintAddress, newPathTrace)
   })
 }
 
@@ -139,10 +146,7 @@ export const findBestRouteFromBid = async (
   for (let route of routes) {
     const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
     if (!hops.length) continue
-    let amount = utils.decimalize(
-      bidData.amount,
-      bidData.mintInfo?.decimals || 0,
-    )
+    let amount = utils.decimalize(bidData.amount, bidData.mintInfo.decimals)
     const amounts = new Array<bigint>()
 
     hops.forEach((hop) => {
@@ -150,13 +154,7 @@ export const findBestRouteFromBid = async (
       amount = curve(amount, hop)
     })
     const maxAskAmount = bestRoute.amount
-    if (amount > maxAskAmount) {
-      bestRoute = {
-        hops,
-        amounts,
-        amount,
-      }
-    }
+    if (amount > maxAskAmount) bestRoute = { hops, amounts, amount }
   }
   return bestRoute
 }
@@ -169,33 +167,21 @@ export const findBestRouteFromAsk = async (
 ): Promise<RouteInfo> => {
   let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
   for (let route of routes) {
-    try {
-      const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
-      if (!hops.length) continue
-      const reversedHops = [...hops].reverse()
-      let amount = utils.decimalize(
-        askData.amount,
-        askData.mintInfo?.decimals || 0,
-      )
-      const amounts = new Array<bigint>()
+    const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
+    if (!hops.length) continue
+    const reversedHops = [...hops].reverse()
+    let amount = utils.decimalize(askData.amount, askData.mintInfo.decimals)
+    const amounts = new Array<bigint>()
 
-      for (const reversedHop of reversedHops) {
-        amount = inverseCurve(amount, reversedHop)
-        if (amount <= BigInt(0)) break
-        amounts.unshift(amount)
-      }
-
-      if (amount <= BigInt(0)) continue
-      const minBidAmount = bestRoute.amount
-
-      if (amount < minBidAmount) {
-        bestRoute = {
-          hops,
-          amounts,
-          amount,
-        }
-      }
-    } catch (error) {}
+    for (const reversedHop of reversedHops) {
+      amount = inverseCurve(amount, reversedHop)
+      if (amount <= BigInt(0)) break
+      amounts.unshift(amount)
+    }
+    if (amount <= BigInt(0)) continue
+    const minBidAmount = bestRoute.amount
+    if (amount < minBidAmount || !minBidAmount)
+      bestRoute = { hops, amounts, amount }
   }
   return bestRoute
 }
