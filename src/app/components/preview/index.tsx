@@ -41,9 +41,9 @@ const ExtraTypography = ({
 }
 
 const PreviewSwap = () => {
-  const { slippage: slippageSettings } = useSelector(
-    (state: AppState) => state.settings,
-  )
+  const {
+    settings: { slippage },
+  } = useSelector((state: AppState) => state)
   const priceImpact = usePriceImpact()
 
   return (
@@ -64,7 +64,7 @@ const PreviewSwap = () => {
       <Col span={24}>
         <ExtraTypography
           label="Slippage Tolerance"
-          content={numeric(slippageSettings).format('0.[00]%')}
+          content={numeric(slippage).format('0.[00]%')}
         />
       </Col>
       <Col span={24}>

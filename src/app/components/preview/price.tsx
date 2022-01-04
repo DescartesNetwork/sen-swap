@@ -35,15 +35,15 @@ const Price = () => {
       <Typography.Text>{!reversed ? price : reversedPrice}</Typography.Text>
       <Typography.Text>
         {!reversed ? (
-          <MintSymbol mintAddress={bidMintAddress} />
-        ) : (
           <MintSymbol mintAddress={askMintAddress} />
+        ) : (
+          <MintSymbol mintAddress={bidMintAddress} />
         )}
         {' / '}
         {!reversed ? (
-          <MintSymbol mintAddress={askMintAddress} />
-        ) : (
           <MintSymbol mintAddress={bidMintAddress} />
+        ) : (
+          <MintSymbol mintAddress={askMintAddress} />
         )}
       </Typography.Text>
     </Space>

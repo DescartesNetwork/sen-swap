@@ -49,32 +49,26 @@ const SwapPoolInfo = () => {
   const bidCgk = useMintCgk(bidMintInfo?.address)
   const askCgk = useMintCgk(askMintInfo?.address)
 
-  const { poolData: askPoolData } = hops[hops.length || 0 - 1] || {}
   const { poolData: bidPoolData } = hops[0] || {}
+  const { poolData: askPoolData } = hops[(hops.length || 0) - 1] || {}
 
   const getMintTVL = (mintAddr?: string, poolData?: PoolData) => {
     if (!account.isAddress(mintAddr) || !poolData) return BigInt(0)
     return extractReserve(mintAddr, poolData)
   }
 
-  const askTVL = useMemo(() => {
-    try {
-      if (!askMintInfo?.decimals) return 0
-      const ask = getMintTVL(askMintInfo?.address, askPoolData)
-      return Number(utils.undecimalize(ask, askMintInfo.decimals))
-    } catch (er) {
-      return 0
-    }
-  }, [askMintInfo?.address, askMintInfo?.decimals, askPoolData])
+  // Bid TVL
   const bidTVL = useMemo(() => {
-    try {
-      if (!bidMintInfo?.decimals) return 0
-      const bid = getMintTVL(bidMintInfo?.address, bidPoolData)
-      return Number(utils.undecimalize(bid, bidMintInfo.decimals))
-    } catch (er) {
-      return 0
-    }
-  }, [bidMintInfo?.address, bidMintInfo?.decimals, bidPoolData])
+    if (!bidMintInfo.decimals) return 0
+    const bid = getMintTVL(bidMintInfo.address, bidPoolData)
+    return Number(utils.undecimalize(bid, bidMintInfo.decimals))
+  }, [bidMintInfo, bidPoolData])
+  // Ask TVL
+  const askTVL = useMemo(() => {
+    if (!askMintInfo.decimals) return 0
+    const ask = getMintTVL(askMintInfo.address, askPoolData)
+    return Number(utils.undecimalize(ask, askMintInfo.decimals))
+  }, [askMintInfo, askPoolData])
 
   return (
     <Card bordered={false}>
