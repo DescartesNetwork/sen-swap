@@ -8,6 +8,7 @@
     "@metamask/detect-provider": "^1.2.0",
     "@project-serum/sol-wallet-adapter": "^0.2.6",
     "@reduxjs/toolkit": "^1.6.2",
+    "@relocke/base58": "^1.0.0",
     "@senswap/sen-js": "^1.2.4",
     "@solana/spl-token-registry": "^0.2.459",
     "antd": "^4.17.0-alpha.7",

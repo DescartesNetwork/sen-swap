@@ -2,9 +2,10 @@ import moment from 'moment'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { utils } from '@senswap/sen-js'
-import { TransLogService } from 'app/lib/stat/logic/translog'
+
 import configs from 'os/configs'
 import { TransLog } from 'app/lib/stat/entities/trans-log'
+import FarmingTransLogService from 'app/lib/stat/logic/farmingTranslog'
 
 export type State = {
   historySwap: HistorySwap[]
@@ -35,7 +36,7 @@ const initialState: State = {
 
 const filterFunction = (transLog: TransLog) => {
   if (!transLog.actionTransfers.length) return false
-  return true
+  return transLog.actionType === 'SWAP'
 }
 
 /**
@@ -64,7 +65,7 @@ export const fetchHistorySwap = createAsyncThunk<
       lastSignature,
     }
 
-    const transLogService = new TransLogService()
+    const transLogService = new FarmingTransLogService()
     const transLogsData = await transLogService.collect(
       myWalletAddress,
       options,
@@ -75,6 +76,7 @@ export const fetchHistorySwap = createAsyncThunk<
     if (isLoadMore) history = [...historySwap]
 
     for (const transLog of transLogsData) {
+      if (!transLog.actionType) continue
       const historyItem = {} as HistorySwap
       const actionTransfer = transLog.actionTransfers
       let lastAction

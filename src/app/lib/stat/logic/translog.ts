@@ -27,6 +27,10 @@ export class TransLogService {
     this.solana = new Solana()
   }
 
+  protected parseAction = (transLog: TransLog) => {
+    return ''
+  }
+
   async collect(
     programId: string,
     configs: OptionsFetchSignature,
@@ -90,11 +94,14 @@ export class TransLogService {
     )
     // system program transaction
     if (this.isParsedInstruction(instructionData)) {
-      transLog.programTransfer = this.parseAction([instructionData], mapAccount)
+      transLog.programTransfer = this.parseListActionTransfer(
+        [instructionData],
+        mapAccount,
+      )
       return transLog
     }
     // smart contract transaction
-    transLog.actionTransfers = this.parseAction(
+    transLog.actionTransfers = this.parseListActionTransfer(
       innerInstructionData,
       mapAccount,
     )
@@ -102,6 +109,7 @@ export class TransLogService {
       programId: instructionData.programId.toString(),
       data: (instructionData as PartiallyDecodedInstruction).data,
     }
+    transLog.actionType = this.parseAction(transLog)
     return transLog
   }
 
@@ -109,7 +117,7 @@ export class TransLogService {
     return (instructionData as ParsedInstruction).parsed !== undefined
   }
 
-  private parseAction(
+  private parseListActionTransfer(
     actions: InstructionData[],
     mapAccount: Map<string, ActionInfo>,
   ) {
