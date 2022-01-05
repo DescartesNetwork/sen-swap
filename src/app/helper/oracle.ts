@@ -1,58 +1,55 @@
-import { utils, Swap } from '@senswap/sen-js'
+import { Swap } from '@senswap/sen-js'
 import { HopData } from 'app/components/preview/index'
 import { extractReserve } from './router'
 
 export const ORACLE = Swap.oracle
 
-export const curve = (bidAmount: string, data: HopData): string => {
-  const {
-    srcMintInfo: { address: srcMintAddress, decimals: bidDecimals },
-    dstMintInfo: { address: dstMintAddress, decimals: askDecimals },
-  } = data
-  const { fee_ratio, tax_ratio } = data.poolData
-  const bidReserve = extractReserve(srcMintAddress, data.poolData)
-  const askReserve = extractReserve(dstMintAddress, data.poolData)
-  if (!bidReserve || !askReserve) return '0'
+export const curve = (bidAmount: bigint, hopData: HopData): bigint => {
+  if (!bidAmount) return BigInt(0)
+  const { srcMintAddress, dstMintAddress, poolData } = hopData
+  const { fee_ratio, tax_ratio } = poolData
+  const bidReserve = extractReserve(srcMintAddress, poolData)
+  const askReserve = extractReserve(dstMintAddress, poolData)
+  if (!bidReserve || !askReserve) return BigInt(0)
 
   const { askAmount } = ORACLE.swap(
-    utils.decimalize(bidAmount, bidDecimals),
+    bidAmount,
     bidReserve,
     askReserve,
     fee_ratio,
     tax_ratio,
   )
-  return utils.undecimalize(askAmount, askDecimals)
+  return askAmount
 }
 
-export const inverseCurve = (askAmount: string, data: HopData): string => {
-  const {
-    srcMintInfo: { address: srcMintAddress, decimals: bidDecimals },
-    dstMintInfo: { address: dstMintAddress, decimals: askDecimals },
-  } = data
-  const { fee_ratio, tax_ratio } = data.poolData
-  const bidReserve = extractReserve(srcMintAddress, data.poolData)
-  const askReserve = extractReserve(dstMintAddress, data.poolData)
+export const inverseCurve = (askAmount: bigint, hopData: HopData): bigint => {
+  if (!askAmount) return BigInt(0)
+  const { srcMintAddress, dstMintAddress, poolData } = hopData
+  const { fee_ratio, tax_ratio } = poolData
+  const bidReserve = extractReserve(srcMintAddress, poolData)
+  const askReserve = extractReserve(dstMintAddress, poolData)
+  if (!bidReserve || !askReserve) return BigInt(0)
+
   const bidAmount = ORACLE.inverseSwap(
-    utils.decimalize(askAmount, askDecimals),
+    askAmount,
     bidReserve,
     askReserve,
     fee_ratio,
     tax_ratio,
   )
-  return utils.undecimalize(bidAmount, bidDecimals)
+  return bidAmount
 }
 
-export const slippage = (bidAmount: string, data: HopData): bigint => {
-  const {
-    srcMintInfo: { address: srcMintAddress, decimals: bidDecimals },
-    dstMintInfo: { address: dstMintAddress },
-  } = data
-  const { fee_ratio, tax_ratio } = data.poolData
-  const bidReserve = extractReserve(srcMintAddress, data.poolData)
-  const askReserve = extractReserve(dstMintAddress, data.poolData)
+export const slippage = (bidAmount: bigint, hopData: HopData): bigint => {
+  if (!bidAmount) return BigInt(0)
+  const { srcMintAddress, dstMintAddress, poolData } = hopData
+  const { fee_ratio, tax_ratio } = poolData
+  const bidReserve = extractReserve(srcMintAddress, poolData)
+  const askReserve = extractReserve(dstMintAddress, poolData)
+  if (!bidReserve || !askReserve) return BigInt(0)
 
   const slippage = ORACLE.slippage(
-    utils.decimalize(bidAmount, bidDecimals),
+    bidAmount,
     bidReserve,
     askReserve,
     fee_ratio,

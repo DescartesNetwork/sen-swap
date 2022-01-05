@@ -1,7 +1,7 @@
 import { Card, Col, Row } from 'antd'
 import SwapReview from './swapReview'
 import SwapPoolInfo from './swapPoolInfo'
-import SwapForm from 'app/components/swap'
+import SwapForm from 'app/components/swapForm'
 
 const Swap = () => {
   return (

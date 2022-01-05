@@ -1,27 +1,17 @@
-import { account, PoolData } from '@senswap/sen-js'
+import { PoolData, utils } from '@senswap/sen-js'
 
 import { curve } from './oracle'
 import { State as BidState } from 'app/model/bid.controller'
 import { State as AskState } from 'app/model/ask.controller'
 import { inverseCurve } from './oracle'
 import { HopData } from 'app/components/preview/index'
-import TokenProvider from 'os/providers/tokenProvider'
+import { State as RouteState } from 'app/model/route.controller'
 
 const POOL_ACTIVITY_STATUS = 1
 const LIMIT_POOL_IN_ROUTE = 3
-const TOKEN_PROVIDER = new TokenProvider()
 
-export type ExtendedPoolData = PoolData & { address: string }
 export type GraphPool = Map<string, Map<string, PoolData>>
-export type RouteTrace = {
-  pools: string[]
-  mints: string[]
-}
-export class BestRouteInfo {
-  hops: HopData[] = []
-  amounts: string[] = []
-  amount: string = ''
-}
+export type RouteTrace = HopData[]
 
 /**
  * Extract reserve from pool data
@@ -74,132 +64,82 @@ export const buildPoolGraph = (pools: Record<string, PoolData>): GraphPool => {
 
 // because of Solana is limiting the number of calculation unit, so the system
 // must limit the list pool of root. Currently, the system set 3 pools in route
-export const findAllRoute = (
-  routes: Array<RouteTrace>,
+export const findAllRoutes = (
   graph: GraphPool,
-  startMint: string,
-  endMint: string,
-  pathTrace: RouteTrace,
+  bidMintAddress: string,
+  askMintAddress: string,
+  deep = 0,
 ) => {
-  const { pools, mints } = pathTrace
-  if (pools.length === LIMIT_POOL_IN_ROUTE) return
-  const mapPool = graph.get(startMint)
-  mapPool?.forEach((pool, poolAddress) => {
-    if (pools.includes(poolAddress)) return
+  const routes: RouteTrace[] = []
+  const clonedGraph = new Map(graph)
+  const pools = graph.get(bidMintAddress)
 
-    let { mint_b: askMint } = pool
-    if (pool.mint_a !== startMint) {
-      askMint = pool.mint_a
-    }
-    if (mints.includes(askMint)) return
+  // Too deep
+  if (deep >= LIMIT_POOL_IN_ROUTE) return routes
 
-    const newPathTrace = {
-      pools: [...pools, poolAddress],
-      mints: [...mints, askMint],
-    }
-    if (askMint === endMint) {
-      routes.push(newPathTrace)
-      return
-    }
-    findAllRoute(routes, graph, askMint, endMint, newPathTrace)
-  })
-}
-
-const parseHops = async (
-  mapPoolData: Record<string, PoolData>,
-  pools: string[],
-  bidData: BidState,
-  askData: AskState,
-): Promise<HopData[]> => {
-  const bidMintAddress = bidData.mintInfo?.address
-  const askMintAddress = askData.mintInfo?.address
-  if (!account.isAddress(bidMintAddress) || !account.isAddress(askMintAddress))
-    return []
-
-  const hops: HopData[] = []
-  let srcMintAddress = bidMintAddress
-  let dstMintAddress = ''
-  for (const poolAddress of pools) {
-    const poolData = mapPoolData[poolAddress]
-    const { mint_a, mint_b } = poolData
-
-    if (srcMintAddress !== mint_a && srcMintAddress !== mint_b) return []
-
-    dstMintAddress = srcMintAddress === mint_a ? mint_b : mint_a
-    const srcMintInfo = await TOKEN_PROVIDER.findByAddress(srcMintAddress)
-    const dstMintInfo = await TOKEN_PROVIDER.findByAddress(dstMintAddress)
-    if (!srcMintInfo || !dstMintInfo) return []
-
+  clonedGraph.delete(bidMintAddress)
+  pools?.forEach((poolData, poolAddress) => {
+    // Build sub params
+    const srcMintAddress = bidMintAddress
+    const dstMintAddress =
+      srcMintAddress === poolData.mint_a ? poolData.mint_b : poolData.mint_a
     const hop: HopData = {
-      poolData: { address: poolAddress, ...poolData },
-      srcMintInfo,
-      dstMintInfo,
+      srcMintAddress,
+      dstMintAddress,
+      poolData: { ...poolData, address: poolAddress },
     }
-    srcMintAddress = dstMintAddress
-    hops.push(hop)
-  }
-  return hops
+    // Termination
+    if (dstMintAddress === askMintAddress) return routes.push([hop])
+    // Recursive call
+    const subRoutes = findAllRoutes(
+      clonedGraph,
+      dstMintAddress,
+      askMintAddress,
+      deep++,
+    )
+    subRoutes.forEach((route) => routes.push([hop, ...route]))
+  })
+
+  return routes
 }
 
-export const findBestRouteFromBid = async (
-  mapPoolData: Record<string, PoolData>,
+export const findBestRouteFromBid = (
   routes: RouteTrace[],
-  bidData: BidState,
-  askData: AskState,
-): Promise<BestRouteInfo> => {
-  let bestRoute = new BestRouteInfo()
-  for (let route of routes) {
-    const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
-    if (!hops.length) continue
-    let amount = bidData.amount
-    const amounts = new Array<string>()
-
-    hops.forEach((hop) => {
+  { amount: bidAmount, mintInfo }: BidState,
+): RouteState => {
+  let bestRoute: RouteState = { best: [], amounts: [], amount: BigInt(0) }
+  routes.forEach((route) => {
+    let amount = utils.decimalize(bidAmount, mintInfo.decimals)
+    const amounts = new Array<bigint>()
+    route.forEach((hop) => {
       amounts.push(amount)
       amount = curve(amount, hop)
     })
-    const maxAskAmount = Number(bestRoute.amount)
-    if (Number(amount) > maxAskAmount) {
-      bestRoute = {
-        hops,
-        amounts,
-        amount,
-      }
-    }
-  }
+    const maxAskAmount = bestRoute.amount
+    if (amount > maxAskAmount) bestRoute = { best: route, amounts, amount }
+  })
   return bestRoute
 }
 
-export const findBestRouteFromAsk = async (
-  mapPoolData: Record<string, PoolData>,
+export const findBestRouteFromAsk = (
   routes: RouteTrace[],
-  bidData: BidState,
-  askData: AskState,
-): Promise<BestRouteInfo> => {
-  let bestRoute = new BestRouteInfo()
-  for (let route of routes) {
-    try {
-      const hops = await parseHops(mapPoolData, route.pools, bidData, askData)
-      if (!hops.length) continue
-      const reversedHops = [...hops].reverse()
-      let amount = askData.amount
-      const amounts = new Array<string>()
+  { amount: askAmount, mintInfo }: AskState,
+): RouteState => {
+  let bestRoute: RouteState = { best: [], amounts: [], amount: BigInt(0) }
+  for (const route of routes) {
+    const reversedRoute = [...route].reverse()
+    let amount = utils.decimalize(askAmount, mintInfo.decimals)
+    const amounts = new Array<bigint>()
 
-      for (const reversedHop of reversedHops) {
-        amount = inverseCurve(amount, reversedHop)
-        if (Number(amount) < 0) break
-        amounts.unshift(amount)
-      }
-      if (Number(amount) < 0) continue
-      const minBidAmount = Number(bestRoute.amount)
-      if (!minBidAmount || Number(amount) < minBidAmount) {
-        bestRoute = {
-          hops,
-          amounts,
-          amount,
-        }
-      }
-    } catch (error) {}
+    for (const hop of reversedRoute) {
+      amount = inverseCurve(amount, hop)
+      if (amount <= BigInt(0)) break
+      amounts.unshift(amount)
+    }
+    if (amount <= BigInt(0)) continue
+    const minBidAmount = bestRoute.amount
+    if (amount < minBidAmount || !minBidAmount)
+      bestRoute = { best: route, amounts, amount }
   }
   return bestRoute
 }

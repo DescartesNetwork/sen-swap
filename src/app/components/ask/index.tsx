@@ -3,64 +3,69 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 
-import { Row, Col, Typography } from 'antd'
+import { Row, Col, Typography, Space } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
 import Selection from '../selection'
+import NumericInput from 'shared/antd/numericInput'
+import { MintSymbol } from 'shared/antd/mint'
 
+import configs from 'app/configs'
 import { useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
-import NumericInput from 'app/shared/components/numericInput'
-import { useMintAccount } from 'app/shared/hooks/useMintAccount'
-import configs from 'app/configs'
-import { useMintSelection } from '../hooks/useMintSelection'
+import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
+import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { wallet } = useWallet()
-  const askData = useSelector((state: AppState) => state.ask)
+  const {
+    ask: { amount, accountAddress, mintInfo, poolAddresses },
+  } = useSelector((state: AppState) => state)
   const { state } = useLocation<SenLpState>()
-  const { balance } = useMintAccount(askData.accountAddress)
+  const { balance: maxBalance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(configs.swap.askDefault)
   const poolAdress = state?.poolAddress
 
   // Select default
   useEffect(() => {
-    if (
-      account.isAddress(askData.accountAddress) ||
-      account.isAddress(poolAdress)
-    )
+    if (account.isAddress(accountAddress) || account.isAddress(poolAdress))
       return
     dispatch(updateAskData(selectionDefault))
-  }, [askData.accountAddress, dispatch, poolAdress, selectionDefault])
+  }, [accountAddress, dispatch, poolAdress, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(
-    () => ({
-      mintInfo: askData.mintInfo,
-      poolAddresses: askData.poolAddresses,
-    }),
-    [askData],
+    () => ({ mintInfo, poolAddresses }),
+    [mintInfo, poolAddresses],
   )
 
   // Handle amount
-  const onAmount = (val: string) => {
-    return dispatch(updateAskData({ amount: val, prioritized: true }))
-  }
+  const onAmount = (val: string) =>
+    dispatch(updateAskData({ amount: val, prioritized: true }))
 
   // Update ask data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
     const { splt } = window.sentre
     const { address: mintAddress } = selectionInfo.mintInfo || {}
     if (!account.isAddress(mintAddress))
-      return dispatch(updateAskData({ ...selectionInfo }))
+      return dispatch(
+        updateAskData({ amount: '', prioritized: true, ...selectionInfo }),
+      )
     const accountAddress = await splt.deriveAssociatedAddress(
       wallet.address,
       mintAddress,
     )
-    dispatch(updateAskData({ accountAddress, ...selectionInfo }))
+    dispatch(
+      updateAskData({
+        amount: '',
+        prioritized: true,
+        accountAddress,
+        ...selectionInfo,
+      }),
+    )
   }
 
   return (
@@ -71,8 +76,8 @@ const Ask = () => {
       <Col span={24}>
         <NumericInput
           placeholder="0"
-          value={askData.amount}
-          onChange={onAmount}
+          value={amount}
+          onValue={onAmount}
           size="large"
           prefix={
             <Selection value={selectionInfo} onChange={onSelectionInfo} />
@@ -80,11 +85,16 @@ const Ask = () => {
         />
       </Col>
       <Col flex="auto" />
-      <Col className="caption">
-        <Typography.Text type="secondary">
-          Available: {numeric(balance || 0).format('0,0.[00]')}{' '}
-          {selectionInfo.mintInfo?.symbol || 'TOKEN'}
-        </Typography.Text>
+      <Col>
+        <Space className="caption">
+          <Typography.Text type="secondary">Available:</Typography.Text>
+          <Typography.Text type="secondary">
+            {numeric(maxBalance).format('0,0.[00]')}
+          </Typography.Text>
+          <Typography.Text type="secondary">
+            <MintSymbol mintAddress={selectionInfo.mintInfo?.address || ''} />
+          </Typography.Text>
+        </Space>
       </Col>
     </Row>
   )

@@ -1,53 +1,32 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Row, Col, Typography, Space, Button, Popover, Modal } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 import PreviewSwap from 'app/components/preview'
 import ConfirmSwap from './confirmSwap'
-import SwapButton from 'app/components/swapButton'
-import SwapAction from 'app/components/swap/swapAction'
+import SwapAction from 'app/components/swapAction'
+import SwapInput from 'app/components/swapForm/swapInput'
 
 import { AppState } from 'app/model'
-import { useAccount } from 'senhub/providers'
-import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
-import { useSlippageRate } from 'app/components/hooks/useSlippageRate'
+import usePriceImpact from 'app/hooks/usePriceImpact'
 import { numeric } from 'shared/util'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
-  const { route } = useSelector((state: AppState) => state.route)
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
-  const { advanced } = useSelector((state: AppState) => state.settings)
-  const { accounts } = useAccount()
-  const slippageRate = useSlippageRate()
+  const {
+    route: { best },
+    bid: { amount: bidAmount },
+    ask: { amount: askAmount },
+  } = useSelector((state: AppState) => state)
+  const priceImpact = usePriceImpact()
 
-  const wrapAmount = useMemo(() => {
-    const bidMint = bidData.mintInfo
-    const bidAccount = accounts[bidData.accountAddress]
-    const bidBalance = bidAccount?.amount || BigInt(0)
-
-    if (!bidMint || !Number(bidData.amount)) return BigInt(0)
-    if (bidMint.address !== DEFAULT_WSOL) return BigInt(0)
-
-    const bidAmount = utils.decimalize(bidData.amount, bidMint.decimals)
-    if (bidAmount <= bidBalance) return BigInt(0)
-    return bidAmount - bidBalance
-  }, [accounts, bidData.accountAddress, bidData.amount, bidData.mintInfo])
-
-  const tooHightImpact = !advanced && slippageRate * 100 > 12.5
-  const disabled =
-    !route?.hops.length ||
-    !parseFloat(bidData.amount) ||
-    parseFloat(bidData.amount) < 0 ||
-    !parseFloat(askData?.amount) ||
-    parseFloat(askData?.amount) < 0
+  const disabled = !best.length || !Number(bidAmount) || !Number(askAmount)
 
   return (
     <Row gutter={[12, 12]}>
       <Col span={24}>
-        <SwapAction spacing={12} />
+        <SwapInput spacing={12} />
       </Col>
       <Col span={24}>
         <Row align="bottom">
@@ -78,7 +57,7 @@ const Widget = () => {
                     <IonIcon name="arrow-down-outline" />
                   </Typography.Text>
                   <Typography.Text style={{ color: '#D72311' }}>
-                    {numeric(Number(slippageRate)).format('0.[0000]%')}
+                    {numeric(Number(priceImpact)).format('0.[0000]%')}
                   </Typography.Text>
                 </Space>
               </Space>
@@ -100,15 +79,7 @@ const Widget = () => {
       <Modal
         title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
         onCancel={() => setVisible(false)}
-        footer={
-          <SwapButton
-            hops={route?.hops || []}
-            wrapAmount={wrapAmount}
-            onCallback={() => setVisible(false)}
-            hightImpact={tooHightImpact}
-            disabled={disabled || tooHightImpact}
-          />
-        }
+        footer={<SwapAction onCallback={() => setVisible(false)} />}
         visible={visible}
       >
         <ConfirmSwap />

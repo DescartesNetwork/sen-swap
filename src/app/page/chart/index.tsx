@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 
-import { Card, Col, Radio, Row, Space, Typography } from 'antd'
+import { Card, Col, Radio, Row, Typography } from 'antd'
+import Cross from './cross'
+
 import { AppState } from 'app/model'
 import SenChart from './chart'
-import GroupAvatar from './GroupAvatar'
 import ChartEmpty from './chartEmpty'
 import { ChartParamsCGK, fetchMarketChart } from 'app/helper/cgk'
 import { numeric } from 'shared/util'
+import { useMint } from 'senhub/providers'
 
 type ChartData = { label: string; val: number }
 enum Interval {
@@ -45,13 +47,14 @@ const CHART_CONFIGS = {
   transparent: 'transparent',
 }
 
-const DEFAULT_TOKEN = 'UNKN'
-
 const SwapChart = () => {
   const [interval, setInterval] = useState(Interval.week)
   const [chartData, setChartData] = useState<{ label: string; val: number }[]>(
     [],
   )
+  const bidData = useSelector((state: AppState) => state.bid)
+  const askData = useSelector((state: AppState) => state.ask)
+  const { tokenProvider } = useMint()
 
   const swapChartConfigs = {
     borderColor: CHART_CONFIGS.transparent,
@@ -62,18 +65,6 @@ const SwapChart = () => {
     pointHoverRadius: CHART_CONFIGS.radius,
     backgroundColor: CHART_CONFIGS.color,
   }
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
-
-  const icons = useMemo(() => {
-    return [askData.mintInfo?.logoURI, bidData.mintInfo?.logoURI]
-  }, [askData.mintInfo?.logoURI, bidData.mintInfo?.logoURI])
-  const symbols = useMemo(() => {
-    return [
-      askData.mintInfo?.symbol || DEFAULT_TOKEN,
-      bidData.mintInfo?.symbol || DEFAULT_TOKEN,
-    ]
-  }, [askData.mintInfo?.symbol, bidData.mintInfo?.symbol])
 
   const parseChartDay = useCallback(
     (marketData: { time: number; val: number }[]) => {
@@ -129,8 +120,14 @@ const SwapChart = () => {
 
   const fetchChartData = useCallback(async () => {
     // fetch data market from coingecko
-    const askTicket = askData.mintInfo?.extensions?.coingeckoId
-    const bidTicket = bidData.mintInfo?.extensions?.coingeckoId
+    const bidTokenInfo = await tokenProvider.findByAddress(
+      bidData.mintInfo?.address || '',
+    )
+    const askTokenInfo = await tokenProvider.findByAddress(
+      askData.mintInfo?.address || '',
+    )
+    const bidTicket = bidTokenInfo?.extensions?.coingeckoId
+    const askTicket = askTokenInfo?.extensions?.coingeckoId
     // return when bid & ask address is same
     const compareAddress = bidData.accountAddress === askData.accountAddress
     if (!askTicket || !bidTicket || compareAddress) return setChartData([])
@@ -156,19 +153,20 @@ const SwapChart = () => {
     return parseChartDaily(marketData)
   }, [
     askData.accountAddress,
-    askData.mintInfo?.extensions?.coingeckoId,
+    askData.mintInfo?.address,
     bidData.accountAddress,
-    bidData.mintInfo?.extensions?.coingeckoId,
+    bidData.mintInfo?.address,
     interval,
     parseChartDaily,
     parseChartDay,
+    tokenProvider,
   ])
 
   useEffect(() => {
     fetchChartData()
   }, [fetchChartData])
 
-  const price = chartData.at(-1)?.val || 0
+  const price = chartData[chartData.length - 1]?.val || 0
   const priceUI = numeric(price).format(
     price > 1 ? '0,0.[00]' : '0,0.[00000000]',
   )
@@ -179,10 +177,7 @@ const SwapChart = () => {
         <Col flex="auto">
           <Row gutter={[20, 20]}>
             <Col flex="auto">
-              <Space size={4} align="center">
-                <GroupAvatar icons={icons} size={24} />
-                <Typography.Text>{symbols.join('/')}</Typography.Text>
-              </Space>
+              <Cross />
             </Col>
             {chartData && !!chartData.length && (
               <Col>

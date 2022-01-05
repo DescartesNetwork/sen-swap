@@ -35,7 +35,7 @@ const History = () => {
     const currentTransactionDataLength = historySwap.slice(0, amountRow).length
 
     if (historySwap.length - currentTransactionDataLength <= LIMIT_IN_STORE) {
-      const lastSignature = historySwap.at(-1)?.transactionId
+      const lastSignature = historySwap[historySwap.length - 1]?.transactionId
       dispatch(
         fetchHistorySwap({
           lastSignature,

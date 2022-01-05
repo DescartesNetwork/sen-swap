@@ -81,7 +81,8 @@ export const fetchHistorySwap = createAsyncThunk<
       const actionTransfer = transLog.actionTransfers
       let lastAction
       const firstAction = actionTransfer[0]
-      if (actionTransfer.length > 1) lastAction = actionTransfer.at(-1)
+      if (actionTransfer.length > 1)
+        lastAction = actionTransfer[actionTransfer.length - 1]
 
       const programId = transLog.programId
 
