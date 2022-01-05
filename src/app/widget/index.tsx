@@ -38,7 +38,7 @@ const Widget = () => {
 
   const tooHightImpact = !advanced && priceImpact * 100 > 12.5
   const disabled =
-    !route?.hops.length ||
+    !route?.best.length ||
     !parseFloat(bidAmount) ||
     parseFloat(bidAmount) < 0 ||
     !parseFloat(askAmount) ||
@@ -102,7 +102,6 @@ const Widget = () => {
         onCancel={() => setVisible(false)}
         footer={
           <SwapButton
-            hops={route?.hops || []}
             wrapAmount={wrapAmount}
             onCallback={() => setVisible(false)}
             hightImpact={tooHightImpact}

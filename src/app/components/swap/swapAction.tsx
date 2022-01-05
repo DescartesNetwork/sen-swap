@@ -10,21 +10,21 @@ import Bid from '../bid'
 
 import {
   buildPoolGraph,
-  findAllHops,
-  findBestHopsFromAsk,
-  findBestHopsFromBid,
+  findAllRoutes,
+  findBestRouteFromAsk,
+  findBestRouteFromBid,
 } from 'app/helper/router'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
-import { RouteInfo, updateRoute } from 'app/model/route.controller'
+import { State as RouteState, updateRoute } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
 import { SenLpState } from 'app/constant/senLpState'
 
 const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const [bestRoute, setBestRoute] = useState<RouteInfo>({
-    hops: [],
+  const [bestRoute, setBestRoute] = useState<RouteState>({
+    best: [],
     amounts: [],
     amount: BigInt(0),
   })
@@ -66,7 +66,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
 
     // Initialize an instance for the best route
     // The best route return a route that user can receive maximum ask amount when swap
-    let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
+    let bestRoute: RouteState = { best: [], amounts: [], amount: BigInt(0) }
     // Return empty default
     if (
       (!Number(bidAmount) && !Number(askAmount)) ||
@@ -78,22 +78,23 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
       return setBestRoute(bestRoute)
 
     // All possible routes
-    let allHops = findAllHops(
+    let allRoutes = findAllRoutes(
       buildPoolGraph(pools),
       bidMintAddress,
       askMintAddress,
     )
     // No available route
-    if (!allHops.length) return setBestRoute(bestRoute)
+    if (!allRoutes.length) return setBestRoute(bestRoute)
     // When user select original route from senlp
     if (originalRoute)
-      allHops = allHops.filter(
-        (hops) => hops.length === 1 && hops[0].poolData.address === poolAddress,
+      allRoutes = allRoutes.filter(
+        (route) =>
+          route.length === 1 && route[0].poolData.address === poolAddress,
       )
 
     if (askPriority < bidPriority)
-      bestRoute = findBestHopsFromBid(allHops, bidData)
-    else bestRoute = findBestHopsFromAsk(allHops, askData)
+      bestRoute = findBestRouteFromBid(allRoutes, bidData)
+    else bestRoute = findBestRouteFromAsk(allRoutes, askData)
     return setBestRoute(bestRoute)
   }, [askData, bidData, originalRoute, poolAddress, pools])
 

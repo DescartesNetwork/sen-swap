@@ -3,7 +3,7 @@ import { utils } from '@senswap/sen-js'
 import { useSelector } from 'react-redux'
 
 import { Button } from 'antd'
-import { HopData } from './preview/index'
+
 import { AppState } from 'app/model'
 import { useWallet } from 'senhub/providers'
 import { explorer } from 'shared/util'
@@ -11,13 +11,11 @@ import { explorer } from 'shared/util'
 const DECIMALS = BigInt(1000000000)
 
 const SwapButton = ({
-  hops,
   onCallback = () => {},
   disabled = false,
   wrapAmount = BigInt(0),
   hightImpact = false,
 }: {
-  hops: HopData[]
   onCallback?: () => void
   disabled?: boolean
   wrapAmount: bigint
@@ -25,10 +23,11 @@ const SwapButton = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const {
+    route: { best },
     bid: { amount: _bidAmount, mintInfo: bidMintInfo },
     ask: { amount: _askAmount, mintInfo: askMintInfo },
+    settings: { slippage },
   } = useSelector((state: AppState) => state)
-  const { slippage } = useSelector((state: AppState) => state.settings)
   const {
     wallet: { address: walletAddress },
   } = useWallet()
@@ -41,7 +40,7 @@ const SwapButton = ({
     if (!wallet) return
     // Synthetize routings
     const routingAddresses = await Promise.all(
-      hops.map(
+      best.map(
         async ({
           srcMintAddress,
           dstMintAddress,
@@ -73,7 +72,7 @@ const SwapButton = ({
     // Execute swap
     return await swap.route(bidAmount, limit, routingAddresses, wallet)
   }, [
-    hops,
+    best,
     bidMintInfo,
     askMintInfo,
     slippage,

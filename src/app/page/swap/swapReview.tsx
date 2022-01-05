@@ -14,7 +14,7 @@ import useAccountBalance from 'shared/hooks/useAccountBalance'
 const SwapActions = () => {
   const dispatch = useDispatch()
   const {
-    route: { hops },
+    route: { best },
     bid: {
       amount: bidAmount,
       mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
@@ -36,7 +36,7 @@ const SwapActions = () => {
   const tooHightImpact = !advanced && priceImpact * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
   const disabled =
     tooHightImpact ||
-    !hops.length ||
+    !best.length ||
     !parseFloat(bidAmount) ||
     parseFloat(bidAmount) < 0 ||
     !parseFloat(askAmount) ||
@@ -54,7 +54,6 @@ const SwapActions = () => {
         <Col span={24} /> {/* Safe sapce */}
         <Col span={24}>
           <SwapButton
-            hops={hops}
             wrapAmount={wrapAmount}
             disabled={disabled}
             hightImpact={tooHightImpact}

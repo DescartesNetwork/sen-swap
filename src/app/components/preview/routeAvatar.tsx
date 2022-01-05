@@ -11,19 +11,19 @@ import { MintAvatar } from 'shared/antd/mint'
 const RouteAvatar = () => {
   const {
     bid: { mintInfo },
-    route: { hops },
+    route: { best },
   } = useSelector((state: AppState) => state)
 
   const srcMintAddress = mintInfo?.address
   const chainMintAddresses = useMemo(() => {
-    if (!hops.length || !account.isAddress(srcMintAddress)) return []
+    if (!best.length || !account.isAddress(srcMintAddress)) return []
     let list = [srcMintAddress]
-    for (const hop of hops) {
+    for (const hop of best) {
       const { dstMintAddress } = hop
       if (account.isAddress(dstMintAddress)) list.push(dstMintAddress)
     }
     return list
-  }, [srcMintAddress, hops])
+  }, [srcMintAddress, best])
 
   return (
     <Space>
