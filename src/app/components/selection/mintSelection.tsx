@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import { account } from '@senswap/sen-js'
 import LazyLoad from '@senswap/react-lazyload'
 
@@ -25,26 +25,6 @@ const MintSelection = ({
   const { pools } = usePool()
   const { getDecimals } = useMint()
 
-  // Compute mints that appear in all pools
-  const supportedMintAddresses = useMemo(() => {
-    if (!pools) return []
-    return Object.values(pools)
-      .map(({ mint_a, mint_b }) => [mint_a, mint_b])
-      .flat()
-      .filter((item, pos, self) => self.indexOf(item) === pos)
-  }, [pools])
-  const isSupportedMint = useCallback(
-    (mintAddress) => supportedMintAddresses.includes(mintAddress),
-    [supportedMintAddresses],
-  )
-  // Compoute mint list
-  const onMints = useCallback(
-    async (value: string[] | undefined) => {
-      if (value) return setMintAddresses(value)
-      return setMintAddresses(supportedMintAddresses)
-    },
-    [supportedMintAddresses],
-  )
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
     (mintAddress: string) => {
@@ -82,7 +62,7 @@ const MintSelection = ({
         <Divider style={{ margin: 0 }} />
       </Col>
       <Col span={24}>
-        <Search onChange={onMints} isSupportedMint={isSupportedMint} />
+        <Search onChange={setMintAddresses} />
       </Col>
       <Col span={24}>
         <Row gutter={[16, 16]} style={{ height: 300, overflow: 'auto' }}>
