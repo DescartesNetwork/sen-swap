@@ -15,10 +15,9 @@ import { AppDispatch, AppState } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
 import { SelectionInfo } from '../selection/mintSelection'
 import { useMintSelection } from 'app/hooks/useMintSelection'
-import useBalance from 'app/hooks/useBalance'
 import { SenLpState } from 'app/constant/senLpState'
-import useMintDecimals from 'shared/hooks/useMintDecimals'
 import WormholeSupported from './wormholeSupported'
+import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const {
   swap: { bidDefault },
@@ -32,12 +31,11 @@ const Bid = () => {
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
-  const balance = useBalance(accountAddress)
+  const { amount: balance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(bidDefault)
   const { state } = useLocation<SenLpState>()
   const poolAdress = state?.poolAddress
-  const mintAddress = mintInfo.address
-  const decimals = useMintDecimals(mintAddress) || 0
+  const { address: mintAddress, decimals } = mintInfo
 
   // Select default
   useEffect(() => {

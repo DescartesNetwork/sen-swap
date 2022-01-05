@@ -12,7 +12,7 @@ import SwapAction from 'app/components/swap/swapAction'
 import { AppState } from 'app/model'
 import usePriceImpact from 'app/hooks/usePriceImpact'
 import { numeric } from 'shared/util'
-import useBalance from 'app/hooks/useBalance'
+import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
@@ -20,22 +20,21 @@ const Widget = () => {
     route,
     bid: {
       amount: bidAmount,
-      mintInfo: bidMintInfo,
+      mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
       accountAddress: bidAccountAddress,
     },
     ask: { amount: askAmount },
     settings: { advanced },
   } = useSelector((state: AppState) => state)
   const priceImpact = usePriceImpact()
-  const bidBalance = useBalance(bidAccountAddress)
+  const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
 
   const wrapAmount = useMemo(() => {
-    if (!bidMintInfo || !Number(bidAmount)) return BigInt(0)
-    if (bidMintInfo.address !== DEFAULT_WSOL) return BigInt(0)
-    const amount = utils.decimalize(bidAmount, bidMintInfo.decimals)
+    if (!Number(bidAmount) || bidMintAddress !== DEFAULT_WSOL) return BigInt(0)
+    const amount = utils.decimalize(bidAmount, bidMintDecimals)
     if (amount <= bidBalance) return BigInt(0)
     return amount - bidBalance
-  }, [bidAmount, bidMintInfo, bidBalance])
+  }, [bidBalance, bidAmount, bidMintAddress, bidMintDecimals])
 
   const tooHightImpact = !advanced && priceImpact * 100 > 12.5
   const disabled =

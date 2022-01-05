@@ -9,7 +9,7 @@ import SwapInfo from 'app/components/preview'
 import { AppState } from 'app/model'
 import usePriceImpact from 'app/hooks/usePriceImpact'
 import { updateBidData } from 'app/model/bid.controller'
-import useBalance from 'app/hooks/useBalance'
+import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const SwapActions = () => {
   const dispatch = useDispatch()
@@ -17,22 +17,21 @@ const SwapActions = () => {
     route: { hops },
     bid: {
       amount: bidAmount,
-      mintInfo: bidMintInfo,
+      mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
       accountAddress: bidAccountAddress,
     },
   } = useSelector((state: AppState) => state)
   const { amount: askAmount } = useSelector((state: AppState) => state.ask)
   const { advanced } = useSelector((state: AppState) => state.settings)
   const priceImpact = usePriceImpact()
-  const bidBalance = useBalance(bidAccountAddress)
+  const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
 
   const wrapAmount = useMemo(() => {
-    if (!Number(bidAmount) || bidMintInfo.address !== DEFAULT_WSOL)
-      return BigInt(0)
-    const amount = utils.decimalize(bidAmount, bidMintInfo.decimals)
+    if (!Number(bidAmount) || bidMintAddress !== DEFAULT_WSOL) return BigInt(0)
+    const amount = utils.decimalize(bidAmount, bidMintDecimals)
     if (amount <= bidBalance) return BigInt(0)
     return amount - bidBalance
-  }, [bidBalance, bidAmount, bidMintInfo])
+  }, [bidBalance, bidAmount, bidMintAddress, bidMintDecimals])
 
   const tooHightImpact = !advanced && priceImpact * 100 > 12.5 //just swap when the slippage rate is smaller than 12.5%
   const disabled =

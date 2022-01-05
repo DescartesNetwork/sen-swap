@@ -14,10 +14,9 @@ import { useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
-import useBalance from 'app/hooks/useBalance'
 import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
-import useMintDecimals from 'shared/hooks/useMintDecimals'
+import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -26,10 +25,9 @@ const Ask = () => {
     ask: { amount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
   const { state } = useLocation<SenLpState>()
-  const balance = useBalance(accountAddress)
+  const { balance: maxBalance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(configs.swap.askDefault)
   const poolAdress = state?.poolAddress
-  const decimals = useMintDecimals(mintInfo.address) || 0
 
   // Select default
   useEffect(() => {
@@ -43,11 +41,6 @@ const Ask = () => {
     () => ({ mintInfo, poolAddresses }),
     [mintInfo, poolAddresses],
   )
-
-  // Compute human-readable balance
-  const maxBalance = useMemo((): string => {
-    return utils.undecimalize(balance, decimals)
-  }, [balance, decimals])
 
   // Handle amount
   const onAmount = (val: string) =>
