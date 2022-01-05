@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { utils } from '@senswap/sen-js'
+import { useCallback, useMemo, useState } from 'react'
+import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useSelector } from 'react-redux'
 
 import { Button } from 'antd'
@@ -7,37 +7,39 @@ import { Button } from 'antd'
 import { AppState } from 'app/model'
 import { useWallet } from 'senhub/providers'
 import { explorer } from 'shared/util'
+import useAccountBalance from 'shared/hooks/useAccountBalance'
+import usePriceImpact from 'app/hooks/usePriceImpact'
 
 const DECIMALS = BigInt(1000000000)
 
-const SwapButton = ({
-  onCallback = () => {},
-  disabled = false,
-  wrapAmount = BigInt(0),
-  hightImpact = false,
-}: {
-  onCallback?: () => void
-  disabled?: boolean
-  wrapAmount: bigint
-  hightImpact?: boolean
-}) => {
+const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
   const [loading, setLoading] = useState(false)
   const {
     route: { best },
-    bid: { amount: _bidAmount, mintInfo: bidMintInfo },
+    bid: {
+      amount: _bidAmount,
+      mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
+      accountAddress: bidAccountAddress,
+    },
     ask: { amount: _askAmount, mintInfo: askMintInfo },
-    settings: { slippage },
+    settings: { slippage, advanced },
   } = useSelector((state: AppState) => state)
   const {
     wallet: { address: walletAddress },
   } = useWallet()
+  const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
+  const priceImpact = usePriceImpact()
 
-  /**
-   * Swap function
-   */
+  const wrapAmount = useMemo(() => {
+    if (!Number(_bidAmount) || bidMintAddress !== DEFAULT_WSOL) return BigInt(0)
+    const amount = utils.decimalize(_bidAmount, bidMintDecimals)
+    if (amount <= bidBalance) return BigInt(0)
+    return amount - bidBalance
+  }, [bidBalance, _bidAmount, bidMintAddress, bidMintDecimals])
+
   const handleSwap = useCallback(async () => {
     const { swap, splt, wallet } = window.sentre
-    if (!wallet) return
+    if (!wallet) throw new Error('Wallet is not connected')
     // Synthetize routings
     const routingAddresses = await Promise.all(
       best.map(
@@ -63,8 +65,7 @@ const SwapButton = ({
       ),
     )
     // Compute limit
-    const bidDecimals = bidMintInfo?.decimals || 0
-    const bidAmount = utils.decimalize(_bidAmount, bidDecimals)
+    const bidAmount = utils.decimalize(_bidAmount, bidMintDecimals)
     const askDecimals = askMintInfo?.decimals || 0
     const askAmount = utils.decimalize(_askAmount, askDecimals)
     const limit =
@@ -73,7 +74,7 @@ const SwapButton = ({
     return await swap.route(bidAmount, limit, routingAddresses, wallet)
   }, [
     best,
-    bidMintInfo,
+    bidMintDecimals,
     askMintInfo,
     slippage,
     walletAddress,
@@ -92,7 +93,7 @@ const SwapButton = ({
     try {
       setLoading(true)
       await handleWrapSol()
-      const { txId } = (await handleSwap()) || {}
+      const { txId } = await handleSwap()
       window.notify({
         type: 'success',
         description: `Swap successfully. Click to view details.`,
@@ -106,6 +107,10 @@ const SwapButton = ({
     }
   }
 
+  const tooHightImpact = !advanced && priceImpact * 100 > 12.5
+  const disabled =
+    tooHightImpact || !best.length || !Number(_bidAmount) || !Number(_askAmount)
+
   return (
     <Button
       type="primary"
@@ -114,7 +119,7 @@ const SwapButton = ({
       loading={loading}
       block
     >
-      {hightImpact ? 'Too High Price Impact' : 'Swap'}
+      {tooHightImpact ? 'Too High Price Impact' : 'Swap'}
     </Button>
   )
 }

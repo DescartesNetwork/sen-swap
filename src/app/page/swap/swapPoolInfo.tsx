@@ -46,8 +46,8 @@ const SwapPoolInfo = () => {
     bid: { mintInfo: bidMintInfo },
     ask: { mintInfo: askMintInfo },
   } = useSelector((state: AppState) => state)
-  const bidCgk = useMintCgk(bidMintInfo?.address)
-  const askCgk = useMintCgk(askMintInfo?.address)
+  const bidCgk = useMintCgk(bidMintInfo.address)
+  const askCgk = useMintCgk(askMintInfo.address)
 
   const { poolData: bidPoolData } = best[0] || {}
   const { poolData: askPoolData } = best[best.length - 1] || {}

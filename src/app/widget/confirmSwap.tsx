@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 
 import { Row, Col, Divider, Space, Typography } from 'antd'
-import PreviewSwap from 'app/components/preview'
+import Preview from 'app/components/preview'
 import IonIcon from 'shared/antd/ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
@@ -48,7 +48,7 @@ const ConfirmSwap = () => {
         <Divider style={{ margin: 0 }} />
       </Col>
       <Col>
-        <PreviewSwap />
+        <Preview />
       </Col>
     </Row>
   )

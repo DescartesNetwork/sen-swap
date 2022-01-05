@@ -21,7 +21,7 @@ import { State as RouteState, updateRoute } from 'app/model/route.controller'
 import { usePool } from 'senhub/providers'
 import { SenLpState } from 'app/constant/senLpState'
 
-const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
+const SwapInput = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
   const [bestRoute, setBestRoute] = useState<RouteState>({
     best: [],
@@ -158,4 +158,4 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   )
 }
 
-export default SwapAction
+export default SwapInput

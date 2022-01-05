@@ -1,8 +1,8 @@
 import { Col, Row } from 'antd'
 import Settings from '../settings'
-import SwapAction from './swapAction'
+import SwapInput from './swapInput'
 
-const Swap = () => {
+const SwapForm = () => {
   return (
     <Row gutter={[24, 24]}>
       <Col span={24}>
@@ -13,10 +13,10 @@ const Swap = () => {
         </Row>
       </Col>
       <Col span={24}>
-        <SwapAction />
+        <SwapInput />
       </Col>
     </Row>
   )
 }
 
-export default Swap
+export default SwapForm
