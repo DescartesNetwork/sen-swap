@@ -6,6 +6,7 @@ export type AccountBalanceReturn = {
   amount: bigint
   decimals: number
   balance: number
+  mintAddress: string
 }
 
 const buildResult = (
@@ -35,9 +36,9 @@ const buildResult = (
  * @param mintAddress Mint address
  * @returns AccountBalanceReturn
  * - AccountBalanceReturn.amount: The amount with decimals
- * - AccountBalanceReturn.decimals: The corresponding decimals
+ * - AccountBalanceReturn.decimals: The corresponding mint decimals
  * - AccountBalanceReturn.balance: The human-readable balance (undecimalized amount)
- * - AccountBalanceReturn.balance: The human-readable balance (undecimalized amount)
+ * - AccountBalanceReturn.mintAddress: The corresponding mint
  */
 export const useAccountBalance = (accountAddress: string) => {
   const {
@@ -45,7 +46,7 @@ export const useAccountBalance = (accountAddress: string) => {
   } = useWallet()
   const { accounts } = useAccount()
   const { amount, mint: mintAddress } = accounts[accountAddress] || {}
-  const decimals = useMintDecimals(mintAddress)
+  const decimals = useMintDecimals(mintAddress) || 0
 
   if (!account.isAddress(walletAddress) || !account.isAddress(accountAddress))
     return buildResult()
