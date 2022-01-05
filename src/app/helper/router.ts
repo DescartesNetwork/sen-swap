@@ -66,6 +66,78 @@ export const buildPoolGraph = (pools: Record<string, PoolData>): GraphPool => {
   return graph
 }
 
+export const findAllHops = (
+  graph: GraphPool,
+  bidMintAddress: string,
+  askMintAddress: string,
+) => {
+  const allHops: HopData[][] = []
+  const mapPool = graph.get(bidMintAddress)
+  if (!mapPool) return allHops
+  graph.delete(bidMintAddress)
+
+  mapPool.forEach((poolData, poolAddress) => {
+    const srcMintAddress = bidMintAddress
+    const dstMintAddress =
+      srcMintAddress === poolData.mint_a ? poolData.mint_b : poolData.mint_a
+
+    const hop: HopData = {
+      srcMintAddress,
+      dstMintAddress,
+      poolData: { ...poolData, address: poolAddress },
+    }
+    if (dstMintAddress === askMintAddress) return allHops.push([hop])
+    const nextHops = findAllHops(graph, dstMintAddress, askMintAddress)
+    for (const hops of nextHops) {
+      if (hops.length >= LIMIT_POOL_IN_ROUTE) continue
+      allHops.push([hop, ...hops])
+    }
+  })
+  return allHops
+}
+
+export const findBestHopsFromBid = (
+  allHops: HopData[][],
+  bidData: BidState,
+): RouteInfo => {
+  let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
+  for (let hops of allHops) {
+    let amount = utils.decimalize(bidData.amount, bidData.mintInfo.decimals)
+    const amounts = new Array<bigint>()
+    hops.forEach((hop) => {
+      amounts.push(amount)
+      amount = curve(amount, hop)
+    })
+    const maxAskAmount = bestRoute.amount
+    if (amount > maxAskAmount) bestRoute = { hops, amounts, amount }
+  }
+  return bestRoute
+}
+
+export const findBestHopsFromAsk = (
+  allHops: HopData[][],
+  askData: AskState,
+): RouteInfo => {
+  let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
+  for (let hops of allHops) {
+    if (!hops.length) continue
+    const reversedHops = [...hops].reverse()
+    let amount = utils.decimalize(askData.amount, askData.mintInfo.decimals)
+    const amounts = new Array<bigint>()
+
+    for (const reversedHop of reversedHops) {
+      amount = inverseCurve(amount, reversedHop)
+      if (amount <= BigInt(0)) break
+      amounts.unshift(amount)
+    }
+    if (amount <= BigInt(0)) continue
+    const minBidAmount = bestRoute.amount
+    if (amount < minBidAmount || !minBidAmount)
+      bestRoute = { hops, amounts, amount }
+  }
+  return bestRoute
+}
+
 // because of Solana is limiting the number of calculation unit, so the system
 // must limit the list pool of root. Currently, the system set 3 pools in route
 export const findAllRoute = (
