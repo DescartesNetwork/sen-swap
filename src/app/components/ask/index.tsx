@@ -1,7 +1,7 @@
 import { useMemo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { account, utils } from '@senswap/sen-js'
+import { account } from '@senswap/sen-js'
 
 import { Row, Col, Typography, Space } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
