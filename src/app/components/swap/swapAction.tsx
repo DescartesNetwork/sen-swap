@@ -10,10 +10,9 @@ import Bid from '../bid'
 
 import {
   buildPoolGraph,
-  findAllRoute,
-  findBestRouteFromAsk,
-  findBestRouteFromBid,
-  RouteTrace,
+  findAllHops,
+  findBestHopsFromAsk,
+  findBestHopsFromBid,
 } from 'app/helper/router'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
@@ -32,7 +31,7 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
   const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
   const { pools } = usePool()
   const { state } = useLocation<SenLpState>()
-  const poolAdress = state?.poolAddress
+  const poolAddress = state?.poolAddress
   const originalRoute = state?.originalRoute
 
   /**
@@ -65,15 +64,6 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
       priority: askPriority,
     } = askData
 
-    const bidPools = bidPoolAddresses.map((address) => ({
-      address,
-      ...pools[address],
-    }))
-    const askPools = askPoolAddresses.map((address) => ({
-      address,
-      ...pools[address],
-    }))
-
     // Initialize an instance for the best route
     // The best route return a route that user can receive maximum ask amount when swap
     let bestRoute: RouteInfo = { hops: [], amounts: [], amount: BigInt(0) }
@@ -82,35 +72,30 @@ const SwapAction = ({ spacing = 12 }: { spacing?: number }) => {
       (!Number(bidAmount) && !Number(askAmount)) ||
       !account.isAddress(bidMintAddress) ||
       !account.isAddress(askMintAddress) ||
-      !bidPools.length ||
-      !askPools.length
+      !bidPoolAddresses.length ||
+      !askPoolAddresses.length
     )
       return setBestRoute(bestRoute)
+
     // All possible routes
-    let allRoutes = new Array<RouteTrace>()
-    findAllRoute(
-      allRoutes,
+    let allHops = findAllHops(
       buildPoolGraph(pools),
       bidMintAddress,
       askMintAddress,
     )
     // No available route
-    if (!allRoutes.length) return setBestRoute(bestRoute)
-
+    if (!allHops.length) return setBestRoute(bestRoute)
     // When user select original route from senlp
     if (originalRoute)
-      allRoutes = allRoutes.filter(
-        ({ pools }) => pools.length === 1 && pools[0] === poolAdress,
+      allHops = allHops.filter(
+        (hops) => hops.length === 1 && hops[0].poolData.address === poolAddress,
       )
 
-    if (askPriority < bidPriority) {
-      bestRoute = await findBestRouteFromBid(pools, allRoutes, bidData, askData)
-    } else {
-      bestRoute = await findBestRouteFromAsk(pools, allRoutes, bidData, askData)
-    }
-
+    if (askPriority < bidPriority)
+      bestRoute = findBestHopsFromBid(allHops, bidData)
+    else bestRoute = findBestHopsFromAsk(allHops, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, originalRoute, poolAdress, pools])
+  }, [askData, bidData, originalRoute, poolAddress, pools])
 
   const setRoute = useCallback(() => {
     const bidPriority = bidData.priority
