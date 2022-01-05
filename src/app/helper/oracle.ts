@@ -22,9 +22,9 @@ export const curve = (bidAmount: bigint, hopData: HopData): bigint => {
   return askAmount
 }
 
-export const inverseCurve = (askAmount: bigint, data: HopData): bigint => {
+export const inverseCurve = (askAmount: bigint, hopData: HopData): bigint => {
   if (!askAmount) return BigInt(0)
-  const { srcMintAddress, dstMintAddress, poolData } = data
+  const { srcMintAddress, dstMintAddress, poolData } = hopData
   const { fee_ratio, tax_ratio } = poolData
   const bidReserve = extractReserve(srcMintAddress, poolData)
   const askReserve = extractReserve(dstMintAddress, poolData)
@@ -40,9 +40,9 @@ export const inverseCurve = (askAmount: bigint, data: HopData): bigint => {
   return bidAmount
 }
 
-export const slippage = (bidAmount: bigint, data: HopData): bigint => {
+export const slippage = (bidAmount: bigint, hopData: HopData): bigint => {
   if (!bidAmount) return BigInt(0)
-  const { srcMintAddress, dstMintAddress, poolData } = data
+  const { srcMintAddress, dstMintAddress, poolData } = hopData
   const { fee_ratio, tax_ratio } = poolData
   const bidReserve = extractReserve(srcMintAddress, poolData)
   const askReserve = extractReserve(dstMintAddress, poolData)
