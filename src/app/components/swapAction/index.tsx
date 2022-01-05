@@ -21,7 +21,10 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
       mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
       accountAddress: bidAccountAddress,
     },
-    ask: { amount: _askAmount, mintInfo: askMintInfo },
+    ask: {
+      amount: _askAmount,
+      mintInfo: { decimals: askMintDecimals },
+    },
     settings: { slippage, advanced },
   } = useSelector((state: AppState) => state)
   const {
@@ -66,8 +69,7 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
     )
     // Compute limit
     const bidAmount = utils.decimalize(_bidAmount, bidMintDecimals)
-    const askDecimals = askMintInfo?.decimals || 0
-    const askAmount = utils.decimalize(_askAmount, askDecimals)
+    const askAmount = utils.decimalize(_askAmount, askMintDecimals)
     const limit =
       (askAmount * (DECIMALS - utils.decimalize(slippage, 9))) / DECIMALS
     // Execute swap
@@ -75,7 +77,7 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
   }, [
     best,
     bidMintDecimals,
-    askMintInfo,
+    askMintDecimals,
     slippage,
     walletAddress,
     _bidAmount,
@@ -83,9 +85,9 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
   ])
 
   const handleWrapSol = async () => {
-    if (!wrapAmount) return
     const { swap, wallet } = window.sentre
-    if (!wallet) return
+    if (!wallet) throw new Error('Wallet is not connected')
+    if (!wrapAmount) throw new Error('Invalid amount')
     return await swap.wrapSol(wrapAmount, wallet)
   }
 
@@ -96,8 +98,8 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
       const { txId } = await handleSwap()
       window.notify({
         type: 'success',
-        description: `Swap successfully. Click to view details.`,
-        onClick: () => window.open(explorer(txId || ''), '_blank'),
+        description: 'Swap successfully. Click to view details.',
+        onClick: () => window.open(explorer(txId), '_blank'),
       })
       return onCallback()
     } catch (er: any) {
