@@ -92,13 +92,9 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
 
   const onSwap = async () => {
     try {
-      console.log(1)
       setLoading(true)
-      console.log(2)
       await handleWrapSol()
-      console.log(3)
       const { txId } = await handleSwap()
-      console.log(4)
       window.notify({
         type: 'success',
         description: 'Swap successfully. Click to view details.',
@@ -108,7 +104,7 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
     } catch (er: any) {
       return window.notify({ type: 'error', description: er.message })
     } finally {
-      setLoading(false)
+      return setLoading(false)
     }
   }
 
