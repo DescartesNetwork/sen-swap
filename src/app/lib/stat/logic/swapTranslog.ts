@@ -1,9 +1,8 @@
-//@ts-ignore
-import { base58_to_binary } from '@relocke/base58'
-//@ts-ignore
-import { struct } from 'soprox-abi'
 import { TransLog } from '../entities/trans-log'
 import { TransLogService } from './translog'
+
+const { base58_to_binary } = require('@relocke/base58')
+const { struct } = require('soprox-abi')
 
 const TRANSLOG_PROGRAM_DATA_SCHEMA = { key: 'code', type: 'u8' }
 

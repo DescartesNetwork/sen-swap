@@ -5,7 +5,7 @@ import { utils } from '@senswap/sen-js'
 
 import configs from 'os/configs'
 import { TransLog } from 'app/lib/stat/entities/trans-log'
-import SwapTransLogService from 'app/lib/stat/logic/swapTranslog'
+import SwapTransLogService from 'app/lib/stat/logic/swapTranslog'
 
 export type State = {
   historySwap: HistorySwap[]
