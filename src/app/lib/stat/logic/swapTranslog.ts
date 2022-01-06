@@ -17,7 +17,7 @@ const ACTION_TYPE: Record<number, SwapActionType> = {
   8: SwapActionType.Route,
 }
 
-export default class FarmingTransLogService extends TransLogService {
+export default class SwapTranslogService extends TransLogService {
   parseAction = (transLog: TransLog) => {
     const programDataEncode = transLog.programInfo?.data
     const dataBuffer = base58_to_binary(programDataEncode)
