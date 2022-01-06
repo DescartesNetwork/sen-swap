@@ -87,15 +87,18 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
   const handleWrapSol = async () => {
     const { swap, wallet } = window.sentre
     if (!wallet) throw new Error('Wallet is not connected')
-    if (!wrapAmount) throw new Error('Invalid amount')
-    return await swap.wrapSol(wrapAmount, wallet)
+    if (wrapAmount) return await swap.wrapSol(wrapAmount, wallet)
   }
 
   const onSwap = async () => {
     try {
+      console.log(1)
       setLoading(true)
+      console.log(2)
       await handleWrapSol()
+      console.log(3)
       const { txId } = await handleSwap()
+      console.log(4)
       window.notify({
         type: 'success',
         description: 'Swap successfully. Click to view details.',
