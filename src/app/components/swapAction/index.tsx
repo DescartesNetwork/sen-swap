@@ -125,7 +125,7 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
     !best.length ||
     !Number(_bidAmount) ||
     !Number(_askAmount) ||
-    !Number(availableBid)
+    Number(_bidAmount) > Number(availableBid)
 
   return (
     <Button
