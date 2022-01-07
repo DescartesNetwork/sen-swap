@@ -28,7 +28,7 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
     settings: { slippage, advanced },
   } = useSelector((state: AppState) => state)
   const {
-    wallet: { address: walletAddress },
+    wallet: { address: walletAddress, lamports },
   } = useWallet()
   const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
   const priceImpact = usePriceImpact()
@@ -39,6 +39,17 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
     if (amount <= bidBalance) return BigInt(0)
     return amount - bidBalance
   }, [bidBalance, _bidAmount, bidMintAddress, bidMintDecimals])
+
+  const availableBid = useMemo((): string => {
+    if (bidMintAddress !== DEFAULT_WSOL)
+      return utils.undecimalize(bidBalance, bidMintDecimals)
+    // So estimate max = 0.01 fee -> multi transaction.
+    const estimateFee = utils.decimalize(0.01, bidMintDecimals)
+    const max = lamports + bidBalance - estimateFee
+    if (max <= bidBalance)
+      return utils.undecimalize(bidBalance, bidMintDecimals)
+    return utils.undecimalize(max, bidMintDecimals)
+  }, [bidBalance, bidMintAddress, bidMintDecimals, lamports])
 
   const handleSwap = useCallback(async () => {
     const { swap, splt, wallet } = window.sentre
@@ -110,7 +121,11 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
 
   const tooHightImpact = !advanced && priceImpact * 100 > 12.5
   const disabled =
-    tooHightImpact || !best.length || !Number(_bidAmount) || !Number(_askAmount)
+    tooHightImpact ||
+    !best.length ||
+    !Number(_bidAmount) ||
+    !Number(_askAmount) ||
+    !Number(availableBid)
 
   return (
     <Button
