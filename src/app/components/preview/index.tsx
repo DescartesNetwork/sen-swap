@@ -52,7 +52,15 @@ const PreviewSwap = () => {
         <ExtraTypography
           label="Price impact"
           content={
-            <Typography.Text type="danger">
+            <Typography.Text
+              type={
+                priceImpact < 0.05 // 5%
+                  ? 'success'
+                  : priceImpact < 0.12 // 12%
+                  ? 'warning'
+                  : 'danger'
+              }
+            >
               {numeric(Number(priceImpact)).format('0.[0000]%')}
             </Typography.Text>
           }
@@ -67,7 +75,7 @@ const PreviewSwap = () => {
           content={numeric(slippage).format('0.[00]%')}
         />
       </Col>
-      <Col span={24}>
+      <Col span={24} style={{ minHeight: 24 }}>
         <ExtraTypography label="Route" content={<RouteAvatar />} />
       </Col>
     </Row>
