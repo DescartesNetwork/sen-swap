@@ -116,7 +116,6 @@ const Bid = () => {
               MAX
             </Button>
           }
-          max={maxBalance}
         />
       </Col>
       <Col flex="auto" />
