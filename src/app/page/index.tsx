@@ -14,7 +14,6 @@ import { AppDispatch } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
 import { SenLpState } from 'app/constant/senLpState'
-import 'app/static/styles/index.less'
 
 const Page = () => {
   const { pools } = usePool()

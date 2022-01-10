@@ -3,6 +3,7 @@ import { utils } from '@senswap/sen-js'
 
 import { AppState } from 'app/model'
 import { curve, slippage } from 'app/helper/oracle'
+import { PriceImpact } from 'app/constant/swap'
 
 const PRECISION = 9
 
@@ -26,6 +27,13 @@ const usePriceImpact = () => {
   })
 
   return 1 - p
+}
+
+export const usePriceColor = () => {
+  const priceImpact = usePriceImpact()
+  if (priceImpact < PriceImpact.goodSwap) return '#14E041'
+  if (priceImpact > PriceImpact.acceptableSwap) return '#D72311'
+  return '#FA8C16'
 }
 
 export default usePriceImpact

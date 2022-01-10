@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Row, Col, Typography, Space, Button, Popover, Modal } from 'antd'
+import { Row, Col, Typography, Space, Button, Popover } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 import PreviewSwap from 'app/components/preview'
-import ConfirmSwap from './confirmSwap'
-import SwapAction from 'app/components/swapAction'
 import SwapInput from 'app/components/swapForm/swapInput'
 
 import { AppState } from 'app/model'
-import usePriceImpact from 'app/hooks/usePriceImpact'
+import usePriceImpact, { usePriceColor } from 'app/hooks/usePriceImpact'
 import { numeric } from 'shared/util'
+import ConfirmSwap from 'app/components/confirmSwap'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
@@ -20,6 +19,7 @@ const Widget = () => {
     ask: { amount: askAmount },
   } = useSelector((state: AppState) => state)
   const priceImpact = usePriceImpact()
+  const priceColor = usePriceColor()
 
   const disabled = !best.length || !Number(bidAmount) || !Number(askAmount)
 
@@ -53,10 +53,10 @@ const Widget = () => {
                   </Typography.Text>
                 </Space>
                 <Space>
-                  <Typography.Text style={{ color: '#D72311' }}>
+                  <Typography.Text style={{ color: priceColor }}>
                     <IonIcon name="arrow-down-outline" />
                   </Typography.Text>
-                  <Typography.Text style={{ color: '#D72311' }}>
+                  <Typography.Text style={{ color: priceColor }}>
                     {numeric(Number(priceImpact)).format('0.[0000]%')}
                   </Typography.Text>
                 </Space>
@@ -76,14 +76,7 @@ const Widget = () => {
           </Col>
         </Row>
       </Col>
-      <Modal
-        title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
-        onCancel={() => setVisible(false)}
-        footer={<SwapAction onCallback={() => setVisible(false)} />}
-        visible={visible}
-      >
-        <ConfirmSwap />
-      </Modal>
+      <ConfirmSwap visible={visible} onCancle={setVisible} />
     </Row>
   )
 }
