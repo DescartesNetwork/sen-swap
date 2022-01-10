@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Row, Col, Space, Typography, Modal, Card, Checkbox } from 'antd'
@@ -7,7 +8,6 @@ import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import SwapAction from 'app/components/swapAction'
 
 import { AppState } from 'app/model'
-import { useState } from 'react'
 import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
 
