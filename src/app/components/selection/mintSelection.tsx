@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { account } from '@senswap/sen-js'
 import LazyLoad from '@senswap/react-lazyload'
 
@@ -8,6 +8,8 @@ import Mint from './mint'
 
 import { useMint, usePool } from 'senhub/providers'
 import { LiteMintInfo } from '../preview'
+import { AppState } from 'app/model'
+import { useSelector } from 'react-redux'
 
 export type SelectionInfo = {
   mintInfo?: LiteMintInfo
@@ -17,13 +19,26 @@ export type SelectionInfo = {
 const MintSelection = ({
   value,
   onChange,
+  selectFrom,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
+  selectFrom: string
 }) => {
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
   const { pools } = usePool()
   const { getDecimals } = useMint()
+  const {
+    bid: {
+      mintInfo: { address: bidAddress },
+    },
+  } = useSelector((state: AppState) => state)
+  const {
+    ask: {
+      mintInfo: { address: askAddress },
+    },
+  } = useSelector((state: AppState) => state)
+  const [mintSelected, setMintSelected] = useState('')
 
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
@@ -53,6 +68,11 @@ const MintSelection = ({
     [getAvailablePoolAddresses, onChange, getDecimals],
   )
 
+  useEffect(() => {
+    if (selectFrom === 'ask') return setMintSelected(bidAddress)
+    return setMintSelected(askAddress)
+  }, [askAddress, bidAddress, selectFrom])
+
   return (
     <Row gutter={[16, 16]}>
       <Col span={24}>
@@ -70,6 +90,7 @@ const MintSelection = ({
             <Row gutter={[16, 16]}>
               {mintAddresses.map((mintAddress, i) => {
                 const { address: currentMintAddress } = value.mintInfo || {}
+                if (mintAddress === mintSelected) return null
                 return (
                   <Col span={24} key={i}>
                     <LazyLoad height={48} overflow>

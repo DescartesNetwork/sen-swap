@@ -104,7 +104,11 @@ const Bid = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
+            <Selection
+              value={selectionInfo}
+              onChange={onSelectionInfo}
+              selectFrom="bid"
+            />
           }
           suffix={
             <Button

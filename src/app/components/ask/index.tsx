@@ -80,7 +80,11 @@ const Ask = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
+            <Selection
+              value={selectionInfo}
+              onChange={onSelectionInfo}
+              selectFrom="ask"
+            />
           }
         />
       </Col>
