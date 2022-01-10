@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 import LazyLoad from '@senswap/react-lazyload'
 
@@ -9,7 +10,6 @@ import Mint from './mint'
 import { useMint, usePool } from 'senhub/providers'
 import { LiteMintInfo } from '../preview'
 import { AppState } from 'app/model'
-import { useSelector } from 'react-redux'
 
 export type SelectionInfo = {
   mintInfo?: LiteMintInfo
