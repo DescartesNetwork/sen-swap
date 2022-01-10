@@ -12,11 +12,9 @@ import { SenLpState } from 'app/constant/senLpState'
 const Selection = ({
   value,
   onChange,
-  selectFrom,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
-  selectFrom: string
 }) => {
   const [visible, setVisible] = useState(false)
   const history = useHistory()
@@ -55,11 +53,7 @@ const Selection = ({
       >
         <Row gutter={[16, 16]}>
           <Col span={24}>
-            <MintSelection
-              value={value}
-              onChange={onSelection}
-              selectFrom={selectFrom}
-            />
+            <MintSelection value={value} onChange={onSelection} />
           </Col>
         </Row>
       </Modal>

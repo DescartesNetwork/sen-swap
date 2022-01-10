@@ -19,11 +19,9 @@ export type SelectionInfo = {
 const MintSelection = ({
   value,
   onChange,
-  selectFrom,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
-  selectFrom: string
 }) => {
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
   const { pools } = usePool()
@@ -32,12 +30,11 @@ const MintSelection = ({
     bid: {
       mintInfo: { address: bidAddress },
     },
-  } = useSelector((state: AppState) => state)
-  const {
     ask: {
       mintInfo: { address: askAddress },
     },
   } = useSelector((state: AppState) => state)
+  const { address: currentMintAddress } = value.mintInfo || {}
   const [mintSelected, setMintSelected] = useState('')
 
   // Compute available pools
@@ -69,9 +66,9 @@ const MintSelection = ({
   )
 
   useEffect(() => {
-    if (selectFrom === 'ask') return setMintSelected(bidAddress)
+    if (currentMintAddress === askAddress) return setMintSelected(bidAddress)
     return setMintSelected(askAddress)
-  }, [askAddress, bidAddress, selectFrom])
+  }, [askAddress, bidAddress, currentMintAddress])
 
   return (
     <Row gutter={[16, 16]}>
@@ -89,7 +86,6 @@ const MintSelection = ({
           <Col span={24}>
             <Row gutter={[16, 16]}>
               {mintAddresses.map((mintAddress, i) => {
-                const { address: currentMintAddress } = value.mintInfo || {}
                 if (mintAddress === mintSelected) return null
                 return (
                   <Col span={24} key={i}>
