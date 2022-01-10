@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { Button, Card, Col, Row, Typography } from 'antd'
@@ -8,7 +9,6 @@ import { updateBidData } from 'app/model/bid.controller'
 import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
 import ConfirmSwap from 'app/components/confirmSwap'
-import { useState } from 'react'
 
 const SwapActions = () => {
   const [visivle, setVisivle] = useState(false)
