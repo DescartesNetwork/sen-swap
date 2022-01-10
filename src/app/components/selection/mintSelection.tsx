@@ -1,5 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useState, useCallback } from 'react'
 import { account } from '@senswap/sen-js'
 import LazyLoad from '@senswap/react-lazyload'
 
@@ -9,7 +8,6 @@ import Mint from './mint'
 
 import { useMint, usePool } from 'senhub/providers'
 import { LiteMintInfo } from '../preview'
-import { AppState } from 'app/model'
 
 export type SelectionInfo = {
   mintInfo?: LiteMintInfo
@@ -19,23 +17,16 @@ export type SelectionInfo = {
 const MintSelection = ({
   value,
   onChange,
+  hiddenTokens,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
+  hiddenTokens?: string[]
 }) => {
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
+  const { address: currentMintAddress } = value.mintInfo || {}
   const { pools } = usePool()
   const { getDecimals } = useMint()
-  const {
-    bid: {
-      mintInfo: { address: bidAddress },
-    },
-    ask: {
-      mintInfo: { address: askAddress },
-    },
-  } = useSelector((state: AppState) => state)
-  const { address: currentMintAddress } = value.mintInfo || {}
-  const [mintSelected, setMintSelected] = useState('')
 
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
@@ -65,11 +56,6 @@ const MintSelection = ({
     [getAvailablePoolAddresses, onChange, getDecimals],
   )
 
-  useEffect(() => {
-    if (currentMintAddress === askAddress) return setMintSelected(bidAddress)
-    return setMintSelected(askAddress)
-  }, [askAddress, bidAddress, currentMintAddress])
-
   return (
     <Row gutter={[16, 16]}>
       <Col span={24}>
@@ -86,7 +72,7 @@ const MintSelection = ({
           <Col span={24}>
             <Row gutter={[16, 16]}>
               {mintAddresses.map((mintAddress, i) => {
-                if (mintAddress === mintSelected) return null
+                if (hiddenTokens?.includes(mintAddress)) return null
                 return (
                   <Col span={24} key={i}>
                     <LazyLoad height={48} overflow>
