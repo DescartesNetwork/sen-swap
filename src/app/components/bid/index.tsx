@@ -7,6 +7,7 @@ import { Row, Col, Typography, Button, Space } from 'antd'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
+import WormholeSupported from './wormholeSupported'
 
 import configs from 'app/configs'
 import { useWallet } from 'senhub/providers'
@@ -16,7 +17,6 @@ import { updateBidData } from 'app/model/bid.controller'
 import { SelectionInfo } from '../selection/mintSelection'
 import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
-import WormholeSupported from './wormholeSupported'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const {

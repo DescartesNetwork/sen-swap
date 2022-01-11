@@ -65,25 +65,21 @@ const MintSelection = ({
         <Search onChange={setMintAddresses} />
       </Col>
       <Col span={24}>
-        <Row gutter={[16, 16]} style={{ height: 300, overflow: 'auto' }}>
-          <Col span={24}>
-            <Row gutter={[16, 16]}>
-              {mintAddresses.map((mintAddress, i) => {
-                const { address: currentMintAddress } = value.mintInfo || {}
-                return (
-                  <Col span={24} key={i}>
-                    <LazyLoad height={48} overflow>
-                      <Mint
-                        mintAddress={mintAddress}
-                        onClick={() => onMint(mintAddress)}
-                        active={currentMintAddress === mintAddress}
-                      />
-                    </LazyLoad>
-                  </Col>
-                )
-              })}
-            </Row>
-          </Col>
+        <Row gutter={[16, 16]} style={{ height: 300 }} className="scrollbar">
+          {mintAddresses.map((mintAddress, i) => {
+            const { address: currentMintAddress } = value.mintInfo || {}
+            return (
+              <Col span={24} key={i}>
+                <LazyLoad height={48} overflow>
+                  <Mint
+                    mintAddress={mintAddress}
+                    onClick={() => onMint(mintAddress)}
+                    active={currentMintAddress === mintAddress}
+                  />
+                </LazyLoad>
+              </Col>
+            )
+          })}
         </Row>
       </Col>
     </Row>
