@@ -68,7 +68,7 @@ const MintSelection = ({
         <Search onChange={setMintAddresses} />
       </Col>
       <Col span={24}>
-        <Row gutter={[16, 16]} style={{ height: 300, overflow: 'auto' }}>
+        <Row gutter={[16, 16]} style={{ height: 300 }} className="scrollbar">
           <Col span={24}>
             <Row gutter={[16, 16]}>
               {mintAddresses.map((mintAddress, i) => {
