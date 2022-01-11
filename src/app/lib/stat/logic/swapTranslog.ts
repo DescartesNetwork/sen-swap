@@ -8,12 +8,10 @@ const { struct } = require('soprox-abi')
 const TRANSLOG_PROGRAM_DATA_SCHEMA = { key: 'code', type: 'u8' }
 
 export enum SwapActionType {
-  Swap = 'SWAP',
   Route = 'SWAP',
 }
 
 const ACTION_TYPE: Record<number, SwapActionType> = {
-  3: SwapActionType.Swap,
   8: SwapActionType.Route,
 }
 

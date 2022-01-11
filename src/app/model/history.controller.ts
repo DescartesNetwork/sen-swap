@@ -5,7 +5,7 @@ import { utils } from '@senswap/sen-js'
 
 import configs from 'os/configs'
 import { TransLog } from 'app/lib/stat/entities/trans-log'
-import SwapTransLogService from 'app/lib/stat/logic/swapTranslog'
+import SwapTranslogService from 'app/lib/stat/logic/swapTranslog'
 
 export type State = {
   historySwap: HistorySwap[]
@@ -65,7 +65,7 @@ export const fetchHistorySwap = createAsyncThunk<
       lastSignature,
     }
 
-    const transLogService = new SwapTransLogService()
+    const transLogService = new SwapTranslogService()
     const transLogsData = await transLogService.collect(
       myWalletAddress,
       options,
@@ -80,6 +80,7 @@ export const fetchHistorySwap = createAsyncThunk<
       const historyItem = {} as HistorySwap
       const actionTransfer = transLog.actionTransfers
       let lastAction
+
       const firstAction = actionTransfer[0]
       if (actionTransfer.length > 1)
         lastAction = actionTransfer[actionTransfer.length - 1]
