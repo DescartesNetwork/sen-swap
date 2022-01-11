@@ -9,10 +9,17 @@ import { useWallet } from 'senhub/providers'
 import { explorer } from 'shared/util'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import usePriceImpact from 'app/hooks/usePriceImpact'
+import { PriceImpact } from 'app/constant/swap'
 
 const DECIMALS = BigInt(1000000000)
 
-const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
+const SwapButton = ({
+  onCallback = () => {},
+  forceSwap = false,
+}: {
+  onCallback?: () => void
+  forceSwap?: boolean
+}) => {
   const [loading, setLoading] = useState(false)
   const {
     route: { best },
@@ -98,8 +105,7 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
   const handleWrapSol = async () => {
     const { swap, wallet } = window.sentre
     if (!wallet) throw new Error('Wallet is not connected')
-    if (!wrapAmount) throw new Error('Invalid amount')
-    return await swap.wrapSol(wrapAmount, wallet)
+    if (wrapAmount) return await swap.wrapSol(wrapAmount, wallet)
   }
 
   const onSwap = async () => {
@@ -116,18 +122,18 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
     } catch (er: any) {
       return window.notify({ type: 'error', description: er.message })
     } finally {
-      setLoading(false)
+      return setLoading(false)
     }
   }
 
-  const tooHightImpact = !advanced && priceImpact * 100 > 12.5
+  const tooHighImpact =
+    !advanced && priceImpact > PriceImpact.acceptableSwap && !forceSwap
   const disabled =
-    tooHightImpact ||
+    tooHighImpact ||
     !best.length ||
     !Number(_bidAmount) ||
     !Number(_askAmount) ||
     Number(_bidAmount) > Number(availableBid)
-
   return (
     <Button
       type="primary"
@@ -136,7 +142,11 @@ const SwapButton = ({ onCallback = () => {} }: { onCallback?: () => void }) => {
       loading={loading}
       block
     >
-      {tooHightImpact ? 'Too High Price Impact' : 'Swap'}
+      {tooHighImpact
+        ? 'Too High Price Impact'
+        : forceSwap
+        ? 'Swap Anyway'
+        : 'Swap'}
     </Button>
   )
 }

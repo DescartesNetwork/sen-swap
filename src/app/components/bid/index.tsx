@@ -7,6 +7,7 @@ import { Row, Col, Typography, Button, Space } from 'antd'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
+import WormholeSupported from './wormholeSupported'
 
 import configs from 'app/configs'
 import { useWallet } from 'senhub/providers'
@@ -16,7 +17,6 @@ import { updateBidData } from 'app/model/bid.controller'
 import { SelectionInfo } from '../selection/mintSelection'
 import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
-import WormholeSupported from './wormholeSupported'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 const {
@@ -30,6 +30,9 @@ const Bid = () => {
   } = useWallet()
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
+    ask: {
+      mintInfo: { address: askAddress },
+    },
   } = useSelector((state: AppState) => state)
   const { amount: balance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(bidDefault)
@@ -104,7 +107,11 @@ const Bid = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
+            <Selection
+              hiddenTokens={[askAddress]}
+              value={selectionInfo}
+              onChange={onSelectionInfo}
+            />
           }
           suffix={
             <Button

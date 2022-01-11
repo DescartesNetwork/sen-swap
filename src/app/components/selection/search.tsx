@@ -3,30 +3,71 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Card, Input, Button } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 
-import { useMint } from 'senhub/providers'
+import { useMint, usePool } from 'senhub/providers'
 
 const KEYSIZE = 3
 
 const Search = ({
   onChange,
-  isSupportedMint,
   disabled = false,
 }: {
-  onChange: (data: string[] | undefined) => void
-  isSupportedMint: (mintAddress: string) => boolean
+  onChange: (data: string[]) => void
   disabled?: boolean
 }) => {
+  const [mintAddresses, setMintAddresses] = useState<string[]>([])
   const [keyword, setKeyword] = useState('')
   const { tokenProvider } = useMint()
+  const { pools } = usePool()
+
+  const sortMintAddresses = useCallback(async () => {
+    // Get all mints in pools
+    const rawMintAddresses = Object.values(pools)
+      .map(({ mint_a, mint_b }) => [mint_a, mint_b])
+      .flat()
+      .filter((item, pos, self) => self.indexOf(item) === pos)
+    // Get all lp mints
+    const lpMintAddresses = Object.values(pools).map(({ mint_lpt }) => mint_lpt)
+    // Check mint addresses (token info, mint lp)
+    const checkedMintAddresses = await Promise.all(
+      rawMintAddresses.map(async (mintAddress) => {
+        const tokenInfo = await tokenProvider.findByAddress(mintAddress)
+        const data = {
+          address: mintAddress,
+          checked: Boolean(tokenInfo) || lpMintAddresses.includes(mintAddress),
+        }
+        return data
+      }),
+    )
+    // Sort mint addresses by checking flags
+    const sortedMintAddresses = checkedMintAddresses
+      .sort((first, second) => {
+        if (!first.checked && second.checked) return 1
+        if (first.checked && !second.checked) return -1
+        return 0
+      })
+      .map(({ address }) => address)
+    // Return
+    return setMintAddresses(sortedMintAddresses)
+  }, [tokenProvider, pools])
+
+  useEffect(() => {
+    sortMintAddresses()
+  }, [sortMintAddresses])
 
   const search = useCallback(async () => {
-    if (!keyword || keyword.length < KEYSIZE) return onChange(undefined)
+    if (!keyword || keyword.length < KEYSIZE) return onChange(mintAddresses)
     const raw = await tokenProvider.find(keyword)
     const data = raw
-      .filter(({ address }) => isSupportedMint(address))
+      .filter(({ address }) => mintAddresses.includes(address))
       .map(({ address }) => address)
+    // Search by address
+    mintAddresses.forEach((mintAddress) => {
+      if (data.includes(mintAddress)) return
+      if (!mintAddress.toLowerCase().includes(keyword.toLowerCase())) return
+      return data.push(mintAddress)
+    })
     return onChange(data)
-  }, [keyword, tokenProvider, onChange, isSupportedMint])
+  }, [keyword, onChange, tokenProvider, mintAddresses])
 
   useEffect(() => {
     search()

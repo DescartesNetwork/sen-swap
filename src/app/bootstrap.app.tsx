@@ -15,6 +15,7 @@ import configs from 'app/configs'
 
 import 'app/static/styles/dark.less'
 import 'app/static/styles/light.less'
+import 'app/static/styles/index.less'
 
 const {
   manifest: { appId },

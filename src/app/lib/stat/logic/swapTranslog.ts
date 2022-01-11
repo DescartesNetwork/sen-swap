@@ -1,9 +1,9 @@
-//@ts-ignore
-import { base58_to_binary } from '@relocke/base58'
-//@ts-ignore
-import { struct } from 'soprox-abi'
+import base58 from 'bs58'
+
 import { TransLog } from '../entities/trans-log'
 import { TransLogService } from './translog'
+
+const { struct } = require('soprox-abi')
 
 const TRANSLOG_PROGRAM_DATA_SCHEMA = { key: 'code', type: 'u8' }
 
@@ -18,7 +18,9 @@ const ACTION_TYPE: Record<number, SwapActionType> = {
 export default class SwapTranslogService extends TransLogService {
   parseAction = (transLog: TransLog) => {
     const programDataEncode = transLog.programInfo?.data
-    const dataBuffer = base58_to_binary(programDataEncode)
+    if (!programDataEncode) return ''
+
+    const dataBuffer = base58.decode(programDataEncode)
     const actionLayout = new struct([TRANSLOG_PROGRAM_DATA_SCHEMA])
     const programDataDecode: { code: number } = actionLayout.fromBuffer(
       Buffer.from(dataBuffer),
