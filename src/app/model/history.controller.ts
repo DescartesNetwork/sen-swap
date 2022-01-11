@@ -5,7 +5,7 @@ import { utils } from '@senswap/sen-js'
 
 import configs from 'os/configs'
 import { TransLog } from 'app/lib/stat/entities/trans-log'
-import SwapTransLogService from 'app/lib/stat/logic/swapTranslog'
+import SwapTranslogService from 'app/lib/stat/logic/swapTranslog'
 
 export type State = {
   historySwap: HistorySwap[]
@@ -35,7 +35,7 @@ const initialState: State = {
 }
 
 const filterFunction = (transLog: TransLog) => {
-  if (transLog.actionTransfers.length <= 1) return false
+  if (!transLog.actionTransfers.length) return false
   return transLog.actionType === 'SWAP'
 }
 
@@ -65,12 +65,13 @@ export const fetchHistorySwap = createAsyncThunk<
       lastSignature,
     }
 
-    const transLogService = new SwapTransLogService()
+    const transLogService = new SwapTranslogService()
     const transLogsData = await transLogService.collect(
       myWalletAddress,
       options,
       filterFunction,
     )
+    console.log(transLogsData)
     let history: HistorySwap[] = []
 
     if (isLoadMore) history = [...historySwap]
@@ -80,8 +81,10 @@ export const fetchHistorySwap = createAsyncThunk<
       const historyItem = {} as HistorySwap
       const actionTransfer = transLog.actionTransfers
       let lastAction
+
       const firstAction = actionTransfer[0]
-      lastAction = actionTransfer[actionTransfer.length - 1]
+      if (actionTransfer.length > 1)
+        lastAction = actionTransfer[actionTransfer.length - 1]
 
       const programId = transLog.programId
 
@@ -98,7 +101,7 @@ export const fetchHistorySwap = createAsyncThunk<
             ),
           )
         : undefined
-      historyItem.amountTo = lastAction.destination
+      historyItem.amountTo = lastAction?.destination
         ? Number(
             utils.undecimalize(
               BigInt(lastAction.amount),
@@ -108,10 +111,13 @@ export const fetchHistorySwap = createAsyncThunk<
         : undefined
 
       historyItem.from = firstAction.destination?.mint
-      historyItem.to = lastAction.destination?.mint
+      historyItem.to = lastAction?.destination?.mint
       historyItem.transactionId = transLog.signature
       historyItem.key = transLog.signature
-      historyItem.status = 'success'
+      historyItem.status =
+        !firstAction.destination || !lastAction?.destination
+          ? 'failed'
+          : 'success'
       history.push(historyItem)
     }
     return { historySwap: history }
