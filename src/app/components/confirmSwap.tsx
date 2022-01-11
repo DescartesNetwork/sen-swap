@@ -72,9 +72,8 @@ const ConfirmSwap = ({
         {tooHighImpact && (
           <Col span={24}>
             <Checkbox checked={checked} onChange={() => setChecked(!checked)}>
-              The price impact is{' '}
-              <span style={{ color: '#F9575E' }}>too high</span>. Tick ​​the
-              checkbox means you accept this transaction.
+              The price impact is currently high. Tick the checkbox to accept
+              the swap.
             </Checkbox>
           </Col>
         )}

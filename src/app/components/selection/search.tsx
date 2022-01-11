@@ -20,12 +20,12 @@ const Search = ({
   const { pools } = usePool()
 
   const sortMintAddresses = useCallback(async () => {
-    // Get all mint in pool
+    // Get all mints in pools
     const rawMintAddresses = Object.values(pools)
       .map(({ mint_a, mint_b }) => [mint_a, mint_b])
       .flat()
       .filter((item, pos, self) => self.indexOf(item) === pos)
-    // Get all lp mint
+    // Get all lp mints
     const lpMintAddresses = Object.values(pools).map(({ mint_lpt }) => mint_lpt)
     // Check mint addresses (token info, mint lp)
     const checkedMintAddresses = await Promise.all(
