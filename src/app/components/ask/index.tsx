@@ -23,6 +23,9 @@ const Ask = () => {
   const { wallet } = useWallet()
   const {
     ask: { amount, accountAddress, mintInfo, poolAddresses },
+    bid: {
+      mintInfo: { address: bidAddress },
+    },
   } = useSelector((state: AppState) => state)
   const { state } = useLocation<SenLpState>()
   const { balance: maxBalance } = useAccountBalance(accountAddress)
@@ -80,7 +83,11 @@ const Ask = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
+            <Selection
+              hiddenTokens={[bidAddress]}
+              value={selectionInfo}
+              onChange={onSelectionInfo}
+            />
           }
         />
       </Col>

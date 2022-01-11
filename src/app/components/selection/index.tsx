@@ -12,9 +12,11 @@ import { SenLpState } from 'app/constant/senLpState'
 const Selection = ({
   value,
   onChange,
+  hiddenTokens,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
+  hiddenTokens?: string[]
 }) => {
   const [visible, setVisible] = useState(false)
   const history = useHistory()
@@ -33,6 +35,7 @@ const Selection = ({
   }
 
   const mintAddress = value?.mintInfo?.address || ''
+
   return (
     <Fragment>
       <Space style={{ cursor: 'pointer' }} onClick={() => setVisible(true)}>
@@ -52,7 +55,11 @@ const Selection = ({
       >
         <Row gutter={[16, 16]}>
           <Col span={24}>
-            <MintSelection value={value} onChange={onSelection} />
+            <MintSelection
+              hiddenTokens={hiddenTokens}
+              value={value}
+              onChange={onSelection}
+            />
           </Col>
         </Row>
       </Modal>
