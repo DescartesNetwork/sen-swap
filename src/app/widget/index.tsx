@@ -52,14 +52,9 @@ const Widget = () => {
                     Price impact
                   </Typography.Text>
                 </Space>
-                <Space>
-                  <Typography.Text style={{ color: priceColor }}>
-                    <IonIcon name="arrow-down-outline" />
-                  </Typography.Text>
-                  <Typography.Text style={{ color: priceColor }}>
-                    {numeric(Number(priceImpact)).format('0.[0000]%')}
-                  </Typography.Text>
-                </Space>
+                <Typography.Text style={{ color: priceColor }}>
+                  {numeric(Number(priceImpact)).format('0.[0000]%')}
+                </Typography.Text>
               </Space>
             </Popover>
           </Col>
