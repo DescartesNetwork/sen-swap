@@ -71,7 +71,6 @@ export const fetchHistorySwap = createAsyncThunk<
       options,
       filterFunction,
     )
-    console.log(transLogsData)
     let history: HistorySwap[] = []
 
     if (isLoadMore) history = [...historySwap]
