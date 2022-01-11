@@ -35,7 +35,7 @@ const initialState: State = {
 }
 
 const filterFunction = (transLog: TransLog) => {
-  if (!transLog.actionTransfers.length) return false
+  if (transLog.actionTransfers.length <= 1) return false
   return transLog.actionType === 'SWAP'
 }
 
@@ -81,8 +81,7 @@ export const fetchHistorySwap = createAsyncThunk<
       const actionTransfer = transLog.actionTransfers
       let lastAction
       const firstAction = actionTransfer[0]
-      if (actionTransfer.length > 1)
-        lastAction = actionTransfer[actionTransfer.length - 1]
+      lastAction = actionTransfer[actionTransfer.length - 1]
 
       const programId = transLog.programId
 
@@ -99,7 +98,7 @@ export const fetchHistorySwap = createAsyncThunk<
             ),
           )
         : undefined
-      historyItem.amountTo = lastAction?.destination
+      historyItem.amountTo = lastAction.destination
         ? Number(
             utils.undecimalize(
               BigInt(lastAction.amount),
@@ -109,13 +108,10 @@ export const fetchHistorySwap = createAsyncThunk<
         : undefined
 
       historyItem.from = firstAction.destination?.mint
-      historyItem.to = lastAction?.destination?.mint
+      historyItem.to = lastAction.destination?.mint
       historyItem.transactionId = transLog.signature
       historyItem.key = transLog.signature
-      historyItem.status =
-        !firstAction.destination || !lastAction?.destination
-          ? 'failed'
-          : 'success'
+      historyItem.status = 'success'
       history.push(historyItem)
     }
     return { historySwap: history }
