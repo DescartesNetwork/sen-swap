@@ -17,11 +17,14 @@ export type SelectionInfo = {
 const MintSelection = ({
   value,
   onChange,
+  hiddenTokens,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
+  hiddenTokens?: string[]
 }) => {
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
+  const { address: currentMintAddress } = value.mintInfo || {}
   const { pools } = usePool()
   const { getDecimals } = useMint()
 
@@ -65,11 +68,11 @@ const MintSelection = ({
         <Search onChange={setMintAddresses} />
       </Col>
       <Col span={24}>
-        <Row gutter={[16, 16]} style={{ height: 300, overflow: 'auto' }}>
+        <Row gutter={[16, 16]} style={{ height: 300 }} className="scrollbar">
           <Col span={24}>
             <Row gutter={[16, 16]}>
               {mintAddresses.map((mintAddress, i) => {
-                const { address: currentMintAddress } = value.mintInfo || {}
+                if (hiddenTokens?.includes(mintAddress)) return null
                 return (
                   <Col span={24} key={i}>
                     <LazyLoad height={48} overflow>
