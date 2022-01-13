@@ -7,7 +7,6 @@ import { Popover, Tag } from 'antd'
 import { AppState } from 'app/model'
 import { checkAttestedWormhole } from 'app/helper/wormhole'
 import { randomColor } from 'shared/util'
-import './index.less'
 
 const WORMHOLE_COLOR = '#F9575E'
 
@@ -43,7 +42,11 @@ const WormholeSupported = () => {
   if (!wormholeSupported) return null
   return (
     <Popover
-      overlayClassName="wormhole-popover"
+      overlayInnerStyle={{
+        background: 'transparent',
+        width: 384 + 32,
+        boxShadow: 'none',
+      }}
       trigger="click"
       content={<FrameWormhole />}
     >
