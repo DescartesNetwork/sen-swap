@@ -13,7 +13,7 @@ import history from './history.controller'
 const model = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(bigintSerializationMiddleware),
-  devTools: devTools('myapp'),
+  devTools: devTools(process.env.REACT_APP_ID as string),
   reducer: {
     ask,
     bid,
