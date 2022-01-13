@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useSelector } from 'react-redux'
+import { useWallet } from '@senhub/providers'
 
 import { Button } from 'antd'
 
 import { AppState } from 'app/model'
-import { useWallet } from 'senhub/providers'
 import { explorer } from 'shared/util'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import usePriceImpact from 'app/hooks/usePriceImpact'

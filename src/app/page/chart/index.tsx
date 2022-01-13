@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
+import { useMint } from '@senhub/providers'
 
 import { Card, Col, Radio, Row, Typography } from 'antd'
 import Cross from './cross'
@@ -10,7 +11,6 @@ import SenChart from './chart'
 import ChartEmpty from './chartEmpty'
 import { ChartParamsCGK, fetchMarketChart } from 'app/helper/cgk'
 import { numeric } from 'shared/util'
-import { useMint } from 'senhub/providers'
 
 type ChartData = { label: string; val: number }
 enum Interval {

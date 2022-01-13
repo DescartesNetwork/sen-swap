@@ -25,6 +25,8 @@ module.exports = {
   },
   remotes: {
     senhub,
+    '@frame/sen_assets':
+      'sen_assets@https://descartesnetwork.github.io/sen-assets/index.js',
   },
   exposes: {
     // app

@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react'
 import { account } from '@senswap/sen-js'
 import LazyLoad from '@senswap/react-lazyload'
+import { useMint, usePool } from '@senhub/providers'
 
 import { Row, Col, Typography, Divider } from 'antd'
 import Search from './search'
 import Mint from './mint'
 
-import { useMint, usePool } from 'senhub/providers'
 import { LiteMintInfo } from '../preview'
 
 export type SelectionInfo = {

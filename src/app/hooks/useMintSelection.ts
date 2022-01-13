@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { account } from '@senswap/sen-js'
+import { useMint, usePool, useWallet } from '@senhub/providers'
 
-import { useMint, usePool, useWallet } from 'senhub/providers'
 import { SelectionInfo } from 'app/components/selection/mintSelection'
 
 const DEFAULT_INFO = {

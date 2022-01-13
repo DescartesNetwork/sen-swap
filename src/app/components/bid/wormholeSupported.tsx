@@ -1,28 +1,35 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 
-import { Space, Tag, Typography } from 'antd'
+import { Popover, Tag } from 'antd'
 
 import { AppState } from 'app/model'
 import { checkAttestedWormhole } from 'app/helper/wormhole'
 import { randomColor } from 'shared/util'
-import configs from 'app/configs'
+import './index.less'
 
 const WORMHOLE_COLOR = '#F9575E'
 
-const {
-  route: { assetsRoute },
-} = configs
+const FrameWormhole = () => {
+  const FrameWormhole = lazy(() =>
+    // @ts-ignore
+    import('@frame/sen_assets/bootstrap').then((module) => ({
+      default: module.FrameWormhole,
+    })),
+  )
+  return (
+    <Suspense fallback="Loading...">
+      <FrameWormhole />
+    </Suspense>
+  )
+}
 
 const WormholeSupported = () => {
   const [wormholeSupported, setWormholeSupported] = useState(false)
-  const history = useHistory()
   const {
     bid: { mintInfo },
   } = useSelector((state: AppState) => state)
-  const query = new URLSearchParams(useLocation().search)
   const { address: mintAddress } = mintInfo || {}
 
   useEffect(() => {
@@ -33,14 +40,13 @@ const WormholeSupported = () => {
     })()
   }, [mintAddress])
 
-  const wormholeBridge = () => {
-    query.set('tokenAddress', mintAddress)
-    history.push(`${assetsRoute}?` + query.toString())
-  }
-
   if (!wormholeSupported) return null
   return (
-    <Space size={4}>
+    <Popover
+      overlayClassName="wormhole-popover"
+      trigger="click"
+      content={<FrameWormhole />}
+    >
       <Tag
         style={{
           margin: 0,
@@ -49,12 +55,10 @@ const WormholeSupported = () => {
           cursor: 'pointer',
         }}
         color={randomColor(WORMHOLE_COLOR, 0.2)}
-        onClick={wormholeBridge}
       >
         Wormhole Bridge
       </Tag>
-      <Typography.Text type="secondary">Supported</Typography.Text>
-    </Space>
+    </Popover>
   )
 }
 

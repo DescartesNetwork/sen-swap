@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, utils } from '@senswap/sen-js'
+import { usePool } from '@senhub/providers'
 
 import { Button, Col, Row } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
@@ -18,7 +19,6 @@ import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
 import { State as RouteState, updateRoute } from 'app/model/route.controller'
-import { usePool } from 'senhub/providers'
 import { SenLpState } from 'app/constant/senLpState'
 
 const SwapInput = ({ spacing = 12 }: { spacing?: number }) => {
