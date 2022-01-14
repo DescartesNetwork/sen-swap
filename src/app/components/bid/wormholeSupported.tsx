@@ -44,7 +44,7 @@ const WormholeSupported = () => {
     <Popover
       overlayInnerStyle={{
         background: 'transparent',
-        width: 384 + 32,
+        width: 375,
         boxShadow: 'none',
       }}
       trigger="click"
