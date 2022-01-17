@@ -1,7 +1,7 @@
 import { Avatar, Space, Tooltip, Typography } from 'antd'
 import JupiterIcon from 'app/static/images/jupiter-logo.svg'
 
-const PoweredBySentre = ({
+const PoweredByJupiter = ({
   spacing = 4,
   iconSize = 20,
 }: {
@@ -20,4 +20,4 @@ const PoweredBySentre = ({
   )
 }
 
-export default PoweredBySentre
+export default PoweredByJupiter

@@ -1,7 +1,7 @@
 import { Avatar, Space, Tooltip, Typography } from 'antd'
 import SentreIcon from 'app/static/images/sen.svg'
 
-const PoweredBy = ({
+const PoweredBySentre = ({
   spacing = 4,
   iconSize = 20,
 }: {
@@ -20,4 +20,4 @@ const PoweredBy = ({
   )
 }
 
-export default PoweredBy
+export default PoweredBySentre

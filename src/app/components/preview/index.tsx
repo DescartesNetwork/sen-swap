@@ -29,7 +29,7 @@ const ExtraTypography = ({
   content?: string | ReactNode
 }) => {
   return (
-    <Row>
+    <Row align="middle">
       <Col flex="auto">
         <Typography.Text type="secondary">{label}</Typography.Text>
       </Col>
