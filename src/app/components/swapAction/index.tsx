@@ -51,7 +51,7 @@ const SwapButton = ({
   const disabled = useDisabled()
 
   const bestRoute = useSenSwap(senlpState?.poolAddress)
-  console.log(bestRoute)
+  // console.log(bestRoute)
   // const jupiter = useJupiterAggregator()
   // console.log(jupiter)
 

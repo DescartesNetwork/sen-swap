@@ -28,12 +28,16 @@ const ConfirmSwap = ({
 
   return (
     <Modal
-      title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
       onCancel={() => onCancel(false)}
+      closeIcon={<IonIcon name="close" />}
       footer={null}
       visible={visible}
+      forceRender
     >
       <Row gutter={[16, 24]}>
+        <Col span={24}>
+          <Typography.Title level={4}> Confirm swap</Typography.Title>
+        </Col>
         <Col span={24}>
           <Row align="middle" justify="space-between">
             <Col>
