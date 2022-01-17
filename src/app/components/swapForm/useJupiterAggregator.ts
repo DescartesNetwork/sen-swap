@@ -5,7 +5,7 @@ import { useJupiter } from '@jup-ag/react-hook'
 import { AppState } from 'app/model'
 import { useMemo } from 'react'
 
-const useWrappedJupiter = () => {
+const useJupiterAggregator = () => {
   const {
     bid: bidData,
     ask: askData,
@@ -48,4 +48,4 @@ const useWrappedJupiter = () => {
   return jupiter
 }
 
-export default useWrappedJupiter
+export default useJupiterAggregator

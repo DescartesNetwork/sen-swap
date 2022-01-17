@@ -5,7 +5,7 @@ import { State as BidState } from 'app/model/bid.controller'
 import { State as AskState } from 'app/model/ask.controller'
 import { inverseCurve } from './oracle'
 import { HopData } from 'app/components/preview/index'
-import { State as RouteState } from 'app/model/route.controller'
+import { RouteState, SwapPlatform } from 'app/model/route.controller'
 
 const POOL_ACTIVITY_STATUS = 1
 const LIMIT_POOL_IN_ROUTE = 3
@@ -107,7 +107,12 @@ export const findBestRouteFromBid = (
   routes: RouteTrace[],
   { amount: bidAmount, mintInfo }: BidState,
 ): RouteState => {
-  let bestRoute: RouteState = { best: [], amounts: [], amount: BigInt(0) }
+  let bestRoute: RouteState = {
+    platform: SwapPlatform.SenSwap,
+    best: [],
+    amounts: [],
+    amount: BigInt(0),
+  }
   routes.forEach((route) => {
     let amount = utils.decimalize(bidAmount, mintInfo.decimals)
     const amounts = new Array<bigint>()
@@ -116,7 +121,13 @@ export const findBestRouteFromBid = (
       amount = curve(amount, hop)
     })
     const maxAskAmount = bestRoute.amount
-    if (amount > maxAskAmount) bestRoute = { best: route, amounts, amount }
+    if (amount > maxAskAmount)
+      bestRoute = {
+        platform: SwapPlatform.SenSwap,
+        best: route,
+        amounts,
+        amount,
+      }
   })
   return bestRoute
 }
@@ -125,7 +136,12 @@ export const findBestRouteFromAsk = (
   routes: RouteTrace[],
   { amount: askAmount, mintInfo }: AskState,
 ): RouteState => {
-  let bestRoute: RouteState = { best: [], amounts: [], amount: BigInt(0) }
+  let bestRoute: RouteState = {
+    platform: SwapPlatform.SenSwap,
+    best: [],
+    amounts: [],
+    amount: BigInt(0),
+  }
   for (const route of routes) {
     const reversedRoute = [...route].reverse()
     let amount = utils.decimalize(askAmount, mintInfo.decimals)
@@ -139,7 +155,12 @@ export const findBestRouteFromAsk = (
     if (amount <= BigInt(0)) continue
     const minBidAmount = bestRoute.amount
     if (amount < minBidAmount || !minBidAmount)
-      bestRoute = { best: route, amounts, amount }
+      bestRoute = {
+        platform: SwapPlatform.SenSwap,
+        best: route,
+        amounts,
+        amount,
+      }
   }
   return bestRoute
 }

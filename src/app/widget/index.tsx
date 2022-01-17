@@ -26,7 +26,7 @@ const Widget = () => {
   return (
     <Row gutter={[12, 12]}>
       <Col span={24}>
-        <SwapInput spacing={12} />
+        <SwapInput />
       </Col>
       <Col span={24}>
         <Row align="bottom">
@@ -71,7 +71,7 @@ const Widget = () => {
           </Col>
         </Row>
       </Col>
-      <ConfirmSwap visible={visible} onCancle={setVisible} />
+      <ConfirmSwap visible={visible} onCancel={setVisible} />
     </Row>
   )
 }

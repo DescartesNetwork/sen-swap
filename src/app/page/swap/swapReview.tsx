@@ -39,7 +39,7 @@ const SwapActions = () => {
           )}
         </Col>
         {tooHighImpact && (
-          <ConfirmSwap visible={visivle} onCancle={setVisivle} />
+          <ConfirmSwap visible={visivle} onCancel={setVisivle} />
         )}
       </Row>
     </Card>

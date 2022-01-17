@@ -13,14 +13,13 @@ import { PriceImpact } from 'app/constant/swap'
 
 const ConfirmSwap = ({
   visible = false,
-  onCancle = () => {},
+  onCancel = () => {},
 }: {
   visible?: boolean
-  onCancle?: (visible: boolean) => void
+  onCancel?: (visible: boolean) => void
 }) => {
   const [checked, setChecked] = useState(false)
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
+  const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
   const priceImpact = usePriceImpact()
 
   const tooHighImpact = priceImpact > PriceImpact.acceptableSwap
@@ -28,7 +27,7 @@ const ConfirmSwap = ({
   return (
     <Modal
       title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
-      onCancel={() => onCancle(false)}
+      onCancel={() => onCancel(false)}
       footer={null}
       visible={visible}
     >
@@ -78,7 +77,7 @@ const ConfirmSwap = ({
           </Col>
         )}
         <Col span={24}>
-          <SwapAction onCallback={() => onCancle(false)} forceSwap={checked} />
+          <SwapAction onCallback={() => onCancel(false)} forceSwap={checked} />
         </Col>
       </Row>
     </Modal>

@@ -1,25 +1,31 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RouteTrace } from 'app/helper/router'
 
-export type State = {
+export enum SwapPlatform {
+  SenSwap,
+  JupiterAggregator,
+}
+export type RouteState = {
+  platform: SwapPlatform
   best: RouteTrace
   amounts: bigint[]
   amount: bigint
 }
 
 const NAME = 'route'
-const initialState: State = {
+const initialState: RouteState = {
+  platform: SwapPlatform.SenSwap,
+  best: [],
   amount: BigInt(0),
   amounts: [],
-  best: [],
 }
 
 /**
  * Actions
  */
 export const updateRoute = createAsyncThunk<
-  Partial<State>,
-  Partial<State>,
+  Partial<RouteState>,
+  Partial<RouteState>,
   { state: any }
 >(`${NAME}/updateRoute`, async (route, { getState }) => {
   const { route: prevRoute } = getState()
