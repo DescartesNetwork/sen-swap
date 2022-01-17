@@ -1,11 +1,11 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
 import { useJupiter } from '@jup-ag/react-hook'
 import { Connection } from '@solana/web3.js'
 
-import { AppState } from 'app/model'
 import configs from 'app/configs'
+import { AppState } from 'app/model'
 import { RouteState, SwapPlatform } from 'app/model/route.controller'
 import { RouteTrace } from 'app/helper/router'
 import { HopData } from '../preview'
@@ -64,38 +64,15 @@ const useJupiterAggregator = () => {
     debounceTime: 250,
   })
 
-  if (!routes?.length)
-    return {
-      swap: () => {
-        throw new Error('No available route')
-      },
-      bestRoutes: { ...DEFAULT_DATA },
-    }
-
-  const { outAmount, priceImpactPct, marketInfos } = routes[0]
-  const best: RouteTrace = marketInfos.map(({ inputMint, outputMint }) => {
-    const hop: HopData = {
-      poolData: {} as PoolData & { address: string }, // dummy pool data
-      srcMintAddress: inputMint.toBase58(),
-      dstMintAddress: outputMint.toBase58(),
-    }
-    return hop
-  })
-  const bestRoute: RouteState = {
-    platform: SwapPlatform.JupiterAggregator,
-    amount: BigInt(outAmount),
-    priceImpact: priceImpactPct,
-    best,
-  }
-
-  const swap = async () => {
+  const swap = useCallback(async () => {
     const {
       sentre: { wallet },
     } = window
     if (!wallet || !account.isAddress(walletAddress))
       throw new Error('Wallet is not connected')
-    const wrappedWallet = new JupiterWalletWrapper(walletAddress, wallet)
+    if (!routes?.length) throw new Error('No available route')
 
+    const wrappedWallet = new JupiterWalletWrapper(walletAddress, wallet)
     const result = await exchange({
       wallet: wrappedWallet,
       route: routes[0],
@@ -108,7 +85,26 @@ const useJupiterAggregator = () => {
     })
     const { txId, outputAddress } = { txId: '', outputAddress: '', ...result }
     return { txId, dstAddress: outputAddress }
-  }
+  }, [exchange, routes, walletAddress])
+
+  const bestRoute: RouteState = useMemo(() => {
+    if (!routes?.length) return { ...DEFAULT_DATA }
+    const { outAmount, priceImpactPct, marketInfos } = routes[0]
+    const best: RouteTrace = marketInfos.map(({ inputMint, outputMint }) => {
+      const hop: HopData = {
+        poolData: {} as PoolData & { address: string }, // dummy pool data
+        srcMintAddress: inputMint.toBase58(),
+        dstMintAddress: outputMint.toBase58(),
+      }
+      return hop
+    })
+    return {
+      platform: SwapPlatform.JupiterAggregator,
+      amount: BigInt(outAmount),
+      priceImpact: priceImpactPct,
+      best,
+    }
+  }, [routes])
 
   return { swap, bestRoute }
 }

@@ -44,10 +44,10 @@ const SwapButton = ({
   const { state: senlpState } = useLocation<SenLpState>()
   const disabled = useDisabled()
 
-  // const validSenSwap = useSenSwapValidator()
+  const validSenSwap = useSenSwapValidator()
   // const senswap = useSenSwap(senlpState?.poolAddress)
   const jupiter = useJupiterAggregator()
-  // console.log('validSenSwap', validSenSwap)
+  console.log('validSenSwap', validSenSwap)
   // console.log('senswap', senswap)
   console.log('jupiter', jupiter)
   // const { swap, bestRoute } = validSenSwap ? senswap : jupiter
