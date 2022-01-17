@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useMint, usePool } from '@senhub/providers'
+import { useAccount, useMint, usePool } from '@senhub/providers'
 
 import { Card, Input, Button } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
@@ -17,12 +17,22 @@ const Search = ({
   const [keyword, setKeyword] = useState('')
   const { tokenProvider } = useMint()
   const { pools } = usePool()
+  const { accounts } = useAccount()
 
   const sortMintAddresses = useCallback(async () => {
+    let sortedMint: Record<string, boolean> = {}
     // Get all mints in token provider
-    const allMintAddresses = (await tokenProvider.all()).map(
-      ({ address }) => address,
-    )
+    const allMintAddress: Record<string, boolean> = {}
+    const allTokens = await tokenProvider.all()
+    for (const token of allTokens) allMintAddress[token.address] = true
+
+    // get all single token in accounts
+    for (const addr in accounts) {
+      const { mint } = accounts[addr]
+      if (allMintAddress[mint]) sortedMint[mint] = true
+    }
+    sortedMint = { ...sortedMint, ...allMintAddress }
+
     // Get all mints in pools
     const inPoolMintAddresses = Object.values(pools)
       .map(({ mint_a, mint_b }) => [mint_a, mint_b])
@@ -30,12 +40,12 @@ const Search = ({
       .filter((item, pos, self) => self.indexOf(item) === pos)
     // Check mint addresses (token info, mint lp)
     inPoolMintAddresses.forEach((mintAddress) => {
-      if (!allMintAddresses.includes(mintAddress))
-        allMintAddresses.push(mintAddress)
+      if (!sortedMint[mintAddress]) sortedMint[mintAddress] = true
     })
+
     // Return
-    return setMintAddresses(allMintAddresses)
-  }, [tokenProvider, pools])
+    return setMintAddresses(Object.keys(sortedMint))
+  }, [tokenProvider, pools, accounts])
 
   useEffect(() => {
     sortMintAddresses()
