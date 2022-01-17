@@ -8,7 +8,7 @@ import useAccountBalance from 'shared/hooks/useAccountBalance'
 export const useWrapSol = () => {
   const {
     bid: {
-      amount: _bidAmount,
+      amount: bidAmount,
       mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
       accountAddress: bidAccountAddress,
     },
@@ -16,11 +16,11 @@ export const useWrapSol = () => {
   const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
 
   const wrapAmount = useMemo(() => {
-    if (!Number(_bidAmount) || bidMintAddress !== DEFAULT_WSOL) return BigInt(0)
-    const amount = utils.decimalize(_bidAmount, bidMintDecimals)
+    if (!Number(bidAmount) || bidMintAddress !== DEFAULT_WSOL) return BigInt(0)
+    const amount = utils.decimalize(bidAmount, bidMintDecimals)
     if (amount <= bidBalance) return BigInt(0)
     return amount - bidBalance
-  }, [bidBalance, _bidAmount, bidMintAddress, bidMintDecimals])
+  }, [bidBalance, bidAmount, bidMintAddress, bidMintDecimals])
 
   const wrapSol = async () => {
     const { swap, wallet } = window.sentre

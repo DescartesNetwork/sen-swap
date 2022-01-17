@@ -22,8 +22,9 @@ const SwapInput = () => {
   const { state: senlpState } = useLocation<SenLpState>()
 
   const bestRoute = useSenSwap(senlpState?.poolAddress)
-  const jupiter = useJupiterAggregator()
-  console.log(jupiter)
+  console.log(bestRoute)
+  // const jupiter = useJupiterAggregator()
+  // console.log(jupiter)
 
   /**
    * Switch tokens

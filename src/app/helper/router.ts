@@ -1,12 +1,13 @@
 import { PoolData, utils } from '@senswap/sen-js'
 
-import { curve } from './oracle'
-import { State as BidState } from 'app/model/bid.controller'
-import { State as AskState } from 'app/model/ask.controller'
+import { curve, slippage } from './oracle'
+import { BidState } from 'app/model/bid.controller'
+import { AskState } from 'app/model/ask.controller'
 import { inverseCurve } from './oracle'
 import { HopData } from 'app/components/preview/index'
 import { RouteState, SwapPlatform } from 'app/model/route.controller'
 
+const PRECISION = 9
 const POOL_ACTIVITY_STATUS = 1
 const LIMIT_POOL_IN_ROUTE = 3
 
@@ -43,6 +44,29 @@ export const pointSorting = (
   if (firstPoint < secondPoint) return 1
   if (firstPoint > secondPoint) return -1
   return 0
+}
+
+/**
+ * Calculate price impact
+ * @param best
+ * @param bid
+ * @param ask
+ * @returns
+ */
+export const calcPriceImpact = (best: RouteTrace, bidAmount: bigint) => {
+  if (!bidAmount) return 0
+  let srcAmount = bidAmount
+  let p = 1
+  best.forEach((hopData) => {
+    const s = Number(
+      utils.undecimalize(slippage(srcAmount, hopData), PRECISION),
+    )
+    p = p * (1 - s)
+    const dstAmount = curve(srcAmount, hopData)
+    srcAmount = dstAmount
+  })
+
+  return 1 - p
 }
 
 export const buildPoolGraph = (pools: Record<string, PoolData>): GraphPool => {
@@ -105,8 +129,9 @@ export const findAllRoutes = (
 
 export const findBestRouteFromBid = (
   routes: RouteTrace[],
-  { amount: bidAmount, mintInfo }: BidState,
+  bidState: BidState,
 ): RouteState => {
+  const { amount: bidAmount, mintInfo } = bidState
   let bestRoute: RouteState = {
     platform: SwapPlatform.SenSwap,
     best: [],
@@ -131,6 +156,7 @@ export const findBestRouteFromBid = (
         priceImpact: 0,
       }
   })
+  bestRoute.priceImpact = calcPriceImpact(bestRoute.best, bestRoute.amounts[0])
   return bestRoute
 }
 
@@ -166,5 +192,6 @@ export const findBestRouteFromAsk = (
         priceImpact: 0,
       }
   }
+  bestRoute.priceImpact = calcPriceImpact(bestRoute.best, bestRoute.amount)
   return bestRoute
 }

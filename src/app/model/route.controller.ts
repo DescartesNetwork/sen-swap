@@ -8,8 +8,8 @@ export enum SwapPlatform {
 export type RouteState = {
   platform: SwapPlatform
   best: RouteTrace // The best route
-  amounts: bigint[] // Series of ask amounts
-  amount: bigint // Bid amount
+  amounts: bigint[]
+  amount: bigint
   priceImpact: number
 }
 
