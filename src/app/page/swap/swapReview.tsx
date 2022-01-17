@@ -1,21 +1,24 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Card, Col, Row, Typography } from 'antd'
 import SwapAction from 'app/components/swapAction'
 import Preview from 'app/components/preview'
 
 import { updateBidData } from 'app/model/bid.controller'
-import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
 import ConfirmSwap from 'app/components/confirmSwap'
+import { AppState } from 'app/model'
 
 const SwapActions = () => {
   const [visivle, setVisivle] = useState(false)
   const dispatch = useDispatch()
+  const {
+    route: { priceImpact },
+  } = useSelector((state: AppState) => state)
+
   const onCallback = () =>
     dispatch(updateBidData({ amount: '', prioritized: true }))
-  const priceImpact = usePriceImpact()
 
   const tooHighImpact = priceImpact > PriceImpact.acceptableSwap
 

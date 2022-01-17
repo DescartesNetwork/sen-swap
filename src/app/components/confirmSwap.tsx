@@ -8,7 +8,6 @@ import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import SwapAction from 'app/components/swapAction'
 
 import { AppState } from 'app/model'
-import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
 
 const ConfirmSwap = ({
@@ -19,8 +18,11 @@ const ConfirmSwap = ({
   onCancel?: (visible: boolean) => void
 }) => {
   const [checked, setChecked] = useState(false)
-  const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
-  const priceImpact = usePriceImpact()
+  const {
+    route: { priceImpact },
+    bid: bidData,
+    ask: askData,
+  } = useSelector((state: AppState) => state)
 
   const tooHighImpact = priceImpact > PriceImpact.acceptableSwap
 

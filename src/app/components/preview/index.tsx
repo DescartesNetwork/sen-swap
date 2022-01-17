@@ -7,8 +7,8 @@ import RouteAvatar from './routeAvatar'
 
 import { AppState } from 'app/model'
 import { numeric } from 'shared/util'
-import usePriceImpact, { usePriceColor } from 'app/hooks/usePriceImpact'
 import Price from './price'
+import { priceImpactColor } from 'app/helper/utils'
 
 export type LiteMintInfo = {
   address: string
@@ -42,10 +42,9 @@ const ExtraTypography = ({
 
 const PreviewSwap = () => {
   const {
+    route: { priceImpact },
     settings: { slippage },
   } = useSelector((state: AppState) => state)
-  const priceImpact = usePriceImpact()
-  const priceColor = usePriceColor()
 
   return (
     <Row gutter={[12, 12]}>
@@ -53,7 +52,7 @@ const PreviewSwap = () => {
         <ExtraTypography
           label="Price impact"
           content={
-            <Typography.Text style={{ color: priceColor }}>
+            <Typography.Text style={{ color: priceImpactColor(priceImpact) }}>
               {numeric(Number(priceImpact)).format('0.[0000]%')}
             </Typography.Text>
           }

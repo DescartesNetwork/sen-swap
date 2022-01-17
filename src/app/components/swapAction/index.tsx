@@ -8,7 +8,6 @@ import { Button } from 'antd'
 import { AppState } from 'app/model'
 import { explorer } from 'shared/util'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
-import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
 import { useWrapSol } from './useWrapSol'
 
@@ -23,7 +22,7 @@ const SwapButton = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const {
-    route: { best },
+    route: { best, priceImpact },
     bid: {
       amount: _bidAmount,
       mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
@@ -39,7 +38,6 @@ const SwapButton = ({
     wallet: { address: walletAddress, lamports },
   } = useWallet()
   const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
-  const priceImpact = usePriceImpact()
   const { wrapAmount, wrapSol } = useWrapSol()
 
   const availableBid = useMemo((): string => {
