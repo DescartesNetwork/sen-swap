@@ -1,15 +1,22 @@
-import { useCallback, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
+import { useCallback, useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useLocation } from 'react-router-dom'
+import { utils } from '@senswap/sen-js'
 import { useWallet } from '@senhub/providers'
 
 import { Button } from 'antd'
 
-import { AppState } from 'app/model'
+import { AppState, AppDispatch } from 'app/model'
 import { explorer } from 'shared/util'
-import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { PriceImpact } from 'app/constant/swap'
+import { SenLpState } from 'app/constant/senLpState'
 import { useWrapSol } from './useWrapSol'
+import { updateBidData } from 'app/model/bid.controller'
+import { updateAskData } from 'app/model/ask.controller'
+import { updateRoute } from 'app/model/route.controller'
+import useSenSwap from './useSenSwap'
+import { useDisabled } from './useDisabled'
+// import useJupiterAggregator from './useJupiterAggregator'
 
 const DECIMALS = BigInt(1000000000)
 
@@ -20,36 +27,33 @@ const SwapButton = ({
   onCallback?: () => void
   forceSwap?: boolean
 }) => {
+  const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
   const {
-    route: { best, priceImpact },
+    route: { best, priceImpact, amount: bestAmount },
     bid: {
       amount: _bidAmount,
-      mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
-      accountAddress: bidAccountAddress,
+      mintInfo: { decimals: bidMintDecimals },
+      priority: bidPriority,
     },
     ask: {
       amount: _askAmount,
       mintInfo: { decimals: askMintDecimals },
+      priority: askPriority,
     },
     settings: { slippage, advanced },
   } = useSelector((state: AppState) => state)
   const {
-    wallet: { address: walletAddress, lamports },
+    wallet: { address: walletAddress },
   } = useWallet()
-  const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
   const { wrapAmount, wrapSol } = useWrapSol()
+  const { state: senlpState } = useLocation<SenLpState>()
+  const disabled = useDisabled()
 
-  const availableBid = useMemo((): string => {
-    if (bidMintAddress !== DEFAULT_WSOL)
-      return utils.undecimalize(bidBalance, bidMintDecimals)
-    // So estimate max = 0.01 fee -> multi transaction.
-    const estimateFee = utils.decimalize(0.01, bidMintDecimals)
-    const max = lamports + bidBalance - estimateFee
-    if (max <= bidBalance)
-      return utils.undecimalize(bidBalance, bidMintDecimals)
-    return utils.undecimalize(max, bidMintDecimals)
-  }, [bidBalance, bidMintAddress, bidMintDecimals, lamports])
+  const bestRoute = useSenSwap(senlpState?.poolAddress)
+  console.log(bestRoute)
+  // const jupiter = useJupiterAggregator()
+  // console.log(jupiter)
 
   const handleSwap = useCallback(async () => {
     const { swap, splt, wallet } = window.sentre
@@ -115,19 +119,44 @@ const SwapButton = ({
     }
   }
 
+  const setRoute = useCallback(() => {
+    if (askPriority < bidPriority) {
+      dispatch(
+        updateAskData({
+          amount: utils.undecimalize(bestAmount, askMintDecimals),
+        }),
+      )
+    }
+    if (bidPriority < askPriority) {
+      dispatch(
+        updateBidData({
+          amount: utils.undecimalize(bestAmount, bidMintDecimals),
+        }),
+      )
+    }
+    dispatch(updateRoute({ ...bestRoute }))
+  }, [
+    dispatch,
+    bestAmount,
+    bestRoute,
+    bidPriority,
+    bidMintDecimals,
+    askPriority,
+    askMintDecimals,
+  ])
+
+  useEffect(() => {
+    setRoute()
+  }, [setRoute])
+
   const tooHighImpact =
     !advanced && priceImpact > PriceImpact.acceptableSwap && !forceSwap
-  const disabled =
-    tooHighImpact ||
-    !best.length ||
-    !Number(_bidAmount) ||
-    !Number(_askAmount) ||
-    Number(_bidAmount) > Number(availableBid)
+
   return (
     <Button
       type="primary"
       onClick={onSwap}
-      disabled={disabled}
+      disabled={disabled || tooHighImpact}
       loading={loading}
       block
     >
