@@ -1,6 +1,6 @@
-import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { AppState } from 'app/model'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
