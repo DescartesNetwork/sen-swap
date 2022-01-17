@@ -1,16 +1,39 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
+import { account, utils } from '@senswap/sen-js'
 import { usePool } from '@senhub/providers'
 
 import { AppState } from 'app/model'
 import { RouteState, SwapPlatform } from 'app/model/route.controller'
+import { State as BidState } from 'app/model/bid.controller'
+import { State as AskState } from 'app/model/ask.controller'
 import {
   buildPoolGraph,
   findAllRoutes,
   findBestRouteFromAsk,
   findBestRouteFromBid,
+  RouteTrace,
 } from 'app/helper/router'
+import { curve, slippage } from 'app/helper/oracle'
+
+const getPriceImpact = (best: RouteTrace, bid: BidState, ask: AskState) => {
+  const PRECISION = 9
+  const { amount: bidAmount, mintInfo: bidMintInfo } = bid
+  const { amount: askAmount } = ask
+  if (!Number(bidAmount) || !Number(askAmount)) return 0
+  let srcAmount = utils.decimalize(bidAmount, bidMintInfo.decimals)
+  let p = 1
+  best.forEach((hopData) => {
+    const s = Number(
+      utils.undecimalize(slippage(srcAmount, hopData), PRECISION),
+    )
+    p = p * (1 - s)
+    const dstAmount = curve(srcAmount, hopData)
+    srcAmount = dstAmount
+  })
+
+  return 1 - p
+}
 
 const useSenSwap = (fixedPoolAddress?: string) => {
   const [bestRoute, setBestRoute] = useState<RouteState>({
