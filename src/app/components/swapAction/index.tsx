@@ -10,6 +10,7 @@ import { explorer } from 'shared/util'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
+import { useWrapSol } from './useWrapSol'
 
 const DECIMALS = BigInt(1000000000)
 
@@ -39,13 +40,7 @@ const SwapButton = ({
   } = useWallet()
   const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
   const priceImpact = usePriceImpact()
-
-  const wrapAmount = useMemo(() => {
-    if (!Number(_bidAmount) || bidMintAddress !== DEFAULT_WSOL) return BigInt(0)
-    const amount = utils.decimalize(_bidAmount, bidMintDecimals)
-    if (amount <= bidBalance) return BigInt(0)
-    return amount - bidBalance
-  }, [bidBalance, _bidAmount, bidMintAddress, bidMintDecimals])
+  const { wrapAmount, wrapSol } = useWrapSol()
 
   const availableBid = useMemo((): string => {
     if (bidMintAddress !== DEFAULT_WSOL)
@@ -102,16 +97,12 @@ const SwapButton = ({
     _askAmount,
   ])
 
-  const handleWrapSol = async () => {
-    const { swap, wallet } = window.sentre
-    if (!wallet) throw new Error('Wallet is not connected')
-    if (wrapAmount) return await swap.wrapSol(wrapAmount, wallet)
-  }
-
   const onSwap = async () => {
     try {
       setLoading(true)
-      await handleWrapSol()
+      // check wrap sol
+      if (wrapAmount) await wrapSol()
+
       const { txId } = await handleSwap()
       window.notify({
         type: 'success',
