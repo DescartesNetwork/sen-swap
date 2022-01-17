@@ -41,6 +41,7 @@ const useSenSwap = (fixedPoolAddress?: string) => {
     best: [],
     amounts: [],
     amount: BigInt(0),
+    priceImpact: 0,
   })
   const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
   const { pools } = usePool()
@@ -48,7 +49,7 @@ const useSenSwap = (fixedPoolAddress?: string) => {
   /**
    * Find optimal route
    */
-  const findRoute = useCallback(async () => {
+  const findBestRoute = useCallback(async () => {
     const {
       poolAddresses: bidPoolAddresses,
       mintInfo: { address: bidMintAddress },
@@ -69,6 +70,7 @@ const useSenSwap = (fixedPoolAddress?: string) => {
       best: [],
       amounts: [],
       amount: BigInt(0),
+      priceImpact: 0,
     }
     // Return empty default
     if (
@@ -103,8 +105,8 @@ const useSenSwap = (fixedPoolAddress?: string) => {
   }, [askData, bidData, fixedPoolAddress, pools])
 
   useEffect(() => {
-    findRoute()
-  }, [findRoute])
+    findBestRoute()
+  }, [findBestRoute])
 
   return bestRoute
 }

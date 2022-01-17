@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
-import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useSelector } from 'react-redux'
+import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useWallet } from '@senhub/providers'
 
 import { Button } from 'antd'

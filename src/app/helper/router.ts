@@ -112,6 +112,7 @@ export const findBestRouteFromBid = (
     best: [],
     amounts: [],
     amount: BigInt(0),
+    priceImpact: 0,
   }
   routes.forEach((route) => {
     let amount = utils.decimalize(bidAmount, mintInfo.decimals)
@@ -127,6 +128,7 @@ export const findBestRouteFromBid = (
         best: route,
         amounts,
         amount,
+        priceImpact: 0,
       }
   })
   return bestRoute
@@ -141,6 +143,7 @@ export const findBestRouteFromAsk = (
     best: [],
     amounts: [],
     amount: BigInt(0),
+    priceImpact: 0,
   }
   for (const route of routes) {
     const reversedRoute = [...route].reverse()
@@ -160,6 +163,7 @@ export const findBestRouteFromAsk = (
         best: route,
         amounts,
         amount,
+        priceImpact: 0,
       }
   }
   return bestRoute

@@ -7,9 +7,10 @@ export enum SwapPlatform {
 }
 export type RouteState = {
   platform: SwapPlatform
-  best: RouteTrace
-  amounts: bigint[]
-  amount: bigint
+  best: RouteTrace // The best route
+  amounts: bigint[] // Series of ask amounts
+  amount: bigint // Bid amount
+  priceImpact: number
 }
 
 const NAME = 'route'
@@ -18,6 +19,7 @@ const initialState: RouteState = {
   best: [],
   amount: BigInt(0),
   amounts: [],
+  priceImpact: 0,
 }
 
 /**
