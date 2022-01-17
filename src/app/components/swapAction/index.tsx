@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { utils } from '@senswap/sen-js'
-import { useWallet } from '@senhub/providers'
 
 import { Button } from 'antd'
 
@@ -18,8 +17,6 @@ import useSenSwap from './useSenSwap'
 import { useDisabled } from './useDisabled'
 // import useJupiterAggregator from './useJupiterAggregator'
 
-const DECIMALS = BigInt(1000000000)
-
 const SwapButton = ({
   onCallback = () => {},
   forceSwap = false,
@@ -30,74 +27,26 @@ const SwapButton = ({
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
   const {
-    route: { best, priceImpact, amount: bestAmount },
+    route: { priceImpact, amount: bestAmount },
     bid: {
-      amount: _bidAmount,
       mintInfo: { decimals: bidMintDecimals },
       priority: bidPriority,
     },
     ask: {
-      amount: _askAmount,
       mintInfo: { decimals: askMintDecimals },
       priority: askPriority,
     },
-    settings: { slippage, advanced },
+    settings: { advanced },
   } = useSelector((state: AppState) => state)
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+
   const { wrapAmount, wrapSol } = useWrapSol()
   const { state: senlpState } = useLocation<SenLpState>()
   const disabled = useDisabled()
 
-  const bestRoute = useSenSwap(senlpState?.poolAddress)
+  const { bestRoute, handleSwap } = useSenSwap(senlpState?.poolAddress)
   // console.log(bestRoute)
   // const jupiter = useJupiterAggregator()
   // console.log(jupiter)
-
-  const handleSwap = useCallback(async () => {
-    const { swap, splt, wallet } = window.sentre
-    if (!wallet) throw new Error('Wallet is not connected')
-    // Synthetize routings
-    const routingAddresses = await Promise.all(
-      best.map(
-        async ({
-          srcMintAddress,
-          dstMintAddress,
-          poolData: { address: poolAddress },
-        }) => {
-          const srcAddress = await splt.deriveAssociatedAddress(
-            walletAddress,
-            srcMintAddress,
-          )
-          const dstAddress = await splt.deriveAssociatedAddress(
-            walletAddress,
-            dstMintAddress,
-          )
-          return {
-            poolAddress: poolAddress,
-            srcAddress: srcAddress,
-            dstAddress: dstAddress,
-          }
-        },
-      ),
-    )
-    // Compute limit
-    const bidAmount = utils.decimalize(_bidAmount, bidMintDecimals)
-    const askAmount = utils.decimalize(_askAmount, askMintDecimals)
-    const limit =
-      (askAmount * (DECIMALS - utils.decimalize(slippage, 9))) / DECIMALS
-    // Execute swap
-    return await swap.route(bidAmount, limit, routingAddresses, wallet)
-  }, [
-    best,
-    bidMintDecimals,
-    askMintDecimals,
-    slippage,
-    walletAddress,
-    _bidAmount,
-    _askAmount,
-  ])
 
   const onSwap = async () => {
     try {
