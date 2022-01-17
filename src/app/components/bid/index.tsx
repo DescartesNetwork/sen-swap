@@ -30,9 +30,6 @@ const Bid = () => {
   } = useWallet()
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
-    ask: {
-      mintInfo: { address: askAddress },
-    },
   } = useSelector((state: AppState) => state)
   const { amount: balance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(bidDefault)
@@ -107,11 +104,7 @@ const Bid = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection
-              hiddenTokens={[askAddress]}
-              value={selectionInfo}
-              onChange={onSelectionInfo}
-            />
+            <Selection value={selectionInfo} onChange={onSelectionInfo} />
           }
           suffix={
             <Button

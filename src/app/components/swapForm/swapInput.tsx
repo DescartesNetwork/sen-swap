@@ -20,6 +20,7 @@ import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
 import { State as RouteState, updateRoute } from 'app/model/route.controller'
 import { SenLpState } from 'app/constant/senLpState'
+import useWrappedJupiter from './useWrappedJupiter'
 
 const SwapInput = ({ spacing = 12 }: { spacing?: number }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -31,8 +32,10 @@ const SwapInput = ({ spacing = 12 }: { spacing?: number }) => {
   const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
   const { pools } = usePool()
   const { state } = useLocation<SenLpState>()
-  const poolAddress = state?.poolAddress
-  const originalRoute = state?.originalRoute
+  const fixedPoolAddress = state?.poolAddress
+
+  const jupiter = useWrappedJupiter()
+  console.log(jupiter)
 
   /**
    * Switch tokens
@@ -73,7 +76,8 @@ const SwapInput = ({ spacing = 12 }: { spacing?: number }) => {
       !account.isAddress(bidMintAddress) ||
       !account.isAddress(askMintAddress) ||
       !bidPoolAddresses.length ||
-      !askPoolAddresses.length
+      !askPoolAddresses.length ||
+      bidMintAddress === askMintAddress
     )
       return setBestRoute(bestRoute)
 
@@ -86,17 +90,17 @@ const SwapInput = ({ spacing = 12 }: { spacing?: number }) => {
     // No available route
     if (!allRoutes.length) return setBestRoute(bestRoute)
     // When user select original route from senlp
-    if (originalRoute)
+    if (account.isAddress(fixedPoolAddress))
       allRoutes = allRoutes.filter(
         (route) =>
-          route.length === 1 && route[0].poolData.address === poolAddress,
+          route.length === 1 && route[0].poolData.address === fixedPoolAddress,
       )
 
     if (askPriority < bidPriority)
       bestRoute = findBestRouteFromBid(allRoutes, bidData)
     else bestRoute = findBestRouteFromAsk(allRoutes, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, originalRoute, poolAddress, pools])
+  }, [askData, bidData, fixedPoolAddress, pools])
 
   const setRoute = useCallback(() => {
     const bidPriority = bidData.priority

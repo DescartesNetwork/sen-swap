@@ -1,4 +1,6 @@
 import { Provider } from 'react-redux'
+import { Connection } from '@solana/web3.js'
+import { JupiterProvider } from '@jup-ag/react-hook'
 import {
   WalletProvider,
   UIProvider,
@@ -19,7 +21,9 @@ import 'app/static/styles/index.less'
 
 const {
   manifest: { appId },
+  sol: { node, cluster },
 } = configs
+const connection = new Connection(node)
 
 export const Page = () => {
   return (
@@ -28,9 +32,11 @@ export const Page = () => {
         <PoolProvider>
           <AccountProvider>
             <WalletProvider>
-              <Provider store={model}>
-                <PageView />
-              </Provider>
+              <JupiterProvider connection={connection} cluster={cluster}>
+                <Provider store={model}>
+                  <PageView />
+                </Provider>
+              </JupiterProvider>
             </WalletProvider>
           </AccountProvider>
         </PoolProvider>
@@ -51,9 +57,11 @@ export const Widget = () => {
         <PoolProvider>
           <AccountProvider>
             <WalletProvider>
-              <Provider store={model}>
-                <WidgetView />
-              </Provider>
+              <JupiterProvider connection={connection} cluster={cluster}>
+                <Provider store={model}>
+                  <WidgetView />
+                </Provider>
+              </JupiterProvider>
             </WalletProvider>
           </AccountProvider>
         </PoolProvider>
