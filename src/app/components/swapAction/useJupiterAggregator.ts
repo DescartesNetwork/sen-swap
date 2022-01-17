@@ -73,7 +73,7 @@ const useJupiterAggregator = () => {
     if (!routes?.length) throw new Error('No available route')
 
     const wrappedWallet = new JupiterWalletWrapper(walletAddress, wallet)
-    const result = await exchange({
+    const result: any = await exchange({
       wallet: wrappedWallet,
       route: routes[0],
       confirmationWaiterFactory: async (txid) => {
@@ -83,8 +83,9 @@ const useJupiterAggregator = () => {
         })
       },
     })
-    const { txId, outputAddress } = { txId: '', outputAddress: '', ...result }
-    return { txId, dstAddress: outputAddress }
+    if (result.error) throw new Error(result.error)
+    const { txid, outputAddress } = result
+    return { txId: txid, dstAddress: outputAddress }
   }, [exchange, routes, walletAddress])
 
   const bestRoute: RouteState = useMemo(() => {

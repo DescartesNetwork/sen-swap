@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux'
-import { Connection } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 import { JupiterProvider } from '@jup-ag/react-hook'
 import {
   WalletProvider,
@@ -32,7 +32,13 @@ export const Page = () => {
         <PoolProvider>
           <AccountProvider>
             <WalletProvider>
-              <JupiterProvider connection={connection} cluster={cluster}>
+              <JupiterProvider
+                connection={connection}
+                cluster={cluster}
+                userPublicKey={
+                  new PublicKey('8UaZw2jDhJzv5V53569JbCd3bD4BnyCfBH3sjwgajGS9')
+                }
+              >
                 <Provider store={model}>
                   <PageView />
                 </Provider>
