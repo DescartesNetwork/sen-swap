@@ -3,9 +3,9 @@ import { useBestRoute } from './useBestRoute'
 
 const useSenSwap = (fixedPoolAddress?: string) => {
   const bestRoute = useBestRoute(fixedPoolAddress)
-  const handleSwap = useHandleSwap()
+  const exchange = useHandleSwap()
 
-  return { bestRoute, handleSwap }
+  return { bestRoute, exchange }
 }
 
 export default useSenSwap

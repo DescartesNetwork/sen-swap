@@ -14,7 +14,10 @@ export const useDisabled = () => {
       accountAddress: bidAccountAddress,
       mintInfo: { address: bidMintAddress, decimals: bidMintDecimals },
     },
-    ask: { amount: askAmount },
+    ask: {
+      amount: askAmount,
+      mintInfo: { address: askMintAddress },
+    },
   } = useSelector((state: AppState) => state)
 
   const {
@@ -38,7 +41,8 @@ export const useDisabled = () => {
     !best.length ||
     !Number(bidAmount) ||
     !Number(askAmount) ||
-    Number(bidAmount) > Number(availableBid)
+    Number(bidAmount) > Number(availableBid) ||
+    bidMintAddress === askMintAddress
 
   return disabled
 }

@@ -43,7 +43,7 @@ const SwapButton = ({
   const { state: senlpState } = useLocation<SenLpState>()
   const disabled = useDisabled()
 
-  const { bestRoute, handleSwap } = useSenSwap(senlpState?.poolAddress)
+  const { bestRoute, exchange } = useSenSwap(senlpState?.poolAddress)
   // console.log(bestRoute)
   // const jupiter = useJupiterAggregator()
   // console.log(jupiter)
@@ -54,7 +54,7 @@ const SwapButton = ({
       // check wrap sol
       if (wrapAmount) await wrapSol()
 
-      const { txId } = await handleSwap()
+      const { txId } = await exchange()
       window.notify({
         type: 'success',
         description: 'Swap successfully. Click to view details.',
