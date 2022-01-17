@@ -8,7 +8,6 @@ export enum SwapPlatform {
 export type RouteState = {
   platform: SwapPlatform
   best: RouteTrace // The best route
-  amounts: bigint[]
   amount: bigint
   priceImpact: number
 }
@@ -18,7 +17,6 @@ const initialState: RouteState = {
   platform: SwapPlatform.SenSwap,
   best: [],
   amount: BigInt(0),
-  amounts: [],
   priceImpact: 0,
 }
 

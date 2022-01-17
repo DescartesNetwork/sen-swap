@@ -15,7 +15,8 @@ import { updateAskData } from 'app/model/ask.controller'
 import { updateRoute } from 'app/model/route.controller'
 import useSenSwap from './useSenSwap'
 import { useDisabled } from './useDisabled'
-// import useJupiterAggregator from './useJupiterAggregator'
+import { useSenSwapValidator } from 'app/hooks/useSenSwapValidator'
+import useJupiterAggregator from './useJupiterAggregator'
 
 const SwapButton = ({
   onCallback = () => {},
@@ -43,10 +44,14 @@ const SwapButton = ({
   const { state: senlpState } = useLocation<SenLpState>()
   const disabled = useDisabled()
 
-  const { bestRoute, exchange } = useSenSwap(senlpState?.poolAddress)
-  // console.log(bestRoute)
-  // const jupiter = useJupiterAggregator()
-  // console.log(jupiter)
+  // const validSenSwap = useSenSwapValidator()
+  // const senswap = useSenSwap(senlpState?.poolAddress)
+  const jupiter = useJupiterAggregator()
+  // console.log('validSenSwap', validSenSwap)
+  // console.log('senswap', senswap)
+  console.log('jupiter', jupiter)
+  // const { swap, bestRoute } = validSenSwap ? senswap : jupiter
+  const { swap, bestRoute } = jupiter
 
   const onSwap = async () => {
     try {
@@ -54,7 +59,7 @@ const SwapButton = ({
       // check wrap sol
       if (wrapAmount) await wrapSol()
 
-      const { txId } = await exchange()
+      const { txId } = await swap()
       window.notify({
         type: 'success',
         description: 'Swap successfully. Click to view details.',

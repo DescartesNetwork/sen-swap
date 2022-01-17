@@ -135,15 +135,12 @@ export const findBestRouteFromBid = (
   let bestRoute: RouteState = {
     platform: SwapPlatform.SenSwap,
     best: [],
-    amounts: [],
     amount: BigInt(0),
     priceImpact: 0,
   }
   routes.forEach((route) => {
     let amount = utils.decimalize(bidAmount, mintInfo.decimals)
-    const amounts = new Array<bigint>()
     route.forEach((hop) => {
-      amounts.push(amount)
       amount = curve(amount, hop)
     })
     const maxAskAmount = bestRoute.amount
@@ -151,12 +148,12 @@ export const findBestRouteFromBid = (
       bestRoute = {
         platform: SwapPlatform.SenSwap,
         best: route,
-        amounts,
         amount,
         priceImpact: 0,
       }
   })
-  bestRoute.priceImpact = calcPriceImpact(bestRoute.best, bestRoute.amounts[0])
+  const amount = utils.decimalize(bidAmount, mintInfo.decimals)
+  bestRoute.priceImpact = calcPriceImpact(bestRoute.best, amount)
   return bestRoute
 }
 
@@ -167,19 +164,16 @@ export const findBestRouteFromAsk = (
   let bestRoute: RouteState = {
     platform: SwapPlatform.SenSwap,
     best: [],
-    amounts: [],
     amount: BigInt(0),
     priceImpact: 0,
   }
   for (const route of routes) {
     const reversedRoute = [...route].reverse()
     let amount = utils.decimalize(askAmount, mintInfo.decimals)
-    const amounts = new Array<bigint>()
 
     for (const hop of reversedRoute) {
       amount = inverseCurve(amount, hop)
       if (amount <= BigInt(0)) break
-      amounts.unshift(amount)
     }
     if (amount <= BigInt(0)) continue
     const minBidAmount = bestRoute.amount
@@ -187,7 +181,6 @@ export const findBestRouteFromAsk = (
       bestRoute = {
         platform: SwapPlatform.SenSwap,
         best: route,
-        amounts,
         amount,
         priceImpact: 0,
       }

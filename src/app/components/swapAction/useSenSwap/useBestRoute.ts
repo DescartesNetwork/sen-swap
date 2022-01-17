@@ -16,7 +16,6 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
   const [bestRoute, setBestRoute] = useState<RouteState>({
     platform: SwapPlatform.SenSwap,
     best: [],
-    amounts: [],
     amount: BigInt(0),
     priceImpact: 0,
   })
@@ -45,7 +44,6 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
     let bestRoute: RouteState = {
       platform: SwapPlatform.SenSwap,
       best: [],
-      amounts: [],
       amount: BigInt(0),
       priceImpact: 0,
     }
