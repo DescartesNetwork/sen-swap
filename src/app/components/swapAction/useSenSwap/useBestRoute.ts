@@ -12,7 +12,7 @@ import {
   findBestRouteFromBid,
 } from 'app/helper/router'
 
-const useSenSwap = (fixedPoolAddress?: string) => {
+export const useBestRoute = (fixedPoolAddress?: string) => {
   const [bestRoute, setBestRoute] = useState<RouteState>({
     platform: SwapPlatform.SenSwap,
     best: [],
@@ -87,5 +87,3 @@ const useSenSwap = (fixedPoolAddress?: string) => {
 
   return bestRoute
 }
-
-export default useSenSwap
