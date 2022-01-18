@@ -1,6 +1,6 @@
 import { Card, Col, Row } from 'antd'
 import SwapReview from './swapReview'
-import SwapPoolInfo from './swapPoolInfo'
+import PoolInfo from './poolInfo'
 import SwapForm from 'app/components/swapForm'
 
 const Swap = () => {
@@ -15,7 +15,7 @@ const Swap = () => {
         <SwapReview />
       </Col>
       <Col span={24}>
-        <SwapPoolInfo />
+        <PoolInfo />
       </Col>
     </Row>
   )

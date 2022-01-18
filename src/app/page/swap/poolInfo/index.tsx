@@ -2,45 +2,15 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { account, PoolData, utils } from '@senswap/sen-js'
 
-import { Card, Col, Divider, Row, Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import { Card, Col, Divider, Row } from 'antd'
+import MintPoolInfo from './mintPoolInfo'
 
 import { AppState } from 'app/model'
 import { extractReserve } from 'app/helper/router'
-import { numeric } from 'shared/util'
 import useMintCgk from 'app/hooks/useMintCgk'
+import './index.less'
 
-const MintPoolInfo = ({
-  mintAddress,
-  tvl = '',
-  price,
-  format = '0,0.[00]a',
-}: {
-  mintAddress: string
-  tvl?: string | number
-  price?: number
-  format?: string
-}) => {
-  return (
-    <Space direction="vertical" size={4}>
-      <MintAvatar mintAddress={mintAddress} />
-      <Space>
-        <Typography.Text>TVL:</Typography.Text>
-        <Typography.Title level={5}>
-          {numeric(tvl).format(format)}
-        </Typography.Title>
-        <Typography.Title level={5}>
-          <MintSymbol mintAddress={mintAddress} />
-        </Typography.Title>
-      </Space>
-      <Typography.Text className="caption" type="secondary">
-        ~ ${numeric(price).format(format)}
-      </Typography.Text>
-    </Space>
-  )
-}
-
-const SwapPoolInfo = () => {
+const PoolInfo = () => {
   const {
     route: { best },
     bid: { mintInfo: bidMintInfo },
@@ -74,8 +44,13 @@ const SwapPoolInfo = () => {
     return Number(utils.undecimalize(ask, askMintInfo.decimals))
   }, [askMintInfo, askPoolData])
 
+  const disabled = !bidTVL || !askTVL
+
   return (
-    <Card bordered={false}>
+    <Card
+      bordered={false}
+      className={disabled ? 'disabled-swap-pool-info-card' : undefined}
+    >
       <Row gutter={[16, 16]} wrap={false}>
         <Col span={11}>
           <MintPoolInfo
@@ -99,4 +74,4 @@ const SwapPoolInfo = () => {
   )
 }
 
-export default SwapPoolInfo
+export default PoolInfo

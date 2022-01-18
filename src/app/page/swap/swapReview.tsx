@@ -1,23 +1,14 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
 
 import { Button, Card, Col, Row, Typography } from 'antd'
-import SwapAction from 'app/components/swapAction'
 import Preview from 'app/components/preview'
 
-import { updateBidData } from 'app/model/bid.controller'
-import usePriceImpact from 'app/hooks/usePriceImpact'
-import { PriceImpact } from 'app/constant/swap'
 import ConfirmSwap from 'app/components/confirmSwap'
+import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
 
 const SwapActions = () => {
   const [visivle, setVisivle] = useState(false)
-  const dispatch = useDispatch()
-  const onCallback = () =>
-    dispatch(updateBidData({ amount: '', prioritized: true }))
-  const priceImpact = usePriceImpact()
-
-  const tooHighImpact = priceImpact > PriceImpact.acceptableSwap
+  const disabled = useDisabledSwap()
 
   return (
     <Card bordered={false}>
@@ -30,17 +21,16 @@ const SwapActions = () => {
         </Col>
         <Col span={24} /> {/* Safe sapce */}
         <Col span={24}>
-          {tooHighImpact ? (
-            <Button type="primary" onClick={() => setVisivle(true)} block>
-              Review & Swap
-            </Button>
-          ) : (
-            <SwapAction onCallback={onCallback} />
-          )}
+          <Button
+            type="primary"
+            onClick={() => setVisivle(true)}
+            disabled={disabled}
+            block
+          >
+            Review & Swap
+          </Button>
         </Col>
-        {tooHighImpact && (
-          <ConfirmSwap visible={visivle} onCancle={setVisivle} />
-        )}
+        <ConfirmSwap visible={visivle} onCancel={setVisivle} />
       </Row>
     </Card>
   )

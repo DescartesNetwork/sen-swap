@@ -1,17 +1,19 @@
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Space } from 'antd'
+import { Divider, Space } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
+import PoweredByJupiter from '../poweredByJupiter'
 
 import { AppState } from 'app/model'
 import { account } from '@senswap/sen-js'
 import { MintAvatar } from 'shared/antd/mint'
+import { SwapPlatform } from 'app/model/route.controller'
 
 const RouteAvatar = () => {
   const {
     bid: { mintInfo },
-    route: { best },
+    route: { platform, best },
   } = useSelector((state: AppState) => state)
 
   const srcMintAddress = mintInfo?.address
@@ -35,6 +37,12 @@ const RouteAvatar = () => {
           )}
         </Fragment>
       ))}
+      {platform === SwapPlatform.JupiterAggregator && (
+        <Fragment>
+          <Divider type="vertical" style={{ margin: 0 }} />
+          <PoweredByJupiter />
+        </Fragment>
+      )}
     </Space>
   )
 }
