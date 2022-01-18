@@ -12,16 +12,15 @@ import { numeric } from 'shared/util'
 import ConfirmSwap from 'app/components/confirmSwap'
 import { priceImpactColor } from 'app/helper/utils'
 import { SwapPlatform } from 'app/model/route.controller'
+import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
   const {
-    route: { platform, best, priceImpact },
-    bid: { amount: bidAmount },
-    ask: { amount: askAmount },
+    route: { platform, priceImpact },
   } = useSelector((state: AppState) => state)
 
-  const disabled = !best.length || !Number(bidAmount) || !Number(askAmount)
+  const disabled = useDisabledSwap()
 
   return (
     <Row gutter={[8, 8]}>
