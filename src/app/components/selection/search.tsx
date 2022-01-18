@@ -28,8 +28,8 @@ const Search = ({
 
     // get all single token in accounts
     for (const addr in accounts) {
-      const { mint } = accounts[addr]
-      if (allMintAddress[mint]) sortedMint[mint] = true
+      const { mint, amount } = accounts[addr]
+      if (allMintAddress[mint] && amount) sortedMint[mint] = true
     }
     sortedMint = { ...sortedMint, ...allMintAddress }
 
