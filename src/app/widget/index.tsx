@@ -1,20 +1,22 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Row, Col, Typography, Space, Button, Popover } from 'antd'
+import { Row, Col, Typography, Space, Button, Popover, Divider } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 import PreviewSwap from 'app/components/preview'
 import SwapInput from 'app/components/swapForm/swapInput'
+import PoweredByJupiter from 'app/components/poweredByJupiter'
 
 import { AppState } from 'app/model'
 import { numeric } from 'shared/util'
 import ConfirmSwap from 'app/components/confirmSwap'
 import { priceImpactColor } from 'app/helper/utils'
+import { SwapPlatform } from 'app/model/route.controller'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
   const {
-    route: { best, priceImpact },
+    route: { platform, best, priceImpact },
     bid: { amount: bidAmount },
     ask: { amount: askAmount },
   } = useSelector((state: AppState) => state)
@@ -22,12 +24,12 @@ const Widget = () => {
   const disabled = !best.length || !Number(bidAmount) || !Number(askAmount)
 
   return (
-    <Row gutter={[12, 12]}>
+    <Row gutter={[8, 8]}>
       <Col span={24}>
         <SwapInput />
       </Col>
       <Col span={24}>
-        <Row align="bottom">
+        <Row align="bottom" wrap={false}>
           <Col flex="auto">
             <Popover
               placement="bottomLeft"
@@ -50,23 +52,33 @@ const Widget = () => {
                     Price impact
                   </Typography.Text>
                 </Space>
-                <Typography.Text
-                  style={{ color: priceImpactColor(priceImpact) }}
-                >
-                  {numeric(Number(priceImpact)).format('0.[0000]%')}
-                </Typography.Text>
+                <Space>
+                  <Typography.Text
+                    style={{ color: priceImpactColor(priceImpact) }}
+                  >
+                    {numeric(Number(priceImpact)).format('0.[0000]%')}
+                  </Typography.Text>
+                  {platform === SwapPlatform.JupiterAggregator && (
+                    <Fragment>
+                      <Divider type="vertical" style={{ margin: 0 }} />
+                      <PoweredByJupiter />
+                    </Fragment>
+                  )}
+                </Space>
               </Space>
             </Popover>
           </Col>
           <Col>
             <Button
               onClick={() => setVisible(true)}
-              size="large"
-              block
               type="primary"
               disabled={disabled}
+              block
             >
-              Review & Swap
+              <Space>
+                <span>Review</span>
+                <IonIcon name="arrow-forward-outline" />
+              </Space>
             </Button>
           </Col>
         </Row>
