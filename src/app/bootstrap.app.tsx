@@ -1,6 +1,4 @@
 import { Provider } from 'react-redux'
-import { Connection, PublicKey } from '@solana/web3.js'
-import { JupiterProvider } from '@jup-ag/react-hook'
 import {
   WalletProvider,
   UIProvider,
@@ -21,9 +19,7 @@ import 'app/static/styles/index.less'
 
 const {
   manifest: { appId },
-  sol: { node, cluster },
 } = configs
-const connection = new Connection(node)
 
 export const Page = () => {
   return (
@@ -32,17 +28,9 @@ export const Page = () => {
         <PoolProvider>
           <AccountProvider>
             <WalletProvider>
-              <JupiterProvider
-                connection={connection}
-                cluster={cluster}
-                userPublicKey={
-                  new PublicKey('8UaZw2jDhJzv5V53569JbCd3bD4BnyCfBH3sjwgajGS9')
-                }
-              >
-                <Provider store={model}>
-                  <PageView />
-                </Provider>
-              </JupiterProvider>
+              <Provider store={model}>
+                <PageView />
+              </Provider>
             </WalletProvider>
           </AccountProvider>
         </PoolProvider>
@@ -63,11 +51,9 @@ export const Widget = () => {
         <PoolProvider>
           <AccountProvider>
             <WalletProvider>
-              <JupiterProvider connection={connection} cluster={cluster}>
-                <Provider store={model}>
-                  <WidgetView />
-                </Provider>
-              </JupiterProvider>
+              <Provider store={model}>
+                <WidgetView />
+              </Provider>
             </WalletProvider>
           </AccountProvider>
         </PoolProvider>

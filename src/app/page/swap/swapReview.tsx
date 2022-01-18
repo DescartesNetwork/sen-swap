@@ -4,11 +4,11 @@ import { Button, Card, Col, Row, Typography } from 'antd'
 import Preview from 'app/components/preview'
 
 import ConfirmSwap from 'app/components/confirmSwap'
-import { useDisabled } from 'app/components/swapAction/useDisabled'
+import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
 
 const SwapActions = () => {
   const [visivle, setVisivle] = useState(false)
-  const disabled = useDisabled()
+  const disabled = useDisabledSwap()
 
   return (
     <Card bordered={false}>

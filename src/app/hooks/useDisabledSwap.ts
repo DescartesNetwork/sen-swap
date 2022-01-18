@@ -6,7 +6,7 @@ import { useWallet } from '@senhub/providers'
 import { AppState } from 'app/model'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 
-export const useDisabled = () => {
+export const useDisabledSwap = () => {
   const {
     route: { best },
     bid: {

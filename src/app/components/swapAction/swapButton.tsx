@@ -9,14 +9,14 @@ import { AppState, AppDispatch } from 'app/model'
 import { explorer } from 'shared/util'
 import { PriceImpact } from 'app/constant/swap'
 import { SenLpState } from 'app/constant/senLpState'
-import { useWrapSol } from './useWrapSol'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateRoute } from 'app/model/route.controller'
-import useSenSwap from './useSenSwap'
-import { useDisabled } from './useDisabled'
+import { useWrapSol } from 'app/hooks/useWrapSol'
+import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
 import { useSenSwapValidator } from 'app/hooks/useSenSwapValidator'
-import useJupiterAggregator from './useJupiterAggregator'
+import useSenSwap from 'app/hooks/useSenSwap'
+import useJupiterAggregator from 'app/hooks/useJupiterAggregator'
 
 export type SwapButtonProps = {
   onCallback?: () => void
@@ -44,7 +44,7 @@ const SwapButton = ({
 
   const { wrapAmount, wrapSol } = useWrapSol()
   const { state: senlpState } = useLocation<SenLpState>()
-  const disabled = useDisabled()
+  const disabled = useDisabledSwap()
 
   const validSenSwap = useSenSwapValidator()
   const senswap = useSenSwap(senlpState?.poolAddress)

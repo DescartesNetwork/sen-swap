@@ -8,9 +8,10 @@ import configs from 'app/configs'
 import { AppState } from 'app/model'
 import { RouteState, SwapPlatform } from 'app/model/route.controller'
 import { RouteTrace } from 'app/helper/router'
-import { HopData } from '../preview'
+
 import JupiterWalletWrapper from './jupiterWalletWrapper'
 import { useWallet } from '@senhub/providers'
+import { HopData } from 'app/components/preview'
 
 const {
   sol: { node },
@@ -77,7 +78,7 @@ const useJupiterAggregator = () => {
       wallet: wrappedWallet,
       route: routes[0],
       confirmationWaiterFactory: async (txid) => {
-        await connection.confirmTransaction(txid)
+        await connection.confirmTransaction(txid, 'confirmed')
         return await connection.getTransaction(txid, {
           commitment: 'confirmed',
         })
