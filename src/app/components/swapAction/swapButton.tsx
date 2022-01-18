@@ -14,9 +14,9 @@ import { updateAskData } from 'app/model/ask.controller'
 import { updateRoute } from 'app/model/route.controller'
 import { useWrapSol } from 'app/hooks/useWrapSol'
 import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
-import { useSenSwapValidator } from 'app/hooks/useSenSwapValidator'
-import useSenSwap from 'app/hooks/useSenSwap'
-import useJupiterAggregator from 'app/hooks/useJupiterAggregator'
+import { useSenSwapValidator } from 'app/hooks/senswap/useSenSwapValidator'
+import useSenSwap from 'app/hooks/senswap'
+import useJupiterAggregator from 'app/hooks/jupiter/useJupiterAggregator'
 
 export type SwapButtonProps = {
   onCallback?: () => void

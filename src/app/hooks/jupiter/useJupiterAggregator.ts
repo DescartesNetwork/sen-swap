@@ -9,7 +9,7 @@ import { AppState } from 'app/model'
 import { RouteState, SwapPlatform } from 'app/model/route.controller'
 import { RouteTrace } from 'app/helper/router'
 
-import JupiterWalletWrapper from './jupiterWalletWrapper'
+import JupiterWalletWrapper from 'app/hooks/jupiter/jupiterWalletWrapper'
 import { useWallet } from '@senhub/providers'
 import { HopData } from 'app/components/preview'
 
@@ -28,7 +28,7 @@ const DEFAULT_DATA: RouteState = {
 const useJupiterAggregator = () => {
   const {
     bid: {
-      mintInfo: { address: bidMintAddress },
+      mintInfo: { address: bidMintAddress, decimals: bidDecimals },
       amount: bidAmount,
     },
     ask: {
@@ -40,7 +40,7 @@ const useJupiterAggregator = () => {
     wallet: { address: walletAddress },
   } = useWallet()
 
-  const amount = Number(bidAmount) * 10 ** 6
+  const amount = Number(bidAmount) * 10 ** bidDecimals
   const inputMint = useMemo(
     () =>
       account.isAddress(bidMintAddress)
