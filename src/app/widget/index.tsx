@@ -7,26 +7,24 @@ import PreviewSwap from 'app/components/preview'
 import SwapInput from 'app/components/swapForm/swapInput'
 
 import { AppState } from 'app/model'
-import usePriceImpact, { usePriceColor } from 'app/hooks/usePriceImpact'
 import { numeric } from 'shared/util'
 import ConfirmSwap from 'app/components/confirmSwap'
+import { priceImpactColor } from 'app/helper/utils'
 
 const Widget = () => {
   const [visible, setVisible] = useState(false)
   const {
-    route: { best },
+    route: { best, priceImpact },
     bid: { amount: bidAmount },
     ask: { amount: askAmount },
   } = useSelector((state: AppState) => state)
-  const priceImpact = usePriceImpact()
-  const priceColor = usePriceColor()
 
   const disabled = !best.length || !Number(bidAmount) || !Number(askAmount)
 
   return (
     <Row gutter={[12, 12]}>
       <Col span={24}>
-        <SwapInput spacing={12} />
+        <SwapInput />
       </Col>
       <Col span={24}>
         <Row align="bottom">
@@ -52,7 +50,9 @@ const Widget = () => {
                     Price impact
                   </Typography.Text>
                 </Space>
-                <Typography.Text style={{ color: priceColor }}>
+                <Typography.Text
+                  style={{ color: priceImpactColor(priceImpact) }}
+                >
                   {numeric(Number(priceImpact)).format('0.[0000]%')}
                 </Typography.Text>
               </Space>
@@ -71,7 +71,7 @@ const Widget = () => {
           </Col>
         </Row>
       </Col>
-      <ConfirmSwap visible={visible} onCancle={setVisible} />
+      <ConfirmSwap visible={visible} onCancel={setVisible} />
     </Row>
   )
 }

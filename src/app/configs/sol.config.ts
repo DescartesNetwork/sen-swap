@@ -5,6 +5,7 @@ import { Net } from 'shared/runtime'
  */
 type Conf = {
   node: string
+  cluster: 'devnet' | 'testnet' | 'mainnet-beta'
   spltAddress: string
   splataAddress: string
 }
@@ -15,6 +16,7 @@ const conf: Record<Net, Conf> = {
    */
   devnet: {
     node: 'https://api.devnet.solana.com',
+    cluster: 'devnet',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   },
@@ -24,6 +26,7 @@ const conf: Record<Net, Conf> = {
    */
   testnet: {
     node: 'https://api.testnet.solana.com',
+    cluster: 'testnet',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   },
@@ -32,7 +35,8 @@ const conf: Record<Net, Conf> = {
    * Production configurations
    */
   mainnet: {
-    node: 'https://api.mainnet-beta.solana.com',
+    node: 'https://solana-api.projectserum.com',
+    cluster: 'mainnet-beta',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   },

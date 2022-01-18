@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Row, Col, Button, Popover, Typography, Divider } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
-import PoweredBy from 'app/components/poweredBy'
+import PoweredBySentre from 'app/components/poweredBySentre'
 import Slippage from './slippage'
 import Advanced from './advanced'
 
@@ -25,7 +25,7 @@ const Settings = () => {
   return (
     <Row gutter={[4, 4]} justify="end" align="middle" wrap={false}>
       <Col>
-        <PoweredBy />
+        <PoweredBySentre />
       </Col>
       <Col>
         <Divider type="vertical" style={{ padding: 0 }} />

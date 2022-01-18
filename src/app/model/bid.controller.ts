@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { LiteMintInfo } from 'app/components/preview'
 
-export type State = {
+export type BidState = {
   amount: string // Desired amount
   accountAddress: string // Associated account to the selected token
   mintInfo: LiteMintInfo // Selected token
@@ -10,7 +10,7 @@ export type State = {
 }
 
 const NAME = 'bid'
-const initialState: State = {
+const initialState: BidState = {
   amount: '',
   mintInfo: {
     address: '',
@@ -26,8 +26,8 @@ const initialState: State = {
  */
 
 export const updateBidData = createAsyncThunk<
-  Partial<State>,
-  Partial<State> & { prioritized?: boolean; reset?: boolean },
+  Partial<BidState>,
+  Partial<BidState> & { prioritized?: boolean; reset?: boolean },
   { state: any }
 >(
   `${NAME}/updateBidData`,

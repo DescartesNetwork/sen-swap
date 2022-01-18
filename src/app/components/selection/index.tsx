@@ -12,11 +12,9 @@ import { SenLpState } from 'app/constant/senLpState'
 const Selection = ({
   value,
   onChange,
-  hiddenTokens,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
-  hiddenTokens?: string[]
 }) => {
   const [visible, setVisible] = useState(false)
   const history = useHistory()
@@ -56,11 +54,7 @@ const Selection = ({
         <Row gutter={[16, 16]}>
           <Col span={24} />
           <Col span={24}>
-            <MintSelection
-              hiddenTokens={hiddenTokens}
-              value={value}
-              onChange={onSelection}
-            />
+            <MintSelection value={value} onChange={onSelection} />
           </Col>
         </Row>
       </Modal>

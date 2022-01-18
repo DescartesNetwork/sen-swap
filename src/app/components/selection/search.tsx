@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useMint, usePool } from '@senhub/providers'
+import { useAccount, useMint, usePool } from '@senhub/providers'
 
 import { Card, Input, Button } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
@@ -17,37 +17,35 @@ const Search = ({
   const [keyword, setKeyword] = useState('')
   const { tokenProvider } = useMint()
   const { pools } = usePool()
+  const { accounts } = useAccount()
 
   const sortMintAddresses = useCallback(async () => {
+    let sortedMint: Record<string, boolean> = {}
+    // Get all mints in token provider
+    const allMintAddress: Record<string, boolean> = {}
+    const allTokens = await tokenProvider.all()
+    for (const token of allTokens) allMintAddress[token.address] = true
+
+    // get all single token in accounts
+    for (const addr in accounts) {
+      const { mint, amount } = accounts[addr]
+      if (allMintAddress[mint] && amount) sortedMint[mint] = true
+    }
+    sortedMint = { ...sortedMint, ...allMintAddress }
+
     // Get all mints in pools
-    const rawMintAddresses = Object.values(pools)
+    const inPoolMintAddresses = Object.values(pools)
       .map(({ mint_a, mint_b }) => [mint_a, mint_b])
       .flat()
       .filter((item, pos, self) => self.indexOf(item) === pos)
-    // Get all lp mints
-    const lpMintAddresses = Object.values(pools).map(({ mint_lpt }) => mint_lpt)
     // Check mint addresses (token info, mint lp)
-    const checkedMintAddresses = await Promise.all(
-      rawMintAddresses.map(async (mintAddress) => {
-        const tokenInfo = await tokenProvider.findByAddress(mintAddress)
-        const data = {
-          address: mintAddress,
-          checked: Boolean(tokenInfo) || lpMintAddresses.includes(mintAddress),
-        }
-        return data
-      }),
-    )
-    // Sort mint addresses by checking flags
-    const sortedMintAddresses = checkedMintAddresses
-      .sort((first, second) => {
-        if (!first.checked && second.checked) return 1
-        if (first.checked && !second.checked) return -1
-        return 0
-      })
-      .map(({ address }) => address)
+    inPoolMintAddresses.forEach((mintAddress) => {
+      if (!sortedMint[mintAddress]) sortedMint[mintAddress] = true
+    })
+
     // Return
-    return setMintAddresses(sortedMintAddresses)
-  }, [tokenProvider, pools])
+    return setMintAddresses(Object.keys(sortedMint))
+  }, [tokenProvider, pools, accounts])
 
   useEffect(() => {
     sortMintAddresses()
