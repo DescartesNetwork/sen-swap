@@ -50,8 +50,11 @@ const SwapButton = ({
   const senswap = useSenSwap(senlpState?.poolAddress)
   const jupiter = useJupiterAggregator()
 
+  // Jupiter support only with bid->ask
   const { swap, bestRoute } =
-    validSenSwap || !jupiter.bestRoute.best.length ? senswap : jupiter
+    validSenSwap || !jupiter.bestRoute.best.length || askPriority > bidPriority
+      ? senswap
+      : jupiter
 
   const onSwap = async () => {
     try {
