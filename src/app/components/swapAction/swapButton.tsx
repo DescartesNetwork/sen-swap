@@ -49,12 +49,11 @@ const SwapButton = ({
   const validSenSwap = useSenSwapValidator()
   const senswap = useSenSwap(senlpState?.poolAddress)
   const jupiter = useJupiterAggregator()
-
   // Jupiter support only with bid->ask
-  const { swap, bestRoute } =
-    validSenSwap || !jupiter.bestRoute.best.length || askPriority > bidPriority
-      ? senswap
-      : jupiter
+  const validJupiter =
+    jupiter.bestRoute.best.length && bidPriority > askPriority
+
+  const { swap, bestRoute } = validSenSwap || !validJupiter ? senswap : jupiter
 
   const onSwap = async () => {
     try {
