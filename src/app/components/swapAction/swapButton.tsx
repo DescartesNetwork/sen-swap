@@ -49,7 +49,9 @@ const SwapButton = ({
   const validSenSwap = useSenSwapValidator()
   const senswap = useSenSwap(senlpState?.poolAddress)
   const jupiter = useJupiterAggregator()
-  const { swap, bestRoute } = validSenSwap ? senswap : jupiter
+
+  const { swap, bestRoute } =
+    validSenSwap || !jupiter.bestRoute.best.length ? senswap : jupiter
 
   const onSwap = async () => {
     try {
