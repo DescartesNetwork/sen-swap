@@ -1,27 +1,27 @@
 import { Avatar, Space, Tooltip, Typography } from 'antd'
-import JupiterIcon from 'app/static/images/jupiter-logo.svg'
+import CoinGeckoIcon from 'app/static/images/coingecko-logo.png'
 
-export type PoweredByJupiterProps = {
+export type PoweredByCoinGeckoProps = {
   title?: string
   spacing?: number
   iconSize?: number
 }
 
-const PoweredByJupiter = ({
+const PoweredByCoinGecko = ({
   title = 'Powered by',
   spacing = 4,
   iconSize = 20,
-}: PoweredByJupiterProps) => {
+}: PoweredByCoinGeckoProps) => {
   return (
     <Space size={spacing} style={{ cursor: 'pointer' }}>
       <Typography.Text style={{ fontSize: 12, color: '#7A7B85' }}>
         {title}
       </Typography.Text>
-      <Tooltip title="Jupiter Aggregator">
-        <Avatar src={JupiterIcon} size={iconSize} />
+      <Tooltip title="CoinGecko">
+        <Avatar src={CoinGeckoIcon} size={iconSize} />
       </Tooltip>
     </Space>
   )
 }
 
-export default PoweredByJupiter
+export default PoweredByCoinGecko

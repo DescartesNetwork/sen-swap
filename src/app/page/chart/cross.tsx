@@ -16,13 +16,13 @@ const Cross = () => {
   return (
     <Space>
       <Avatar.Group>
-        <MintAvatar mintAddress={bidMintAddress} />
         <MintAvatar mintAddress={askMintAddress} />
+        <MintAvatar mintAddress={bidMintAddress} />
       </Avatar.Group>
       <Typography.Text>
-        <MintSymbol mintAddress={bidMintAddress} />
-        {' / '}
         <MintSymbol mintAddress={askMintAddress} />
+        {' / '}
+        <MintSymbol mintAddress={bidMintAddress} />
       </Typography.Text>
     </Space>
   )

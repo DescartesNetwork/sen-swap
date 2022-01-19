@@ -3,7 +3,10 @@ import Chart from 'chart.js'
 import isEqual from 'react-fast-compare'
 
 import { numeric } from 'shared/util'
-interface Props {
+
+const DEFAULT_BACKGROUND_COLOR = '#dadada'
+
+export type SenChartProps = {
   labels?: (number | string)[]
   chartData?: (number | string)[]
   configs?: { backgroundColor?: string } & object
@@ -13,8 +16,6 @@ interface Props {
   chartId?: string
 }
 
-const DEFAULT_BACKGROUND_COLOR = '#dadada'
-
 const SenChart = ({
   chartData = [],
   labels = [],
@@ -22,7 +23,7 @@ const SenChart = ({
   configs,
   disableAxe = false,
   chartId = 'sen_chart',
-}: Props) => {
+}: SenChartProps) => {
   const { backgroundColor } = configs || {}
   const [isRebuildChart, setRebuildChart] = useState<boolean>(false)
 
