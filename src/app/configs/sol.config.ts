@@ -46,8 +46,7 @@ const conf: Record<Net, Conf> = {
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
     swapAddress: 'SSW7ooZ1EbEognq5GosbygA3uWW1Hq1NsFq6TsftCFV',
-    statNode:
-      'https://cors-anywhere.herokuapp.com/https://api.mainnet-beta.solana.com',
+    statNode: 'https://free.rpcpool.com',
   },
 }
 
