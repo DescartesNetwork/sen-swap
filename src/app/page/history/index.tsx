@@ -21,9 +21,14 @@ const History = () => {
   const dispatch = useDispatch<AppDispatch>()
 
   const fetchHistory = useCallback(async () => {
-    setLoading(true)
-    await dispatch(fetchHistorySwap()).unwrap()
-    setLoading(false)
+    try {
+      setLoading(true)
+      await dispatch(fetchHistorySwap()).unwrap()
+    } catch (er) {
+      return console.warn(er)
+    } finally {
+      setLoading(false)
+    }
   }, [dispatch])
 
   useEffect(() => {
