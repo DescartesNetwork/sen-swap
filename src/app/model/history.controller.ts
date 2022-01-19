@@ -1,11 +1,8 @@
 import moment from 'moment'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-
 import { utils } from '@senswap/sen-js'
 
-import configs from 'os/configs'
-import { TransLog } from 'app/lib/stat/entities/trans-log'
-import SwapTranslogService from 'app/lib/stat/logic/translogSwap'
+import SwapService from 'app/lib/stat/logic/swap/swap'
 
 export type State = {
   historySwap: HistorySwap[]
@@ -27,101 +24,62 @@ export type HistorySwap = {
   decimals: number
 }
 
-const LIMIT_HISTORY_SWAP = 20
-
 const NAME = 'history'
 const initialState: State = {
   historySwap: [],
 }
 
-const filterFunction = (transLog: TransLog) => {
-  if (!transLog.actionTransfers.length) return false
-  return transLog.actionType === 'SWAP'
-}
-
 /**
  * Actions
  */
-export const fetchHistorySwap = createAsyncThunk<
-  { historySwap: HistorySwap[] },
-  { lastSignature?: string; isLoadMore?: boolean },
-  { state: { history: State } }
->(
-  `${NAME}/fetchHistorySwap`,
-  async ({ lastSignature, isLoadMore }, { getState }) => {
-    const {
-      sol: { swapAddress },
-    } = configs
+export const fetchHistorySwap = createAsyncThunk<{
+  historySwap: HistorySwap[]
+}>(`${NAME}/fetchHistorySwap`, async () => {
+  const myWalletAddress = await window.sentre.wallet?.getAddress()
+  if (!myWalletAddress) throw Error('Login first')
 
-    const {
-      history: { historySwap },
-    } = getState()
+  const transLogService = new SwapService(myWalletAddress)
+  const transLogsData = await transLogService.fetchHistory()
+  let history: HistorySwap[] = []
 
-    const myWalletAddress = await window.sentre.wallet?.getAddress()
-    if (!myWalletAddress) throw Error('Loggin first')
+  for (const transLog of transLogsData) {
+    const historyItem = {} as HistorySwap
+    const actionTransfer = transLog.actionTransfers
+    const firstAction = actionTransfer[0]
+    const lastAction = actionTransfer[actionTransfer.length - 1]
+    if (!firstAction || !lastAction) continue
 
-    const options = {
-      limit: LIMIT_HISTORY_SWAP,
-      lastSignature,
-    }
+    const time = new Date(transLog.blockTime * 1000)
+    historyItem.time = moment(time).format('MMM DD, YYYY HH:mm')
+    historyItem.amountFrom = firstAction.destination
+      ? Number(
+          utils.undecimalize(
+            BigInt(firstAction.amount),
+            firstAction.destination.decimals,
+          ),
+        )
+      : undefined
+    historyItem.amountTo = lastAction?.destination
+      ? Number(
+          utils.undecimalize(
+            BigInt(lastAction.amount),
+            lastAction.destination.decimals,
+          ),
+        )
+      : undefined
 
-    const transLogService = new SwapTranslogService()
-    const transLogsData = await transLogService.collect(
-      myWalletAddress,
-      options,
-      filterFunction,
-    )
-    let history: HistorySwap[] = []
-
-    if (isLoadMore) history = [...historySwap]
-
-    for (const transLog of transLogsData) {
-      if (!transLog.actionType) continue
-      const historyItem = {} as HistorySwap
-      const actionTransfer = transLog.actionTransfers
-      let lastAction
-
-      const firstAction = actionTransfer[0]
-      if (actionTransfer.length > 1)
-        lastAction = actionTransfer[actionTransfer.length - 1]
-
-      const programId = transLog.programId
-
-      if (programId !== swapAddress) continue
-
-      const time = new Date(transLog.blockTime * 1000)
-
-      historyItem.time = moment(time).format('MMM DD, YYYY HH:mm')
-      historyItem.amountFrom = firstAction.destination
-        ? Number(
-            utils.undecimalize(
-              BigInt(firstAction.amount),
-              firstAction.destination.decimals,
-            ),
-          )
-        : undefined
-      historyItem.amountTo = lastAction?.destination
-        ? Number(
-            utils.undecimalize(
-              BigInt(lastAction.amount),
-              lastAction.destination.decimals,
-            ),
-          )
-        : undefined
-
-      historyItem.from = firstAction.destination?.mint
-      historyItem.to = lastAction?.destination?.mint
-      historyItem.transactionId = transLog.signature
-      historyItem.key = transLog.signature
-      historyItem.status =
-        !firstAction.destination || !lastAction?.destination
-          ? 'failed'
-          : 'success'
-      history.push(historyItem)
-    }
-    return { historySwap: history }
-  },
-)
+    historyItem.from = firstAction.destination?.mint
+    historyItem.to = lastAction?.destination?.mint
+    historyItem.transactionId = transLog.signature
+    historyItem.key = transLog.signature
+    historyItem.status =
+      !firstAction.destination || !lastAction?.destination
+        ? 'failed'
+        : 'success'
+    history.push(historyItem)
+  }
+  return { historySwap: history }
+})
 
 /**
  * Usual procedure

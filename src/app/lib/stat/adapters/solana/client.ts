@@ -7,12 +7,17 @@ import {
 } from '@solana/web3.js'
 
 import { OptionsFetchSignature } from '../../constants/transaction'
+import configs from 'app/configs'
 
 const DEFAULT_LIMIT = 700
-const TRANSACTION_LIMIT = 150
+const TRANSACTION_LIMIT = 200
+
+const {
+  sol: { statNode },
+} = configs
 
 export class Solana {
-  private conn: Connection = window.sentre.splt.connection
+  private conn: Connection = new Connection(statNode)
 
   //Search for all signatures from last Signature and earlier
   //So: If new collection (to now) -> last Signature = null
