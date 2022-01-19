@@ -11,7 +11,6 @@ import { AppDispatch, AppState } from 'app/model'
 import './index.less'
 
 const ROW_PER_PAGE = 5
-const LIMIT_IN_STORE = 15
 const TABLE_HEIGHT = 462
 
 const History = () => {
@@ -23,7 +22,7 @@ const History = () => {
 
   const fetchHistory = useCallback(async () => {
     setLoading(true)
-    await dispatch(fetchHistorySwap({})).unwrap()
+    await dispatch(fetchHistorySwap()).unwrap()
     setLoading(false)
   }, [dispatch])
 
@@ -31,20 +30,7 @@ const History = () => {
     fetchHistory()
   }, [fetchHistory])
 
-  const onHandleViewMore = () => {
-    const currentTransactionDataLength = historySwap.slice(0, amountRow).length
-
-    if (historySwap.length - currentTransactionDataLength <= LIMIT_IN_STORE) {
-      const lastSignature = historySwap[historySwap.length - 1]?.transactionId
-      dispatch(
-        fetchHistorySwap({
-          lastSignature,
-          isLoadMore: true,
-        }),
-      )
-    }
-    setAmountRow(amountRow + ROW_PER_PAGE)
-  }
+  const onHandleViewMore = () => setAmountRow(amountRow + ROW_PER_PAGE)
 
   const onHandleRefeshTable = () => {
     fetchHistory()
