@@ -100,7 +100,6 @@ export const findAllRoutes = (
 
   // Too deep
   if (deep >= LIMIT_POOL_IN_ROUTE) return routes
-
   clonedGraph.delete(bidMintAddress)
   pools?.forEach((poolData, poolAddress) => {
     // Build sub params
@@ -119,7 +118,7 @@ export const findAllRoutes = (
       clonedGraph,
       dstMintAddress,
       askMintAddress,
-      deep++,
+      deep + 1,
     )
     subRoutes.forEach((route) => routes.push([hop, ...route]))
   })
