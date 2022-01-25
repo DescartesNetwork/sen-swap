@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Row, Col, Space, Typography, Modal, Card, Checkbox } from 'antd'
@@ -26,9 +26,14 @@ const ConfirmSwap = ({
 
   const tooHighImpact = priceImpact > PriceImpact.acceptableSwap
 
+  const onCloseModal = useCallback(() => {
+    onCancel(false)
+    setChecked(false)
+  }, [onCancel])
+
   return (
     <Modal
-      onCancel={() => onCancel(false)}
+      onCancel={onCloseModal}
       closeIcon={<IonIcon name="close" />}
       footer={null}
       visible={visible}
@@ -36,7 +41,7 @@ const ConfirmSwap = ({
     >
       <Row gutter={[16, 24]}>
         <Col span={24}>
-          <Typography.Title level={4}> Confirm swap</Typography.Title>
+          <Typography.Title level={4}> Confirm swaps</Typography.Title>
         </Col>
         <Col span={24}>
           <Row align="middle" justify="space-between">
@@ -83,7 +88,7 @@ const ConfirmSwap = ({
           </Col>
         )}
         <Col span={24}>
-          <SwapAction onCallback={() => onCancel(false)} forceSwap={checked} />
+          <SwapAction onCallback={onCloseModal} forceSwap={checked} />
         </Col>
       </Row>
     </Modal>
