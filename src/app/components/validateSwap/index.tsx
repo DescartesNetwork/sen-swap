@@ -18,7 +18,6 @@ const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
       amount: bidAmount,
       mintInfo: { address: mintAddress },
     },
-    bid: bidData,
   } = useSelector((state: AppState) => state)
   const {
     wallet: { address: walletAddress },
@@ -35,7 +34,7 @@ const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
       if (prevAmount) swapAmountSuccess += Number(prevAmount)
       await db.setItem(PDB_KEY, swapAmountSuccess)
     })()
-  }, [bidAmount, bidData, price, txId, walletAddress])
+  }, [bidAmount, price, txId, walletAddress])
 
   return <Fragment />
 }
