@@ -10,7 +10,7 @@ import configs from 'app/configs'
 const {
   manifest: { appId },
 } = configs
-const PDB_KEY = 'validate_swap'
+const PDB_KEY = 'validated_swap_transaction'
 
 const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
   const {
@@ -32,10 +32,10 @@ const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
         PDB_KEY,
       )) || { txId: [], amount: 0 }
       let swapAmountSuccess = Number(bidAmount) * price
-      const listTxId = prevLogs.txId
-      if (txId && !listTxId.includes(txId)) listTxId.push(txId)
+      const listTxIds = prevLogs.txId
+      if (txId && !listTxIds.includes(txId)) listTxIds.push(txId)
       if (prevLogs.amount) swapAmountSuccess += prevLogs.amount
-      const swapLogs = { txId: listTxId, amount: swapAmountSuccess }
+      const swapLogs = { txIds: listTxIds, amount: swapAmountSuccess }
       await db.setItem(PDB_KEY, swapLogs)
     })()
   }, [bidAmount, price, txId, walletAddress])
