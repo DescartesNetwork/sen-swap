@@ -27,12 +27,14 @@ const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
   useEffect(() => {
     ;(async () => {
       const db = createPDB(walletAddress, appId)
-
       if (!txId || !db) return
-      const prevAmount = await db.getItem(PDB_KEY)
+      const prevLogs: { txId: string; amount: number } = (await db.getItem(
+        PDB_KEY,
+      )) || { txId: '', amount: 0 }
       let swapAmountSuccess = Number(bidAmount) * price
-      if (prevAmount) swapAmountSuccess += Number(prevAmount)
-      await db.setItem(PDB_KEY, swapAmountSuccess)
+      if (prevLogs.amount) swapAmountSuccess += prevLogs.amount
+      const swapLogs = { txId, amount: swapAmountSuccess }
+      await db.setItem(PDB_KEY, swapLogs)
     })()
   }, [bidAmount, price, txId, walletAddress])
 
