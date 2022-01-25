@@ -11,7 +11,6 @@ const {
   manifest: { appId },
 } = configs
 const PDB_KEY = 'validate_swap'
-const SUCCESS_RANGE = 100
 
 const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
   const {
@@ -29,19 +28,12 @@ const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
   useEffect(() => {
     ;(async () => {
       const db = createPDB(walletAddress, appId)
+
       if (!txId || !db) return
       const prevAmount = await db.getItem(PDB_KEY)
       let swapAmountSuccess = Number(bidAmount) * price
-
       if (prevAmount) swapAmountSuccess += Number(prevAmount)
       await db.setItem(PDB_KEY, swapAmountSuccess)
-      if (swapAmountSuccess < SUCCESS_RANGE)
-        return console.log(
-          `Need ${SUCCESS_RANGE - swapAmountSuccess}$ to finish referral`,
-        )
-      return console.log(
-        `Referral successfully - ${swapAmountSuccess}$ , ${appId} , ${PDB_KEY}`,
-      )
     })()
   }, [bidAmount, bidData, price, txId, walletAddress])
 
