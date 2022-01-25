@@ -1,9 +1,10 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { utils } from '@senswap/sen-js'
 
 import { Button } from 'antd'
+import ValidateSwap from '../validateSwap'
 
 import { AppState, AppDispatch } from 'app/model'
 import { explorer } from 'shared/util'
@@ -28,6 +29,7 @@ const SwapButton = ({
   forceSwap = false,
 }: SwapButtonProps) => {
   const dispatch = useDispatch<AppDispatch>()
+  const [validSwap, setValidSwap] = useState('')
   const [loading, setLoading] = useState(false)
   const {
     route: { priceImpact, amount: bestAmount },
@@ -67,10 +69,12 @@ const SwapButton = ({
         description: 'Swap successfully. Click to view details.',
         onClick: () => window.open(explorer(txId), '_blank'),
       })
+      setValidSwap(txId)
       return onCallback()
     } catch (er: any) {
       return window.notify({ type: 'error', description: er.message })
     } finally {
+      setValidSwap('')
       return setLoading(false)
     }
   }
@@ -109,19 +113,22 @@ const SwapButton = ({
     !advanced && priceImpact > PriceImpact.acceptableSwap && !forceSwap
 
   return (
-    <Button
-      type="primary"
-      onClick={onSwap}
-      disabled={disabled || tooHighImpact}
-      loading={loading}
-      block
-    >
-      {tooHighImpact
-        ? 'Too High Price Impact'
-        : forceSwap
-        ? 'Swap Anyway'
-        : 'Swap'}
-    </Button>
+    <Fragment>
+      <Button
+        type="primary"
+        onClick={onSwap}
+        disabled={disabled || tooHighImpact}
+        loading={loading}
+        block
+      >
+        {tooHighImpact
+          ? 'Too High Price Impact'
+          : forceSwap
+          ? 'Swap Anyway'
+          : 'Swap'}
+      </Button>
+      <ValidateSwap txId={validSwap} />
+    </Fragment>
   )
 }
 
