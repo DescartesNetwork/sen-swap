@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { utils } from '@senswap/sen-js'
 
 import { Button } from 'antd'
+import ValidateSwap from '../validateSwap'
 
 import { AppState, AppDispatch } from 'app/model'
 import { explorer } from 'shared/util'
@@ -17,7 +18,6 @@ import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
 import { useSenSwapValidator } from 'app/hooks/senswap/useSenSwapValidator'
 import useSenSwap from 'app/hooks/senswap'
 import useJupiterAggregator from 'app/hooks/jupiter/useJupiterAggregator'
-import ValidateSwap from '../validateSwap'
 
 export type SwapButtonProps = {
   onCallback?: () => void
