@@ -84,7 +84,7 @@ const useJupiterAggregator = () => {
         })
       },
     })
-    if (result.error) throw new Error(result.error)
+    if (result.error) throw new Error(result.error?.message || 'Unknown Error')
     const { txid, outputAddress } = result
     return { txId: txid, dstAddress: outputAddress }
   }, [exchange, routes, walletAddress])
