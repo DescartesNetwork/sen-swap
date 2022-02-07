@@ -176,7 +176,7 @@ const SwapChart = () => {
   return (
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
       <Row gutter={[24, 24]}>
-        <Col flex="auto">
+        <Col span={24}>
           <Row gutter={[20, 20]}>
             <Col flex="auto">
               <Space>
