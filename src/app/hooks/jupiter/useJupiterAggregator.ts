@@ -1,12 +1,16 @@
-import { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
 import { useJupiter } from '@jup-ag/react-hook'
 import { Connection } from '@solana/web3.js'
 
 import configs from 'app/configs'
-import { AppState } from 'app/model'
-import { RouteState, SwapPlatform } from 'app/model/route.controller'
+import { AppDispatch, AppState } from 'app/model'
+import {
+  RouteState,
+  setLoadingJupiterRoute,
+  SwapPlatform,
+} from 'app/model/route.controller'
 import { RouteTrace } from 'app/helper/router'
 
 import JupiterWalletWrapper from 'app/hooks/jupiter/jupiterWalletWrapper'
@@ -26,6 +30,8 @@ const DEFAULT_DATA: RouteState = {
 }
 
 const useJupiterAggregator = () => {
+  const [acceptableRefresh, setAcceptableRefresh] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
   const {
     bid: {
       mintInfo: { address: bidMintAddress, decimals: bidDecimals },
@@ -35,6 +41,7 @@ const useJupiterAggregator = () => {
       mintInfo: { address: askMintAddress },
     },
     settings: { slippage },
+    route: { loadingJubRoute },
   } = useSelector((state: AppState) => state)
   const {
     wallet: { address: walletAddress },
@@ -57,7 +64,7 @@ const useJupiterAggregator = () => {
   )
 
   // Jupiter Aggregator
-  const { exchange, routes } = useJupiter({
+  const { exchange, routes, loading, refresh } = useJupiter({
     amount,
     inputMint,
     outputMint,
@@ -107,6 +114,21 @@ const useJupiterAggregator = () => {
       best,
     }
   }, [routes])
+
+  useEffect(() => {
+    if (loading !== loadingJubRoute)
+      dispatch(setLoadingJupiterRoute({ loadingJubRoute: loading }))
+  }, [dispatch, loading, loadingJubRoute])
+
+  useEffect(() => {
+    if (!!bidAmount && Number(bidAmount) > 0) return setAcceptableRefresh(true)
+  }, [bidAmount])
+
+  useEffect(() => {
+    if (!acceptableRefresh) return
+    setAcceptableRefresh(false)
+    return refresh()
+  }, [refresh, bidAmount, loadingJubRoute, acceptableRefresh])
 
   return { swap, bestRoute }
 }
