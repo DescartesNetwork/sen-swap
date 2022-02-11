@@ -1,7 +1,6 @@
-import { Row, Col, Typography, Switch } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import { Col, Row, Switch, Typography } from 'antd'
 
-const Advanced = ({
+const Enhancement = ({
   value,
   onChange,
 }: {
@@ -14,7 +13,7 @@ const Advanced = ({
         <Row gutter={[8, 8]} wrap={false}>
           <Col flex="auto">
             <Typography.Text style={{ fontSize: 14 }}>
-              Advanced Mode
+              Enhancement UI
             </Typography.Text>
           </Col>
           <Col>
@@ -23,14 +22,12 @@ const Advanced = ({
         </Row>
       </Col>
       <Col span={24}>
-        <Typography.Paragraph style={{ fontSize: 12, textAlign: 'justify' }}>
-          <IonIcon name="warning-outline" /> This advanced mode will disable the
-          automatic protection that often results in bad rates and lost funds.
-          Only use this mode if you know what you are doing.
+        <Typography.Paragraph style={{ fontSize: 12 }}>
+          Take advantage of all the familiar tools.
         </Typography.Paragraph>
       </Col>
     </Row>
   )
 }
 
-export default Advanced
+export default Enhancement
