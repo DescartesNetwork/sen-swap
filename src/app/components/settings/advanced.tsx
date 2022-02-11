@@ -13,9 +13,7 @@ const Advanced = ({
       <Col span={24}>
         <Row gutter={[8, 8]} wrap={false}>
           <Col flex="auto">
-            <Typography.Text style={{ fontSize: 14 }}>
-              Advanced Mode
-            </Typography.Text>
+            <Typography.Text>Advanced Mode</Typography.Text>
           </Col>
           <Col>
             <Switch size="small" checked={value} onChange={onChange} />
@@ -23,7 +21,7 @@ const Advanced = ({
         </Row>
       </Col>
       <Col span={24}>
-        <Typography.Paragraph style={{ fontSize: 12, textAlign: 'justify' }}>
+        <Typography.Paragraph className="caption">
           <IonIcon name="warning-outline" /> This advanced mode will disable the
           automatic protection that often results in bad rates and lost funds.
           Only use this mode if you know what you are doing.

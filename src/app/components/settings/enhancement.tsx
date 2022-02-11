@@ -12,9 +12,7 @@ const Enhancement = ({
       <Col span={24}>
         <Row gutter={[8, 8]} wrap={false}>
           <Col flex="auto">
-            <Typography.Text style={{ fontSize: 14 }}>
-              Enhancement UI
-            </Typography.Text>
+            <Typography.Text>Enhancement UI</Typography.Text>
           </Col>
           <Col>
             <Switch size="small" checked={value} onChange={onChange} />
@@ -22,7 +20,7 @@ const Enhancement = ({
         </Row>
       </Col>
       <Col span={24}>
-        <Typography.Paragraph style={{ fontSize: 12 }}>
+        <Typography.Paragraph className="caption">
           Take advantage of all the familiar tools.
         </Typography.Paragraph>
       </Col>
