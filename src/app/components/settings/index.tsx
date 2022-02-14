@@ -8,10 +8,11 @@ import Advanced from './advanced'
 
 import { updateSettings } from 'app/model/settings.controller'
 import { AppDispatch, AppState } from 'app/model'
+import Enhancement from './enhancement'
 
 const Settings = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { slippage, advanced } = useSelector(
+  const { slippage, advanced, enhancement } = useSelector(
     (state: AppState) => state.settings,
   )
 
@@ -20,6 +21,9 @@ const Settings = () => {
   }
   const onAdvanced = (advanced: boolean) => {
     return dispatch(updateSettings({ advanced }))
+  }
+  const onEnhancement = (enhancement: boolean) => {
+    return dispatch(updateSettings({ enhancement }))
   }
 
   return (
@@ -42,9 +46,13 @@ const Settings = () => {
               <Col span={24}>
                 <Slippage value={slippage} onChange={onSlippage} />
               </Col>
-              <Divider style={{ marginTop: 8, marginBottom: 8 }} />
+              <Divider style={{ margin: 0 }} />
               <Col span={24}>
                 <Advanced value={advanced} onChange={onAdvanced} />
+              </Col>
+              <Divider style={{ margin: 0 }} />
+              <Col span={24}>
+                <Enhancement value={enhancement} onChange={onEnhancement} />
               </Col>
             </Row>
           }

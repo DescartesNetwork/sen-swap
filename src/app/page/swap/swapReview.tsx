@@ -1,15 +1,17 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { Button, Card, Col, Row, Typography } from 'antd'
 import Preview from 'app/components/preview'
 
 import ConfirmSwap from 'app/components/confirmSwap'
 import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
+import { AppState } from 'app/model'
 
 const SwapActions = () => {
   const [visivle, setVisivle] = useState(false)
   const disabled = useDisabledSwap()
-
+  const { enhancement } = useSelector((state: AppState) => state.settings)
   return (
     <Card bordered={false}>
       <Row gutter={[24, 24]}>
@@ -19,7 +21,7 @@ const SwapActions = () => {
         <Col span={24}>
           <Preview />
         </Col>
-        <Col span={24} /> {/* Safe sapce */}
+        {enhancement && <Col span={24} />} {/* Safe sapce */}
         <Col span={24}>
           <Button
             type="primary"

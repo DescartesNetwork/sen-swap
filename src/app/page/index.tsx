@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 import { usePool } from '@senhub/providers'
@@ -10,7 +10,7 @@ import Swap from './swap'
 import History from './history'
 
 import { useMintSelection } from 'app/hooks/useMintSelection'
-import { AppDispatch } from 'app/model'
+import { AppDispatch, AppState } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
 import { SenLpState } from 'app/constant/senLpState'
@@ -24,6 +24,7 @@ const Page = () => {
   const bidData = useMintSelection(bid)
   const askData = useMintSelection(ask)
   const poolAdress = state?.poolAddress
+  const { enhancement } = useSelector((state: AppState) => state.settings)
 
   /** Check state when user come from sen LP */
   const checkIsSenLpCome = useCallback(() => {
@@ -49,20 +50,26 @@ const Page = () => {
   }, [askData, bidData, dispatch])
 
   return (
-    <Row gutter={[24, 24]} style={{ paddingBottom: 12 }}>
+    <Row
+      gutter={[24, 24]}
+      style={{ paddingBottom: 12 }}
+      justify={enhancement ? 'start' : 'center'}
+    >
       <Col lg={8} md={12} xs={24}>
         <Swap />
       </Col>
-      <Col lg={16} md={12} xs={24}>
-        <Row gutter={[24, 24]}>
-          <Col span={24}>
-            <SwapChart />
-          </Col>
-          <Col span={24}>
-            <History />
-          </Col>
-        </Row>
-      </Col>
+      {enhancement && (
+        <Col lg={16} md={12} xs={24}>
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <SwapChart />
+            </Col>
+            <Col span={24}>
+              <History />
+            </Col>
+          </Row>
+        </Col>
+      )}
     </Row>
   )
 }
