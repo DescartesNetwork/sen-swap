@@ -10,6 +10,7 @@ export type RouteState = {
   best: RouteTrace // The best route
   amount: bigint
   priceImpact: number
+  loadingJubRoute?: boolean
 }
 
 const NAME = 'route'
@@ -18,19 +19,28 @@ const initialState: RouteState = {
   best: [],
   amount: BigInt(0),
   priceImpact: 0,
+  loadingJubRoute: false,
 }
 
 /**
  * Actions
  */
+
+export const setLoadingJupiterRoute = createAsyncThunk<
+  Partial<RouteState>,
+  Partial<RouteState>,
+  { state: any }
+>(`${NAME}/setLoadingJupiterRoute`, async ({ loadingJubRoute }) => {
+  return { loadingJubRoute }
+})
+
 export const updateRoute = createAsyncThunk<
   Partial<RouteState>,
   Partial<RouteState>,
   { state: any }
->(`${NAME}/updateRoute`, async (route, { getState }) => {
-  const { route: prevRoute } = getState()
-  if (!route) return { ...prevRoute }
-  return { ...prevRoute, ...route }
+>(`${NAME}/updateRoute`, async (route) => {
+  if (!route) return {}
+  return { ...route }
 })
 
 /**
@@ -42,10 +52,15 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) =>
-    void builder.addCase(
-      updateRoute.fulfilled,
-      (state, { payload }) => void Object.assign(state, payload),
-    ),
+    void builder
+      .addCase(
+        updateRoute.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        setLoadingJupiterRoute.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      ),
 })
 
 export default slice.reducer
