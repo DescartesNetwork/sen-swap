@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
 import { useJupiter } from '@jup-ag/react-hook'
@@ -30,7 +30,6 @@ const DEFAULT_DATA: RouteState = {
 }
 
 const useJupiterAggregator = () => {
-  const [acceptableRefresh, setAcceptableRefresh] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
   const {
     bid: {
@@ -41,7 +40,6 @@ const useJupiterAggregator = () => {
       mintInfo: { address: askMintAddress },
     },
     settings: { slippage },
-    route: { loadingJubRoute },
   } = useSelector((state: AppState) => state)
   const {
     wallet: { address: walletAddress },
@@ -115,21 +113,17 @@ const useJupiterAggregator = () => {
     }
   }, [routes])
 
+  console.log('loading', loading)
   useEffect(() => {
-    if (loading !== loadingJubRoute)
-      dispatch(setLoadingJupiterRoute({ loadingJubRoute: loading }))
-  }, [dispatch, loading, loadingJubRoute])
+    console.log('loading-->', loading)
+    dispatch(setLoadingJupiterRoute({ loadingJubRoute: loading }))
+  }, [dispatch, loading])
 
   useEffect(() => {
-    if (!!bidAmount && Number(bidAmount) > 0) return setAcceptableRefresh(true)
+    if (!!bidAmount && Number(bidAmount) > 0) return refresh()
+    // because refresh is not a useCallBack function. So not dependent refresh
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bidAmount])
-
-  useEffect(() => {
-    if (!acceptableRefresh) return
-    setAcceptableRefresh(false)
-    return refresh()
-  }, [refresh, bidAmount, loadingJubRoute, acceptableRefresh])
-
   return { swap, bestRoute }
 }
 

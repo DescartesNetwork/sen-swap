@@ -38,10 +38,9 @@ export const updateRoute = createAsyncThunk<
   Partial<RouteState>,
   Partial<RouteState>,
   { state: any }
->(`${NAME}/updateRoute`, async (route, { getState }) => {
-  const { route: prevRoute } = getState()
-  if (!route) return { ...prevRoute }
-  return { ...prevRoute, ...route }
+>(`${NAME}/updateRoute`, async (route) => {
+  if (!route) return {}
+  return { ...route }
 })
 
 /**
