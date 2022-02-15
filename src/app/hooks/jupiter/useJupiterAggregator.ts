@@ -113,9 +113,7 @@ const useJupiterAggregator = () => {
     }
   }, [routes])
 
-  console.log('loading', loading)
   useEffect(() => {
-    console.log('loading-->', loading)
     dispatch(setLoadingJupiterRoute({ loadingJubRoute: loading }))
   }, [dispatch, loading])
 
