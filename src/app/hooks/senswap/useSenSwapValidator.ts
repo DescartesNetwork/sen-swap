@@ -1,3 +1,4 @@
+import { RouteState } from 'app/model/route.controller'
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -6,9 +7,8 @@ import { usePoolTvl } from 'app/hooks/usePoolTvl'
 
 const MIN_TVL = 1000 // $USD
 
-export const useSenSwapValidator = () => {
+export const useSenSwapValidator = ({ best }: RouteState) => {
   const {
-    route: { best },
     bid: { amount: bidAmount },
     ask: { amount: askAmount },
   } = useSelector((state: AppState) => state)
@@ -22,7 +22,7 @@ export const useSenSwapValidator = () => {
       if (tvl < MIN_TVL) return false
     }
     return true
-  }, [getTvl, best])
+  }, [best, getTvl])
 
   const validate = useCallback(async () => {
     if (!Number(bidAmount) && !Number(askAmount)) return setValid(true)

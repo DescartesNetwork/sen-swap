@@ -3,12 +3,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export type State = {
   slippage: number
   advanced: boolean
+  enhancement: boolean
 }
 
 const NAME = 'settings'
 const initialState: State = {
   slippage: 0.01,
   advanced: false,
+  enhancement: false,
 }
 
 /**

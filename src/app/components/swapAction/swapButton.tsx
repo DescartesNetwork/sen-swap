@@ -48,8 +48,9 @@ const SwapButton = ({
   const { state: senlpState } = useLocation<SenLpState>()
   const disabled = useDisabledSwap()
 
-  const validSenSwap = useSenSwapValidator()
   const senswap = useSenSwap(senlpState?.poolAddress)
+  const validSenSwap = useSenSwapValidator(senswap.bestRoute)
+
   const jupiter = useJupiterAggregator()
   // Jupiter support only with bid->ask
   const validJupiter =
