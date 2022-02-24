@@ -10,7 +10,7 @@ import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
 
-const SwapInput = () => {
+const SwapInput = ({ widget = false }: { widget?: boolean }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
 
@@ -27,19 +27,25 @@ const SwapInput = () => {
     await dispatch(updateData({ amount, prioritized: true }))
   }, [dispatch, askData, bidData])
 
+  const bidStyle = widget ? { padding: 16 } : { padding: '0 24px 12px' }
+  const askStyle = widget
+    ? { padding: '0 16px 16px' }
+    : { padding: '0 24px 24px' }
+
   return (
-    <Row gutter={[12, 12]} justify="center">
-      <Col span={24}>
+    <Row gutter={[0, 0]} justify="center">
+      <Col span={24} style={{ ...bidStyle }} className="swap-bid">
         <Bid />
       </Col>
-      <Col>
+      <Col style={{ top: -12 }}>
         <Button
+          className="btn-switch-type"
           size="small"
           icon={<IonIcon name="git-compare-outline" />}
           onClick={onSwitch}
         />
       </Col>
-      <Col span={24}>
+      <Col span={24} style={{ ...askStyle }}>
         <Ask />
       </Col>
     </Row>

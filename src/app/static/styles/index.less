@@ -1,8 +1,16 @@
+// trick to remove padding widget
+#sen_swap {
+  margin: -16px;
+  & ~ .sentre-card-body {
+    overflow: hidden;
+  }
+}
 .caption {
   font-size: 12px;
 }
 .card-swap {
-  height: 338px;
+  overflow: hidden;
+  // height: 338px;
 }
 
 .card-child {
@@ -18,6 +26,31 @@
 }
 .active {
   border-color: #f9575e !important;
+}
+
+.mint-select {
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bid-slide {
+  min-width: 150px;
+  span {
+    font-size: 12px;
+  }
+}
+.swap-setting {
+  padding: 24px 24px 0;
+  background: #fff;
+}
+.swap-bid {
+  border-radius: 0 0 16px 16px;
+  background: #fff;
+}
+.btn-switch-type {
+  border: 1.5px solid !important;
+  background: #fff !important;
+  border-color: #f4f4f5 !important;
 }
 
 @media (max-width: 992px) {

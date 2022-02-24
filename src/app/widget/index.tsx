@@ -23,12 +23,12 @@ const Widget = () => {
   const disabled = useDisabledSwap()
 
   return (
-    <Row gutter={[8, 8]}>
+    <Row gutter={[8, 8]} className="senswap-widget">
       <Col span={24}>
-        <SwapInput />
+        <SwapInput widget />
       </Col>
       <Col span={24}>
-        <Row align="bottom" wrap={false}>
+        <Row align="bottom" style={{ padding: '0 16px' }} wrap={false}>
           <Col flex="auto">
             <Popover
               placement="bottomLeft"

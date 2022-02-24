@@ -1,14 +1,13 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useWallet } from '@senhub/providers'
 
-import { Row, Col, Typography, Button, Space } from 'antd'
+import { Row, Col, Typography, Space, Slider } from 'antd'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
-import WormholeSupported from './wormholeSupported'
 
 import configs from 'app/configs'
 import { numeric } from 'shared/util'
@@ -22,6 +21,14 @@ import useAccountBalance from 'shared/hooks/useAccountBalance'
 const {
   swap: { bidDefault },
 } = configs
+
+const MARKS = {
+  0: '0%',
+  25: '25%',
+  50: '50%',
+  75: '75%',
+  100: '100%',
+}
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -62,10 +69,24 @@ const Bid = () => {
   }, [balance, decimals, lamports, mintAddress])
 
   // Handle amount
-  const onAmount = (val: string) =>
-    dispatch(updateBidData({ amount: val, prioritized: true }))
+  const onAmount = useCallback(
+    (val: string) =>
+      dispatch(updateBidData({ amount: val, prioritized: true })),
+    [dispatch],
+  )
   // All in :)))
   const onMax = () => onAmount(maxBalance)
+  // set percent balance
+  const onSetPercentBalance = useCallback(
+    (value: number) => {
+      if (!maxBalance) return
+      const numMaxBalance = Number(maxBalance)
+      if (numMaxBalance < 0.5) return onAmount(maxBalance)
+      const percentageBalance = (numMaxBalance * value) / 100
+      return onAmount(`${percentageBalance}`)
+    },
+    [maxBalance, onAmount],
+  )
 
   // Update bid data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
@@ -90,45 +111,47 @@ const Bid = () => {
   }
 
   return (
-    <Row gutter={[8, 8]}>
+    <Row gutter={[0, 0]} align="middle">
       <Col flex="auto">
-        <Typography.Text>From</Typography.Text>
+        <Selection value={selectionInfo} onChange={onSelectionInfo} />
       </Col>
       <Col>
-        <WormholeSupported />
-      </Col>
-      <Col span={24}>
         <NumericInput
+          bordered={false}
+          style={{ textAlign: 'right', fontSize: 24, maxWidth: 180 }}
           placeholder="0"
           value={bidAmount}
           onValue={onAmount}
-          size="large"
-          prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
-          }
-          suffix={
-            <Button
-              type="text"
-              size="small"
-              style={{ fontSize: 12, marginRight: -7 }}
-              onClick={onMax}
-            >
-              MAX
-            </Button>
-          }
         />
       </Col>
-      <Col flex="auto" />
-      <Col>
-        <Space className="caption">
-          <Typography.Text type="secondary">Available:</Typography.Text>
-          <Typography.Text type="secondary">
-            {numeric(maxBalance || 0).format('0,0.[00]')}
-          </Typography.Text>
-          <Typography.Text type="secondary">
-            <MintSymbol mintAddress={selectionInfo.mintInfo?.address || ''} />
-          </Typography.Text>
-        </Space>
+      <Col span={24}>
+        <Row>
+          <Col flex="auto">
+            <Space className="caption">
+              <Typography.Text type="secondary">Available:</Typography.Text>
+              <Typography.Text
+                type="secondary"
+                style={{ cursor: 'pointer' }}
+                onClick={onMax}
+              >
+                {numeric(maxBalance || 0).format('0,0.[00]')}
+              </Typography.Text>
+              <Typography.Text type="secondary">
+                <MintSymbol
+                  mintAddress={selectionInfo.mintInfo?.address || ''}
+                />
+              </Typography.Text>
+            </Space>
+          </Col>
+          <Col>
+            <Slider
+              className="bid-slide"
+              marks={MARKS}
+              step={null}
+              onChange={onSetPercentBalance}
+            />
+          </Col>
+        </Row>
       </Col>
     </Row>
   )
