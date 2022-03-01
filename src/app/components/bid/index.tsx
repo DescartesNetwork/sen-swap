@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
+import { useWallet } from '@senhub/providers'
 
 import { Row, Col, Typography, Button, Space } from 'antd'
 import Selection from '../selection'
@@ -10,7 +11,6 @@ import { MintSymbol } from 'shared/antd/mint'
 import WormholeSupported from './wormholeSupported'
 
 import configs from 'app/configs'
-import { useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
 import { AppDispatch, AppState } from 'app/model'
 import { updateBidData } from 'app/model/bid.controller'
@@ -30,9 +30,6 @@ const Bid = () => {
   } = useWallet()
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
-    ask: {
-      mintInfo: { address: askAddress },
-    },
   } = useSelector((state: AppState) => state)
   const { amount: balance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(bidDefault)
@@ -107,11 +104,7 @@ const Bid = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection
-              hiddenTokens={[askAddress]}
-              value={selectionInfo}
-              onChange={onSelectionInfo}
-            />
+            <Selection value={selectionInfo} onChange={onSelectionInfo} />
           }
           suffix={
             <Button

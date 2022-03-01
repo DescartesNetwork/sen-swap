@@ -2,13 +2,13 @@ import { ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 import { PoolData } from '@senswap/sen-js'
 
-import { Col, Row, Typography } from 'antd'
+import { Col, Row, Skeleton, Typography } from 'antd'
 import RouteAvatar from './routeAvatar'
 
 import { AppState } from 'app/model'
 import { numeric } from 'shared/util'
-import usePriceImpact, { usePriceColor } from 'app/hooks/usePriceImpact'
 import Price from './price'
+import { priceImpactColor } from 'app/helper/utils'
 
 export type LiteMintInfo = {
   address: string
@@ -24,17 +24,23 @@ export type HopData = {
 const ExtraTypography = ({
   label = '',
   content = '',
+  loading = false,
 }: {
   label?: string
   content?: string | ReactNode
+  loading?: boolean
 }) => {
   return (
-    <Row>
+    <Row align="middle">
       <Col flex="auto">
         <Typography.Text type="secondary">{label}</Typography.Text>
       </Col>
       <Col>
-        <span>{content}</span>
+        {loading ? (
+          <Skeleton.Input style={{ width: 150 }} active size="small" />
+        ) : (
+          <span>{content}</span>
+        )}
       </Col>
     </Row>
   )
@@ -42,10 +48,9 @@ const ExtraTypography = ({
 
 const PreviewSwap = () => {
   const {
+    route: { priceImpact, loadingJubRoute },
     settings: { slippage },
   } = useSelector((state: AppState) => state)
-  const priceImpact = usePriceImpact()
-  const priceColor = usePriceColor()
 
   return (
     <Row gutter={[12, 12]}>
@@ -53,23 +58,33 @@ const PreviewSwap = () => {
         <ExtraTypography
           label="Price impact"
           content={
-            <Typography.Text style={{ color: priceColor }}>
+            <Typography.Text style={{ color: priceImpactColor(priceImpact) }}>
               {numeric(Number(priceImpact)).format('0.[0000]%')}
             </Typography.Text>
           }
+          loading={loadingJubRoute}
         />
       </Col>
       <Col span={24}>
-        <ExtraTypography label="Price" content={<Price />} />
+        <ExtraTypography
+          label="Price"
+          content={<Price />}
+          loading={loadingJubRoute}
+        />
       </Col>
       <Col span={24}>
         <ExtraTypography
           label="Slippage Tolerance"
           content={numeric(slippage).format('0.[00]%')}
+          loading={loadingJubRoute}
         />
       </Col>
       <Col span={24} style={{ minHeight: 24 }}>
-        <ExtraTypography label="Route" content={<RouteAvatar />} />
+        <ExtraTypography
+          label="Route"
+          content={<RouteAvatar />}
+          loading={loadingJubRoute}
+        />
       </Col>
     </Row>
   )

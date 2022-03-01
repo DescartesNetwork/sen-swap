@@ -1,11 +1,10 @@
 import { ChangeEvent, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
 
 import { Row, Col, Space, Button, Typography, Input } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 import NewKeyStore from './newKeystore'
 
-import { RootDispatch } from 'os/store'
+import { useRootDispatch, RootDispatch } from 'os/store'
 import { connectWallet } from 'os/store/wallet.reducer'
 import { KeystoreWallet } from '../../lib'
 
@@ -16,7 +15,7 @@ const KeyStore = () => {
   const [visible, setVisible] = useState(false)
 
   const refFile = useRef<HTMLInputElement>(null)
-  const dispatch = useDispatch<RootDispatch>()
+  const dispatch = useRootDispatch<RootDispatch>()
 
   const onKeystore = (e: ChangeEvent<HTMLInputElement>) => {
     const [file]: any = e?.target?.files
@@ -50,7 +49,7 @@ const KeyStore = () => {
   }
 
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[24, 24]}>
       <Col span={24}>
         <Space align="center">
           <IonIcon name="document-lock" />

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 
 import { Row, Col, Card } from 'antd'
@@ -8,15 +7,15 @@ import WelcomeSlide from './welcomeSlide'
 import SocialButton from './socialButton'
 import WalletConnection from '../header/wallet/login/walletConnection'
 
-import { RootState } from 'os/store'
-import './index.less'
+import { useRootSelector, RootState } from 'os/store'
+import './index.os.less'
 
 const Welcome = () => {
   const history = useHistory()
-  const { address: walletAddress } = useSelector(
-    (state: RootState) => state.wallet,
-  )
-  const { width } = useSelector((state: RootState) => state.ui)
+  const {
+    wallet: { address: walletAddress },
+    ui: { width },
+  } = useRootSelector((state: RootState) => state)
 
   // Redirect callback
   useEffect(() => {

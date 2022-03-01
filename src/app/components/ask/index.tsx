@@ -2,6 +2,7 @@ import { useMemo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
+import { useWallet } from '@senhub/providers'
 
 import { Row, Col, Typography, Space } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
@@ -10,7 +11,6 @@ import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
 
 import configs from 'app/configs'
-import { useWallet } from 'senhub/providers'
 import { numeric } from 'shared/util'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
@@ -23,9 +23,6 @@ const Ask = () => {
   const { wallet } = useWallet()
   const {
     ask: { amount, accountAddress, mintInfo, poolAddresses },
-    bid: {
-      mintInfo: { address: bidAddress },
-    },
   } = useSelector((state: AppState) => state)
   const { state } = useLocation<SenLpState>()
   const { balance: maxBalance } = useAccountBalance(accountAddress)
@@ -83,11 +80,7 @@ const Ask = () => {
           onValue={onAmount}
           size="large"
           prefix={
-            <Selection
-              hiddenTokens={[bidAddress]}
-              value={selectionInfo}
-              onChange={onSelectionInfo}
-            />
+            <Selection value={selectionInfo} onChange={onSelectionInfo} />
           }
         />
       </Col>

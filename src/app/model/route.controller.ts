@@ -1,30 +1,46 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RouteTrace } from 'app/helper/router'
 
-export type State = {
-  best: RouteTrace
-  amounts: bigint[]
+export enum SwapPlatform {
+  SenSwap,
+  JupiterAggregator,
+}
+export type RouteState = {
+  platform: SwapPlatform
+  best: RouteTrace // The best route
   amount: bigint
+  priceImpact: number
+  loadingJubRoute?: boolean
 }
 
 const NAME = 'route'
-const initialState: State = {
-  amount: BigInt(0),
-  amounts: [],
+const initialState: RouteState = {
+  platform: SwapPlatform.SenSwap,
   best: [],
+  amount: BigInt(0),
+  priceImpact: 0,
+  loadingJubRoute: false,
 }
 
 /**
  * Actions
  */
-export const updateRoute = createAsyncThunk<
-  Partial<State>,
-  Partial<State>,
+
+export const setLoadingJupiterRoute = createAsyncThunk<
+  Partial<RouteState>,
+  Partial<RouteState>,
   { state: any }
->(`${NAME}/updateRoute`, async (route, { getState }) => {
-  const { route: prevRoute } = getState()
-  if (!route) return { ...prevRoute }
-  return { ...prevRoute, ...route }
+>(`${NAME}/setLoadingJupiterRoute`, async ({ loadingJubRoute }) => {
+  return { loadingJubRoute }
+})
+
+export const updateRoute = createAsyncThunk<
+  Partial<RouteState>,
+  Partial<RouteState>,
+  { state: any }
+>(`${NAME}/updateRoute`, async (route) => {
+  if (!route) return {}
+  return { ...route }
 })
 
 /**
@@ -36,10 +52,15 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) =>
-    void builder.addCase(
-      updateRoute.fulfilled,
-      (state, { payload }) => void Object.assign(state, payload),
-    ),
+    void builder
+      .addCase(
+        updateRoute.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        setLoadingJupiterRoute.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      ),
 })
 
 export default slice.reducer

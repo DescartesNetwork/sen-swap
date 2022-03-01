@@ -20,6 +20,7 @@ interface Window {
   ipfs?: ReturnType<import('ipfs-core').create>
   // Utility
   notify: ({ type, description, onClick }: SentreNotification) => void
+  goto: (url: string) => void
   // Partner wallets
   coin98: any
   solana: any
@@ -73,7 +74,10 @@ type CgkData = {
  */
 declare module '*.md'
 declare module 'flexsearch'
-declare module 'senhub/providers' {
+declare module '@senhub/context' {
+  export * from 'os/store/context'
+}
+declare module '@senhub/providers' {
   export * from 'os/providers'
 }
 

@@ -1,9 +1,13 @@
+import { useSelector } from 'react-redux'
+
 import { Card, Col, Row } from 'antd'
 import SwapReview from './swapReview'
-import SwapPoolInfo from './swapPoolInfo'
+import PoolInfo from './poolInfo'
 import SwapForm from 'app/components/swapForm'
+import { AppState } from 'app/model'
 
 const Swap = () => {
+  const { enhancement } = useSelector((state: AppState) => state.settings)
   return (
     <Row gutter={[24, 24]}>
       <Col span={24}>
@@ -14,9 +18,11 @@ const Swap = () => {
       <Col span={24}>
         <SwapReview />
       </Col>
-      <Col span={24}>
-        <SwapPoolInfo />
-      </Col>
+      {enhancement && (
+        <Col span={24}>
+          <PoolInfo />
+        </Col>
+      )}
     </Row>
   )
 }

@@ -1,4 +1,3 @@
-//@ts-ignore
 import {
   ParsedConfirmedTransaction,
   ParsedInstruction,
@@ -22,11 +21,6 @@ import { SOL_ADDRESS, SOL_DECIMALS } from '../constants/sol'
 type InstructionData = ParsedInstruction | PartiallyDecodedInstruction
 
 export class TransLogService {
-  solana: Solana
-  constructor() {
-    this.solana = new Solana()
-  }
-
   protected parseAction = (transLog: TransLog) => {
     return ''
   }
@@ -34,39 +28,20 @@ export class TransLogService {
   async collect(
     programId: string,
     configs: OptionsFetchSignature,
-    funcFilter?: (transLog: TransLog) => boolean,
   ): Promise<TransLog[]> {
-    let { lastSignature, limit } = configs
-
-    let isStop = false
+    const solana = new Solana()
     let transLogs: Array<TransLog> = []
-    let lastSignatureTmp = lastSignature
+    const confirmedTrans: ParsedConfirmedTransaction[] =
+      await solana.fetchTransactions(programId, configs)
 
-    while (!isStop) {
-      const confirmedTrans: ParsedConfirmedTransaction[] =
-        await this.solana.fetchTransactions(programId, {
-          ...configs,
-          lastSignature: lastSignatureTmp,
-        })
-
-      for (const trans of confirmedTrans) {
-        lastSignatureTmp = trans.transaction.signatures[0]
-        const log = this.parseTransLog(trans)
-        if (log) transLogs.push(log)
-      }
-
-      if (funcFilter) {
-        transLogs = transLogs.filter((trans) => funcFilter(trans))
-
-        if (!confirmedTrans.length || isStop) break
-        if (limit && transLogs.length >= limit) {
-          isStop = true
-          break
-        }
-      } else break
+    for (const trans of confirmedTrans) {
+      const log = this.parseTransLog(trans)
+      if (!log) continue
+      transLogs.push(log)
     }
     return transLogs
   }
+
   private parseTransLog(
     confirmedTrans: ParsedConfirmedTransaction,
   ): TransLog | undefined {
@@ -110,6 +85,7 @@ export class TransLogService {
       data: (instructionData as PartiallyDecodedInstruction).data,
     }
     transLog.actionType = this.parseAction(transLog)
+
     return transLog
   }
 

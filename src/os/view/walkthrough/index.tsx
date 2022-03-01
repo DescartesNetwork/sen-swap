@@ -1,92 +1,32 @@
-import { useEffect, ReactNode } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
-import Joyride, { CallBackProps, EVENTS, STATUS, Step } from 'react-joyride'
+import Joyride, { CallBackProps, EVENTS, STATUS } from 'react-joyride'
 
-import { Typography } from 'antd'
 import Tooltip from './tooltip'
 
-import { RootState } from 'os/store'
-import { setWalkthrough } from 'os/store/walkthrough.reducer'
+import {
+  useRootSelector,
+  RootState,
+  useRootDispatch,
+  RootDispatch,
+} from 'os/store'
+
+import { DEFAULT_STEPS, NEWCOMER_STEPS, REFERRAL_STEPS } from './steps'
+import { setWalkthrough, WalkThroughType } from 'os/store/walkthrough.reducer'
+import { getReferrer } from 'os/helpers/utils'
 import './index.os.less'
 
-const step = ({
-  content,
-  target,
-  title,
-}: {
-  content: ReactNode
-  target: string
-  title: string
-}) => {
-  return {
-    content,
-    disableBeacon: true,
-    disableOverlayClose: true,
-    spotlightClicks: true,
-    styles: {
-      options: {
-        zIndex: 10000,
-      },
-    },
-    target,
-    title: <Typography.Title level={5}>{title}</Typography.Title>,
-  }
-}
-
-const STEPS: Step[] = [
-  step({
-    content: (
-      <Typography.Text>
-        Click the <b>Store</b> button to explore the numerous DeFi applications.
-      </Typography.Text>
-    ),
-    target: '#store-nav-button',
-    title: 'Search an app',
-  }),
-  step({
-    content: (
-      <Typography.Text>
-        Find an application in the list and click the <b>Install</b> button to
-        set up the application.
-      </Typography.Text>
-    ),
-    target: '#install-action-button',
-    title: 'Install an app',
-  }),
-  step({
-    content: (
-      <Typography.Text>
-        Click the <b>Open</b> button to explore more interesting features.
-      </Typography.Text>
-    ),
-    target: '#open-action-button',
-    title: 'Open the app',
-  }),
-  step({
-    content: (
-      <Typography.Text>
-        Helps you keep an overview and quick actions with many applications at
-        the same time.
-      </Typography.Text>
-    ),
-    target: '#dashboard-nav-button',
-    title: 'Your Dashboard',
-  }),
-]
-
 const Walkthrough = () => {
-  const dispatch = useDispatch()
+  const dispatch = useRootDispatch<RootDispatch>()
   const {
-    wallet: { address },
-    walkthrough: { run, step },
+    wallet: { address: walletAddress },
+    walkthrough: { type, run, step },
     flags: { visited },
-  } = useSelector((state: RootState) => state)
-
-  useEffect(() => {
-    if (account.isAddress(address) && !visited)
-      dispatch(setWalkthrough({ run: true }))
-  }, [address, dispatch, visited])
+  } = useRootSelector((state: RootState) => state)
+  const { search } = useLocation()
+  const query = new URLSearchParams(search)
+  const referrerAddress = query.get('referrer') || ''
 
   const onCallback = async ({
     type,
@@ -110,11 +50,37 @@ const Walkthrough = () => {
     }
   }
 
+  const steps = useMemo(() => {
+    if (type === WalkThroughType.NewComer) return NEWCOMER_STEPS
+    if (type === WalkThroughType.Referral) return REFERRAL_STEPS
+    return DEFAULT_STEPS
+  }, [type])
+
+  const initWalkthrough = useCallback(async () => {
+    if (!account.isAddress(walletAddress)) return
+    const currentReferrerAddress = await getReferrer(walletAddress)
+    if (
+      !account.isAddress(currentReferrerAddress) &&
+      account.isAddress(referrerAddress)
+    )
+      return dispatch(
+        setWalkthrough({ type: WalkThroughType.Referral, run: true }),
+      )
+    if (!visited)
+      return dispatch(
+        setWalkthrough({ type: WalkThroughType.NewComer, run: true }),
+      )
+  }, [dispatch, walletAddress, referrerAddress, visited])
+
+  useEffect(() => {
+    initWalkthrough()
+  }, [initWalkthrough])
+
   return (
     <Joyride
       continuous={true}
       run={run}
-      steps={STEPS}
+      steps={steps}
       stepIndex={step}
       scrollOffset={128}
       scrollToFirstStep={true}

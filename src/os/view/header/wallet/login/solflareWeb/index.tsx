@@ -1,14 +1,12 @@
-import { useDispatch } from 'react-redux'
-
 import { Row, Card, Col, Avatar } from 'antd'
 
-import SOLFLARE from 'os/static/images/solflare.png'
-import { RootDispatch } from 'os/store'
+import SOLFLARE from 'os/static/images/wallet/solflare.png'
+import { useRootDispatch, RootDispatch } from 'os/store'
 import { connectWallet } from 'os/store/wallet.reducer'
 import { SolflareWallet } from '../../lib'
 
 const Solflare = () => {
-  const dispatch = useDispatch<RootDispatch>()
+  const dispatch = useRootDispatch<RootDispatch>()
 
   const connect = async () => {
     const solFlareWallet = new SolflareWallet()
@@ -22,16 +20,17 @@ const Solflare = () => {
   return (
     <Card
       onClick={connect}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'pointer', borderRadius: 8, boxShadow: 'unset' }}
       bordered={false}
+      className="card-wallet-method"
       hoverable
-      bodyStyle={{ padding: '24px 16px' }}
+      bodyStyle={{ padding: '12px 16px' }}
     >
-      <Row gutter={[16, 16]} justify="center">
+      <Row gutter={[16, 16]} align="middle">
         <Col>
-          <Avatar size={64} shape="square" src={SOLFLARE} />
+          <Avatar size={32} shape="square" src={SOLFLARE} />
         </Col>
-        <Col span={24}>
+        <Col>
           <p style={{ margin: 0, textAlign: 'center' }}>Solflare Web</p>
         </Col>
       </Row>

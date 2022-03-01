@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Row, Col, Space, Typography, Modal, Card, Checkbox } from 'antd'
@@ -8,31 +8,41 @@ import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import SwapAction from 'app/components/swapAction'
 
 import { AppState } from 'app/model'
-import usePriceImpact from 'app/hooks/usePriceImpact'
 import { PriceImpact } from 'app/constant/swap'
 
 const ConfirmSwap = ({
   visible = false,
-  onCancle = () => {},
+  onCancel = () => {},
 }: {
   visible?: boolean
-  onCancle?: (visible: boolean) => void
+  onCancel?: (visible: boolean) => void
 }) => {
   const [checked, setChecked] = useState(false)
-  const bidData = useSelector((state: AppState) => state.bid)
-  const askData = useSelector((state: AppState) => state.ask)
-  const priceImpact = usePriceImpact()
+  const {
+    route: { priceImpact },
+    bid: bidData,
+    ask: askData,
+  } = useSelector((state: AppState) => state)
 
   const tooHighImpact = priceImpact > PriceImpact.acceptableSwap
 
+  const onCloseModal = useCallback(() => {
+    onCancel(false)
+    setChecked(false)
+  }, [onCancel])
+
   return (
     <Modal
-      title={<Typography.Title level={4}> Confirm swap</Typography.Title>}
-      onCancel={() => onCancle(false)}
+      onCancel={onCloseModal}
+      closeIcon={<IonIcon name="close" />}
       footer={null}
       visible={visible}
+      forceRender
     >
       <Row gutter={[16, 24]}>
+        <Col span={24}>
+          <Typography.Title level={4}> Confirm swaps</Typography.Title>
+        </Col>
         <Col span={24}>
           <Row align="middle" justify="space-between">
             <Col>
@@ -78,7 +88,7 @@ const ConfirmSwap = ({
           </Col>
         )}
         <Col span={24}>
-          <SwapAction onCallback={() => onCancle(false)} forceSwap={checked} />
+          <SwapAction onCallback={onCloseModal} forceSwap={checked} />
         </Col>
       </Row>
     </Modal>

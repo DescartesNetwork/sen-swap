@@ -1,13 +1,15 @@
 import { useState, useCallback } from 'react'
 import { account } from '@senswap/sen-js'
 import LazyLoad from '@senswap/react-lazyload'
+import { useMint, usePool } from '@senhub/providers'
 
 import { Row, Col, Typography, Divider } from 'antd'
 import Search from './search'
 import Mint from './mint'
 
-import { useMint, usePool } from 'senhub/providers'
 import { LiteMintInfo } from '../preview'
+
+const LIMITATION = 100
 
 export type SelectionInfo = {
   mintInfo?: LiteMintInfo
@@ -17,11 +19,9 @@ export type SelectionInfo = {
 const MintSelection = ({
   value,
   onChange,
-  hiddenTokens,
 }: {
   value: SelectionInfo
   onChange: (value: SelectionInfo) => void
-  hiddenTokens?: string[]
 }) => {
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
   const { address: currentMintAddress } = value.mintInfo || {}
@@ -71,20 +71,17 @@ const MintSelection = ({
         <Row gutter={[16, 16]} style={{ height: 300 }} className="scrollbar">
           <Col span={24}>
             <Row gutter={[16, 16]}>
-              {mintAddresses.map((mintAddress, i) => {
-                if (hiddenTokens?.includes(mintAddress)) return null
-                return (
-                  <Col span={24} key={i}>
-                    <LazyLoad height={48} overflow>
-                      <Mint
-                        mintAddress={mintAddress}
-                        onClick={() => onMint(mintAddress)}
-                        active={currentMintAddress === mintAddress}
-                      />
-                    </LazyLoad>
-                  </Col>
-                )
-              })}
+              {mintAddresses.slice(0, LIMITATION).map((mintAddress, i) => (
+                <Col span={24} key={i}>
+                  <LazyLoad height={48} overflow>
+                    <Mint
+                      mintAddress={mintAddress}
+                      onClick={() => onMint(mintAddress)}
+                      active={currentMintAddress === mintAddress}
+                    />
+                  </LazyLoad>
+                </Col>
+              ))}
             </Row>
           </Col>
         </Row>

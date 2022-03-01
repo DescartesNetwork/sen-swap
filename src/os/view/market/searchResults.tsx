@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 
 import { Row, Col, Button, Typography } from 'antd'
@@ -7,15 +6,20 @@ import IonIcon from 'shared/antd/ionicon'
 import SearchEngine from './searchEngine'
 import AppCard from './appCard'
 
+import {
+  useRootDispatch,
+  useRootSelector,
+  RootDispatch,
+  RootState,
+} from 'os/store'
 import { setLoading, setValue } from 'os/store/search.reducer'
-import { RootDispatch, RootState } from 'os/store'
 
 let searching: NodeJS.Timeout
 
 const SearchResult = ({ value }: { value: string }) => {
   const history = useHistory()
-  const dispatch = useDispatch<RootDispatch>()
-  const { register } = useSelector((state: RootState) => state.page)
+  const dispatch = useRootDispatch<RootDispatch>()
+  const { register } = useRootSelector((state: RootState) => state.page)
   const [appIds, setAppIds] = useState<AppIds>([])
 
   const onSearch = useCallback(async () => {
@@ -31,6 +35,11 @@ const SearchResult = ({ value }: { value: string }) => {
     }, 500)
   }, [dispatch, register, value])
 
+  const onBack = useCallback(async () => {
+    await dispatch(setValue(''))
+    return history.push('/store')
+  }, [dispatch, history])
+
   useEffect(() => {
     onSearch()
   }, [onSearch])
@@ -43,10 +52,7 @@ const SearchResult = ({ value }: { value: string }) => {
           size="small"
           icon={<IonIcon name="arrow-back-outline" />}
           style={{ marginLeft: -8 }}
-          onClick={() => {
-            history.push('/store')
-            dispatch(setValue(''))
-          }}
+          onClick={onBack}
         >
           Back
         </Button>

@@ -2,16 +2,17 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Row, Col, Button, Popover, Typography, Divider } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
-import PoweredBy from 'app/components/poweredBy'
+import PoweredBySentre from 'app/components/poweredBySentre'
 import Slippage from './slippage'
 import Advanced from './advanced'
 
 import { updateSettings } from 'app/model/settings.controller'
 import { AppDispatch, AppState } from 'app/model'
+import Enhancement from './enhancement'
 
 const Settings = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { slippage, advanced } = useSelector(
+  const { slippage, advanced, enhancement } = useSelector(
     (state: AppState) => state.settings,
   )
 
@@ -21,11 +22,14 @@ const Settings = () => {
   const onAdvanced = (advanced: boolean) => {
     return dispatch(updateSettings({ advanced }))
   }
+  const onEnhancement = (enhancement: boolean) => {
+    return dispatch(updateSettings({ enhancement }))
+  }
 
   return (
     <Row gutter={[4, 4]} justify="end" align="middle" wrap={false}>
       <Col>
-        <PoweredBy />
+        <PoweredBySentre />
       </Col>
       <Col>
         <Divider type="vertical" style={{ padding: 0 }} />
@@ -42,9 +46,13 @@ const Settings = () => {
               <Col span={24}>
                 <Slippage value={slippage} onChange={onSlippage} />
               </Col>
-              <Divider style={{ marginTop: 8, marginBottom: 8 }} />
+              <Divider style={{ margin: 0 }} />
               <Col span={24}>
                 <Advanced value={advanced} onChange={onAdvanced} />
+              </Col>
+              <Divider style={{ margin: 0 }} />
+              <Col span={24}>
+                <Enhancement value={enhancement} onChange={onEnhancement} />
               </Col>
             </Row>
           }

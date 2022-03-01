@@ -26,6 +26,8 @@ const overrideWebpackConfig = ({ context, webpackConfig, pluginOptions }) => {
     https: require.resolve('https-browserify'),
     path: require.resolve('path-browserify'),
     fs: false,
+    // For Project Serum
+    process: require.resolve('process/browser'),
   }
   // Fix unrecognized change / caching problem
   webpackConfig.cache.buildDependencies.config.push(

@@ -9,7 +9,7 @@ import {
 import { OptionsFetchSignature } from '../../constants/transaction'
 
 const DEFAULT_LIMIT = 700
-const TRANSACTION_LIMIT = 150
+const TRANSACTION_LIMIT = 200
 
 export class Solana {
   private conn: Connection = window.sentre.splt.connection

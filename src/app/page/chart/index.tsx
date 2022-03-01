@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
+import { useMint } from '@senhub/providers'
 
-import { Card, Col, Radio, Row, Typography } from 'antd'
+import { Button, Card, Col, Radio, Row, Typography, Space, Popover } from 'antd'
+import IonIcon from 'shared/antd/ionicon'
 import Cross from './cross'
-
-import { AppState } from 'app/model'
 import SenChart from './chart'
 import ChartEmpty from './chartEmpty'
+import PoweredByCoinGecko from 'app/components/poweredByCoingecko'
+
+import { AppState } from 'app/model'
 import { ChartParamsCGK, fetchMarketChart } from 'app/helper/cgk'
 import { numeric } from 'shared/util'
-import { useMint } from 'senhub/providers'
 
 type ChartData = { label: string; val: number }
 enum Interval {
@@ -146,7 +148,7 @@ const SwapChart = () => {
       if (!bidChart || !askChart) continue
       marketData.unshift({
         time: bidChart.time,
-        val: bidChart.val / askChart.val,
+        val: askChart.val / bidChart.val,
       })
     }
     if (interval === Interval.day) return parseChartDay(marketData)
@@ -174,10 +176,22 @@ const SwapChart = () => {
   return (
     <Card bordered={false} className="card-swap" bodyStyle={{ paddingTop: 28 }}>
       <Row gutter={[24, 24]}>
-        <Col flex="auto">
+        <Col span={24}>
           <Row gutter={[20, 20]}>
             <Col flex="auto">
-              <Cross />
+              <Space>
+                <Cross />
+                <Popover
+                  content={
+                    <PoweredByCoinGecko title="Reference Market Price. Powered by" />
+                  }
+                >
+                  <Button
+                    type="text"
+                    icon={<IonIcon name="information-circle-outline" />}
+                  />
+                </Popover>
+              </Space>
             </Col>
             {chartData && !!chartData.length && (
               <Col>
