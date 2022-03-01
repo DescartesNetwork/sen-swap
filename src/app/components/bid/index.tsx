@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useWallet } from '@senhub/providers'
 
-import { Row, Col, Typography, Space, Slider } from 'antd'
+import { Row, Col, Typography, Space, Radio, RadioChangeEvent } from 'antd'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
@@ -22,12 +22,9 @@ const {
   swap: { bidDefault },
 } = configs
 
-const MARKS = {
-  0: '0%',
-  25: '25%',
-  50: '50%',
-  75: '75%',
-  100: '100%',
+export enum RATE {
+  FIFTY = 50,
+  HUNDRED = 100,
 }
 
 const Bid = () => {
@@ -43,6 +40,8 @@ const Bid = () => {
   const { state } = useLocation<SenLpState>()
   const poolAdress = state?.poolAddress
   const { address: mintAddress, decimals } = mintInfo
+  const [amount, setAmount] = useState(0)
+  const [activeValue, setActiveValue] = useState(0)
 
   // Select default
   useEffect(() => {
@@ -70,23 +69,35 @@ const Bid = () => {
 
   // Handle amount
   const onAmount = useCallback(
-    (val: string) =>
-      dispatch(updateBidData({ amount: val, prioritized: true })),
+    (val: string) => {
+      setAmount(Number(val))
+      return dispatch(updateBidData({ amount: val, prioritized: true }))
+    },
+
     [dispatch],
   )
   // All in :)))
   const onMax = () => onAmount(maxBalance)
   // set percent balance
   const onSetPercentBalance = useCallback(
-    (value: number) => {
+    (e: RadioChangeEvent) => {
       if (!maxBalance) return
+      const value = e.target.value
       const numMaxBalance = Number(maxBalance)
       if (numMaxBalance < 0.5) return onAmount(maxBalance)
-      const percentageBalance = (numMaxBalance * value) / 100
+      const percentageBalance = numMaxBalance * (value / 100)
+
       return onAmount(`${percentageBalance}`)
     },
     [maxBalance, onAmount],
   )
+
+  const checkActive = useCallback(() => {
+    if (!maxBalance) return setActiveValue(0)
+    if (Number(maxBalance) === amount) return setActiveValue(RATE.HUNDRED)
+    if (Number(maxBalance) / 2 === amount) return setActiveValue(RATE.FIFTY)
+    return setActiveValue(0)
+  }, [maxBalance, amount])
 
   // Update bid data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
@@ -110,6 +121,10 @@ const Bid = () => {
     )
   }
 
+  useEffect(() => {
+    checkActive()
+  }, [checkActive])
+
   return (
     <Row gutter={[0, 0]} align="middle">
       <Col flex="auto">
@@ -125,7 +140,7 @@ const Bid = () => {
         />
       </Col>
       <Col span={24}>
-        <Row>
+        <Row align="middle">
           <Col flex="auto">
             <Space className="caption">
               <Typography.Text type="secondary">Available:</Typography.Text>
@@ -144,12 +159,26 @@ const Bid = () => {
             </Space>
           </Col>
           <Col>
-            <Slider
-              className="bid-slide"
-              marks={MARKS}
-              step={null}
-              onChange={onSetPercentBalance}
-            />
+            <Space size={0} direction="vertical">
+              <Radio.Group
+                value={activeValue}
+                buttonStyle="solid"
+                onChange={onSetPercentBalance}
+              >
+                <Space>
+                  <Radio.Button className="rate-btn" value={RATE.FIFTY} />
+                  <Radio.Button className="rate-btn" value={RATE.HUNDRED} />
+                </Space>
+              </Radio.Group>
+              <Space>
+                <Typography.Text type="secondary">
+                  {RATE.FIFTY}%
+                </Typography.Text>
+                <Typography.Text type="secondary">
+                  {RATE.HUNDRED}%
+                </Typography.Text>
+              </Space>
+            </Space>
           </Col>
         </Row>
       </Col>

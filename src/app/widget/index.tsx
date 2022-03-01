@@ -28,56 +28,52 @@ const Widget = () => {
         <SwapInput widget />
       </Col>
       <Col span={24}>
-        <Row align="bottom" style={{ padding: '0 16px' }} wrap={false}>
-          <Col flex="auto">
-            <Popover
-              placement="bottomLeft"
-              content={<PreviewSwap />}
-              trigger="click"
-            >
-              <Space
-                style={{ cursor: 'pointer' }}
-                direction="vertical"
-                size={4}
-              >
-                <Space>
-                  <Typography.Text>
-                    <IonIcon
-                      name="information-circle-outline"
-                      style={{ color: '#7A7B85' }}
-                    />
-                  </Typography.Text>
-                  <Typography.Text type="secondary">
-                    Price impact
-                  </Typography.Text>
-                </Space>
-                <Space>
-                  <Typography.Text
-                    style={{ color: priceImpactColor(priceImpact) }}
-                  >
-                    {numeric(Number(priceImpact)).format('0.[0000]%')}
-                  </Typography.Text>
-                  {platform === SwapPlatform.JupiterAggregator && (
-                    <Fragment>
-                      <Divider type="vertical" style={{ margin: 0 }} />
-                      <PoweredByJupiter />
-                    </Fragment>
-                  )}
-                </Space>
-              </Space>
-            </Popover>
+        <Row gutter={[12, 12]} style={{ padding: '0 16px' }}>
+          <Col span={24}>
+            <Row>
+              <Col flex="auto" />
+              <Col>
+                <Popover
+                  placement="bottomLeft"
+                  content={<PreviewSwap />}
+                  trigger="click"
+                >
+                  <Space style={{ cursor: 'pointer' }} size={4}>
+                    <Space>
+                      <Typography.Text>
+                        <IonIcon
+                          name="information-circle-outline"
+                          style={{ color: '#7A7B85' }}
+                        />
+                      </Typography.Text>
+                      <Typography.Text type="secondary">
+                        Price impact:
+                      </Typography.Text>
+                      <Typography.Text
+                        style={{ color: priceImpactColor(priceImpact) }}
+                      >
+                        {numeric(Number(priceImpact)).format('0.[0000]%')}
+                      </Typography.Text>
+                      {platform === SwapPlatform.JupiterAggregator && (
+                        <Fragment>
+                          <Divider type="vertical" style={{ margin: 0 }} />
+                          <PoweredByJupiter />
+                        </Fragment>
+                      )}
+                    </Space>
+                  </Space>
+                </Popover>
+              </Col>
+            </Row>
           </Col>
-          <Col>
+          <Col span={24}>
             <Button
               onClick={() => setVisible(true)}
               type="primary"
               disabled={disabled}
               block
             >
-              <Space>
-                <span>Review</span>
-                <IonIcon name="arrow-forward-outline" />
-              </Space>
+              Review & Swap
             </Button>
           </Col>
         </Row>
