@@ -21,14 +21,13 @@ const Widget = () => {
   } = useSelector((state: AppState) => state)
 
   const disabled = useDisabledSwap()
-
   return (
-    <Row gutter={[8, 8]} className="senswap-widget">
+    <Row gutter={[24, 0]} className="senswap-widget">
       <Col span={24}>
         <SwapInput widget />
       </Col>
       <Col span={24}>
-        <Row gutter={[12, 12]} style={{ padding: '0 16px' }}>
+        <Row gutter={[12, 12]} style={{ padding: '0 16px', margin: '0 -12px' }}>
           <Col span={24}>
             <Row>
               <Col flex="auto" />
@@ -70,6 +69,7 @@ const Widget = () => {
             <Button
               onClick={() => setVisible(true)}
               type="primary"
+              size="large"
               disabled={disabled}
               block
             >

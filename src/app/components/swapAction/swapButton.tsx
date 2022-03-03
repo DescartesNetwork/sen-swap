@@ -71,6 +71,7 @@ const SwapButton = ({
         onClick: () => window.open(explorer(txId), '_blank'),
       })
       setValidSwap(txId)
+      dispatch(updateBidData({ amount: '' }))
       return onCallback()
     } catch (er: any) {
       return window.notify({ type: 'error', description: er.message })

@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useWallet } from '@senhub/providers'
 
-import { Row, Col, Typography, Space, Radio, RadioChangeEvent } from 'antd'
+import { Row, Col, Typography, Space, Radio } from 'antd'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
@@ -40,7 +40,6 @@ const Bid = () => {
   const { state } = useLocation<SenLpState>()
   const poolAdress = state?.poolAddress
   const { address: mintAddress, decimals } = mintInfo
-  const [amount, setAmount] = useState(0)
   const [activeValue, setActiveValue] = useState(0)
 
   // Select default
@@ -56,6 +55,11 @@ const Bid = () => {
     [mintInfo, poolAddresses],
   )
 
+  const fiftyPerBtn = useMemo(() => {
+    if (activeValue === RATE.HUNDRED) return RATE.HUNDRED
+    return RATE.FIFTY
+  }, [activeValue])
+
   // Compute human-readable balance
   const maxBalance = useMemo((): string => {
     if (mintAddress !== DEFAULT_WSOL)
@@ -70,7 +74,6 @@ const Bid = () => {
   // Handle amount
   const onAmount = useCallback(
     (val: string) => {
-      setAmount(Number(val))
       return dispatch(updateBidData({ amount: val, prioritized: true }))
     },
 
@@ -79,25 +82,25 @@ const Bid = () => {
   // All in :)))
   const onMax = () => onAmount(maxBalance)
   // set percent balance
-  const onSetPercentBalance = useCallback(
-    (e: RadioChangeEvent) => {
+  const onChangePercentAmount = useCallback(
+    (activeValue: RATE) => {
       if (!maxBalance) return
-      const value = e.target.value
       const numMaxBalance = Number(maxBalance)
-      if (numMaxBalance < 0.5) return onAmount(maxBalance)
-      const percentageBalance = numMaxBalance * (value / 100)
-
+      if (numMaxBalance < 5 / 10 ** 6) return onAmount(maxBalance)
+      const percentageBalance = numMaxBalance * (activeValue / 100)
       return onAmount(`${percentageBalance}`)
     },
     [maxBalance, onAmount],
   )
 
   const checkActive = useCallback(() => {
-    if (!maxBalance) return setActiveValue(0)
-    if (Number(maxBalance) === amount) return setActiveValue(RATE.HUNDRED)
-    if (Number(maxBalance) / 2 === amount) return setActiveValue(RATE.FIFTY)
+    const numMaxBalance = Number(maxBalance)
+    const amount = Number(bidAmount)
+    if (!numMaxBalance || numMaxBalance === 0) return setActiveValue(0)
+    if (numMaxBalance === amount) return setActiveValue(RATE.HUNDRED)
+    if (numMaxBalance / 2 === amount) return setActiveValue(RATE.FIFTY)
     return setActiveValue(0)
-  }, [maxBalance, amount])
+  }, [bidAmount, maxBalance])
 
   // Update bid data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
@@ -133,7 +136,7 @@ const Bid = () => {
       <Col>
         <NumericInput
           bordered={false}
-          style={{ textAlign: 'right', fontSize: 24, maxWidth: 180 }}
+          style={{ textAlign: 'right', fontSize: 24, maxWidth: 200 }}
           placeholder="0"
           value={bidAmount}
           onValue={onAmount}
@@ -160,14 +163,18 @@ const Bid = () => {
           </Col>
           <Col>
             <Space size={0} direction="vertical">
-              <Radio.Group
-                value={activeValue}
-                buttonStyle="solid"
-                onChange={onSetPercentBalance}
-              >
+              <Radio.Group value={activeValue} buttonStyle="solid">
                 <Space>
-                  <Radio.Button className="rate-btn" value={RATE.FIFTY} />
-                  <Radio.Button className="rate-btn" value={RATE.HUNDRED} />
+                  <Radio.Button
+                    className="rate-btn"
+                    onClick={() => onChangePercentAmount(RATE.FIFTY)}
+                    value={fiftyPerBtn}
+                  />
+                  <Radio.Button
+                    className="rate-btn"
+                    onClick={() => onChangePercentAmount(RATE.HUNDRED)}
+                    value={RATE.HUNDRED}
+                  />
                 </Space>
               </Radio.Group>
               <Space>

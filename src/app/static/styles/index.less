@@ -1,10 +1,13 @@
-// trick to remove padding widget
-#sen_swap {
-  margin: -16px;
-  & ~ .sentre-card-body {
-    overflow: hidden;
+.senswap-widget {
+  margin-left: -16px !important;
+  margin-right: -16px !important;
+  margin-top: -16px;
+  .senswap-widget-col {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
+
 .caption {
   font-size: 12px;
 }
@@ -43,7 +46,7 @@
   background: #fff;
 }
 .btn-switch-type {
-  border: 1.5px solid !important;
+  border: 2.5px solid !important;
   background: #fff !important;
   border-color: #f4f4f5 !important;
 }

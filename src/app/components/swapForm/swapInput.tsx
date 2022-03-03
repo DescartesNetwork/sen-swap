@@ -33,7 +33,7 @@ const SwapInput = ({ widget = false }: { widget?: boolean }) => {
     : { padding: '0 24px 24px' }
 
   return (
-    <Row gutter={[0, 0]} justify="center">
+    <Row gutter={[0, 0]} justify="center" style={{ margin: '0 -12px' }}>
       <Col span={24} style={{ ...bidStyle }} className="swap-bid">
         <Bid />
       </Col>
