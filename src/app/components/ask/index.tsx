@@ -69,23 +69,20 @@ const Ask = () => {
   }
 
   return (
-    <Row gutter={[8, 8]}>
-      <Col span={24}>
-        <Typography.Text>To</Typography.Text>
+    <Row gutter={[0, 0]}>
+      <Col flex="auto">
+        <Selection value={selectionInfo} onChange={onSelectionInfo} />
       </Col>
-      <Col span={24}>
+      <Col>
         <NumericInput
+          bordered={false}
+          style={{ textAlign: 'right', fontSize: 24, maxWidth: 180 }}
           placeholder="0"
           value={amount}
           onValue={onAmount}
-          size="large"
-          prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
-          }
         />
       </Col>
-      <Col flex="auto" />
-      <Col>
+      <Col span={24}>
         <Space className="caption">
           <Typography.Text type="secondary">Available:</Typography.Text>
           <Typography.Text type="secondary">

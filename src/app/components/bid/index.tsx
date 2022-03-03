@@ -1,14 +1,13 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import { useWallet } from '@senhub/providers'
 
-import { Row, Col, Typography, Button, Space } from 'antd'
+import { Row, Col, Typography, Space, Radio } from 'antd'
 import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
 import { MintSymbol } from 'shared/antd/mint'
-import WormholeSupported from './wormholeSupported'
 
 import configs from 'app/configs'
 import { numeric } from 'shared/util'
@@ -23,6 +22,11 @@ const {
   swap: { bidDefault },
 } = configs
 
+export enum RATE {
+  FIFTY = 50,
+  HUNDRED = 100,
+}
+
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {
@@ -36,6 +40,7 @@ const Bid = () => {
   const { state } = useLocation<SenLpState>()
   const poolAdress = state?.poolAddress
   const { address: mintAddress, decimals } = mintInfo
+  const [activeValue, setActiveValue] = useState(0)
 
   // Select default
   useEffect(() => {
@@ -50,6 +55,11 @@ const Bid = () => {
     [mintInfo, poolAddresses],
   )
 
+  const fiftyPerBtn = useMemo(() => {
+    if (activeValue === RATE.HUNDRED) return RATE.HUNDRED
+    return RATE.FIFTY
+  }, [activeValue])
+
   // Compute human-readable balance
   const maxBalance = useMemo((): string => {
     if (mintAddress !== DEFAULT_WSOL)
@@ -62,10 +72,35 @@ const Bid = () => {
   }, [balance, decimals, lamports, mintAddress])
 
   // Handle amount
-  const onAmount = (val: string) =>
-    dispatch(updateBidData({ amount: val, prioritized: true }))
+  const onAmount = useCallback(
+    (val: string) => {
+      return dispatch(updateBidData({ amount: val, prioritized: true }))
+    },
+
+    [dispatch],
+  )
   // All in :)))
   const onMax = () => onAmount(maxBalance)
+  // set percent balance
+  const onChangePercentAmount = useCallback(
+    (activeValue: RATE) => {
+      if (!maxBalance) return
+      const numMaxBalance = Number(maxBalance)
+      if (numMaxBalance < 5 / 10 ** 6) return onAmount(maxBalance)
+      const percentageBalance = numMaxBalance * (activeValue / 100)
+      return onAmount(`${percentageBalance}`)
+    },
+    [maxBalance, onAmount],
+  )
+
+  const checkActive = useCallback(() => {
+    const numMaxBalance = Number(maxBalance)
+    const amount = Number(bidAmount)
+    if (!numMaxBalance || numMaxBalance === 0) return setActiveValue(0)
+    if (numMaxBalance === amount) return setActiveValue(RATE.HUNDRED)
+    if (numMaxBalance / 2 === amount) return setActiveValue(RATE.FIFTY)
+    return setActiveValue(0)
+  }, [bidAmount, maxBalance])
 
   // Update bid data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
@@ -89,46 +124,70 @@ const Bid = () => {
     )
   }
 
+  useEffect(() => {
+    checkActive()
+  }, [checkActive])
+
   return (
-    <Row gutter={[8, 8]}>
+    <Row gutter={[0, 0]} align="middle">
       <Col flex="auto">
-        <Typography.Text>From</Typography.Text>
+        <Selection value={selectionInfo} onChange={onSelectionInfo} />
       </Col>
       <Col>
-        <WormholeSupported />
-      </Col>
-      <Col span={24}>
         <NumericInput
+          bordered={false}
+          style={{ textAlign: 'right', fontSize: 24, maxWidth: 200 }}
           placeholder="0"
           value={bidAmount}
           onValue={onAmount}
-          size="large"
-          prefix={
-            <Selection value={selectionInfo} onChange={onSelectionInfo} />
-          }
-          suffix={
-            <Button
-              type="text"
-              size="small"
-              style={{ fontSize: 12, marginRight: -7 }}
-              onClick={onMax}
-            >
-              MAX
-            </Button>
-          }
         />
       </Col>
-      <Col flex="auto" />
-      <Col>
-        <Space className="caption">
-          <Typography.Text type="secondary">Available:</Typography.Text>
-          <Typography.Text type="secondary">
-            {numeric(maxBalance || 0).format('0,0.[00]')}
-          </Typography.Text>
-          <Typography.Text type="secondary">
-            <MintSymbol mintAddress={selectionInfo.mintInfo?.address || ''} />
-          </Typography.Text>
-        </Space>
+      <Col span={24}>
+        <Row align="middle">
+          <Col flex="auto">
+            <Space className="caption">
+              <Typography.Text type="secondary">Available:</Typography.Text>
+              <Typography.Text
+                type="secondary"
+                style={{ cursor: 'pointer' }}
+                onClick={onMax}
+              >
+                {numeric(maxBalance || 0).format('0,0.[00]')}
+              </Typography.Text>
+              <Typography.Text type="secondary">
+                <MintSymbol
+                  mintAddress={selectionInfo.mintInfo?.address || ''}
+                />
+              </Typography.Text>
+            </Space>
+          </Col>
+          <Col>
+            <Space size={0} direction="vertical">
+              <Radio.Group value={activeValue} buttonStyle="solid">
+                <Space>
+                  <Radio.Button
+                    className="rate-btn"
+                    onClick={() => onChangePercentAmount(RATE.FIFTY)}
+                    value={fiftyPerBtn}
+                  />
+                  <Radio.Button
+                    className="rate-btn"
+                    onClick={() => onChangePercentAmount(RATE.HUNDRED)}
+                    value={RATE.HUNDRED}
+                  />
+                </Space>
+              </Radio.Group>
+              <Space>
+                <Typography.Text type="secondary">
+                  {RATE.FIFTY}%
+                </Typography.Text>
+                <Typography.Text type="secondary">
+                  {RATE.HUNDRED}%
+                </Typography.Text>
+              </Space>
+            </Space>
+          </Col>
+        </Row>
       </Col>
     </Row>
   )
