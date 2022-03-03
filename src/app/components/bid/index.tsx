@@ -162,30 +162,30 @@ const Bid = () => {
             </Space>
           </Col>
           <Col>
-            <Space size={0} direction="vertical">
-              <Radio.Group value={activeValue} buttonStyle="solid">
-                <Space>
+            <Radio.Group value={activeValue} buttonStyle="solid">
+              <Space>
+                <Space size={4} direction="vertical">
                   <Radio.Button
                     className="rate-btn"
                     onClick={() => onChangePercentAmount(RATE.FIFTY)}
                     value={fiftyPerBtn}
                   />
+                  <Typography.Text type="secondary" className="caption">
+                    {RATE.FIFTY}%
+                  </Typography.Text>
+                </Space>
+                <Space size={4} direction="vertical">
                   <Radio.Button
                     className="rate-btn"
                     onClick={() => onChangePercentAmount(RATE.HUNDRED)}
                     value={RATE.HUNDRED}
                   />
+                  <Typography.Text type="secondary" className="caption">
+                    {RATE.HUNDRED}%
+                  </Typography.Text>
                 </Space>
-              </Radio.Group>
-              <Space>
-                <Typography.Text type="secondary">
-                  {RATE.FIFTY}%
-                </Typography.Text>
-                <Typography.Text type="secondary">
-                  {RATE.HUNDRED}%
-                </Typography.Text>
               </Space>
-            </Space>
+            </Radio.Group>
           </Col>
         </Row>
       </Col>
