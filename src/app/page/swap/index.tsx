@@ -11,7 +11,7 @@ const Swap = () => {
   return (
     <Row gutter={[24, 24]}>
       <Col span={24}>
-        <Card bordered={false} className="card-swap">
+        <Card bordered={false} className="card-swap" bodyStyle={{ padding: 0 }}>
           <SwapForm />
         </Card>
       </Col>

@@ -1,12 +1,16 @@
 import { Col, Row } from 'antd'
+import WormholeSupported from '../bid/wormholeSupported'
 import Settings from '../settings'
 import SwapInput from './swapInput'
 
 const SwapForm = () => {
   return (
-    <Row gutter={[24, 24]}>
-      <Col span={24}>
-        <Row gutter={[8, 8]} justify="end" align="middle" wrap={false}>
+    <Row gutter={0}>
+      <Col span={24} className="swap-setting">
+        <Row>
+          <Col flex="auto">
+            <WormholeSupported />
+          </Col>
           <Col>
             <Settings />
           </Col>

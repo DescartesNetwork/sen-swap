@@ -2,7 +2,7 @@ import { useState, Fragment, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { forceCheck } from '@senswap/react-lazyload'
 
-import { Row, Col, Space, Typography, Divider, Modal } from 'antd'
+import { Row, Col, Typography, Modal, Space } from 'antd'
 import IonIcon from 'shared/antd/ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import MintSelection, { SelectionInfo } from './mintSelection'
@@ -36,12 +36,11 @@ const Selection = ({
 
   return (
     <Fragment>
-      <Space style={{ cursor: 'pointer' }} onClick={() => setVisible(true)}>
+      <Space className="mint-select" onClick={() => setVisible(true)}>
         <MintAvatar mintAddress={mintAddress} />
         <Typography.Text type="secondary">
           <MintSymbol mintAddress={mintAddress} />
         </Typography.Text>
-        <Divider type="vertical" style={{ marginLeft: 4 }} />
       </Space>
       <Modal
         visible={visible}
