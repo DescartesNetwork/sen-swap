@@ -136,7 +136,12 @@ const Bid = () => {
       <Col>
         <NumericInput
           bordered={false}
-          style={{ textAlign: 'right', fontSize: 24, maxWidth: 200 }}
+          style={{
+            textAlign: 'right',
+            fontSize: 24,
+            maxWidth: 150,
+            padding: 0,
+          }}
           placeholder="0"
           value={bidAmount}
           onValue={onAmount}

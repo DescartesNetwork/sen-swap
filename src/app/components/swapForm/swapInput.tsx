@@ -27,13 +27,16 @@ const SwapInput = ({ widget = false }: { widget?: boolean }) => {
     await dispatch(updateData({ amount, prioritized: true }))
   }, [dispatch, askData, bidData])
 
-  const bidStyle = widget ? { padding: 16 } : { padding: '0 24px 12px' }
+  const bidStyle = widget
+    ? { padding: '16px 16px 40px' }
+    : { padding: '6px 24px 16px' }
   const askStyle = widget
     ? { padding: '0 16px 16px' }
     : { padding: '0 24px 24px' }
+  const wrapStype = widget ? { margin: '0 -12px' } : {}
 
   return (
-    <Row gutter={[0, 0]} justify="center" style={{ margin: '0 -12px' }}>
+    <Row gutter={[0, 0]} justify="center" style={{ ...wrapStype }}>
       <Col span={24} style={{ ...bidStyle }} className="swap-bid">
         <Bid />
       </Col>

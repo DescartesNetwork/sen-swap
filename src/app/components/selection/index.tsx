@@ -41,6 +41,9 @@ const Selection = ({
         <Typography.Text type="secondary">
           <MintSymbol mintAddress={mintAddress} />
         </Typography.Text>
+        <Typography.Text type="secondary">
+          <IonIcon name="chevron-down-outline" />
+        </Typography.Text>
       </Space>
       <Modal
         visible={visible}
