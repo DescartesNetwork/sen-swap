@@ -76,7 +76,12 @@ const Ask = () => {
       <Col>
         <NumericInput
           bordered={false}
-          style={{ textAlign: 'right', fontSize: 24, maxWidth: 180 }}
+          style={{
+            textAlign: 'right',
+            fontSize: 24,
+            maxWidth: 150,
+            padding: 0,
+          }}
           placeholder="0"
           value={amount}
           onValue={onAmount}
