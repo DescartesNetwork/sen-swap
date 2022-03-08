@@ -17,7 +17,7 @@ import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
 const Widget = () => {
   const [visible, setVisible] = useState(false)
   const {
-    route: { platform, priceImpact },
+    route: { platform, priceImpact, loadingJubRoute },
   } = useSelector((state: AppState) => state)
 
   const disabled = useDisabledSwap()
@@ -71,6 +71,7 @@ const Widget = () => {
               type="primary"
               size="large"
               disabled={disabled}
+              loading={loadingJubRoute}
               block
             >
               Review & Swap

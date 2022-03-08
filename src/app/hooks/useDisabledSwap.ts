@@ -8,7 +8,7 @@ import useAccountBalance from 'shared/hooks/useAccountBalance'
 
 export const useDisabledSwap = () => {
   const {
-    route: { best },
+    route: { best, loadingJubRoute },
     bid: {
       amount: bidAmount,
       accountAddress: bidAccountAddress,
@@ -44,5 +44,5 @@ export const useDisabledSwap = () => {
     Number(bidAmount) > Number(availableBid) ||
     bidMintAddress === askMintAddress
 
-  return disabled
+  return disabled || loadingJubRoute
 }

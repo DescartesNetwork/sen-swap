@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, Fragment } from 'react'
+import { useCallback, useState, useEffect, Fragment, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { utils } from '@senswap/sen-js'
@@ -52,11 +52,12 @@ const SwapButton = ({
   const validSenSwap = useSenSwapValidator(senswap.bestRoute)
 
   const jupiter = useJupiterAggregator()
-  // Jupiter support only with bid->ask
-  const validJupiter =
-    jupiter.bestRoute.best.length && bidPriority > askPriority
 
-  const { swap, bestRoute } = validSenSwap || !validJupiter ? senswap : jupiter
+  // Jupiter support only with bid->ask
+  const { swap, bestRoute } = useMemo(() => {
+    if (bidPriority < askPriority || validSenSwap) return senswap
+    return jupiter
+  }, [askPriority, bidPriority, jupiter, senswap, validSenSwap])
 
   const onSwap = async () => {
     try {
@@ -98,13 +99,13 @@ const SwapButton = ({
     }
     dispatch(updateRoute({ ...bestRoute }))
   }, [
-    dispatch,
-    bestAmount,
-    bestRoute,
-    bidPriority,
-    bidMintDecimals,
     askPriority,
+    bidPriority,
+    dispatch,
+    bestRoute,
+    bestAmount,
     askMintDecimals,
+    bidMintDecimals,
   ])
 
   useEffect(() => {
