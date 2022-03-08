@@ -29,6 +29,8 @@ const DEFAULT_DATA: RouteState = {
   priceImpact: 0,
 }
 
+let timeout: NodeJS.Timeout
+
 const useJupiterAggregator = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {
@@ -118,7 +120,12 @@ const useJupiterAggregator = () => {
   }, [dispatch, loading])
 
   useEffect(() => {
-    if (!!bidAmount && Number(bidAmount) > 0) return refresh()
+    if (!!bidAmount && Number(bidAmount) > 0) {
+      if (timeout) clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        refresh()
+      }, 1000)
+    }
     // because refresh is not a useCallBack function. So not dependent refresh
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bidAmount])

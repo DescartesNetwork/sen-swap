@@ -11,6 +11,9 @@ import { AppState } from 'app/model'
 const SwapActions = () => {
   const [visivle, setVisivle] = useState(false)
   const disabled = useDisabledSwap()
+  const {
+    route: { loadingJubRoute },
+  } = useSelector((state: AppState) => state)
   const { enhancement } = useSelector((state: AppState) => state.settings)
   return (
     <Card bordered={false}>
@@ -27,6 +30,7 @@ const SwapActions = () => {
             type="primary"
             onClick={() => setVisivle(true)}
             disabled={disabled}
+            loading={loadingJubRoute}
             block
           >
             Review & Swap
