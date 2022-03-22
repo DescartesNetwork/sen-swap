@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
+import { account, PoolData } from '@senswap/sen-js'
 import { usePool } from '@senhub/providers'
 
 import { AppState } from 'app/model'
@@ -11,6 +11,9 @@ import {
   findBestRouteFromAsk,
   findBestRouteFromBid,
 } from 'app/helper/router'
+import { usePoolTvl } from '../usePoolTvl'
+
+const MIN_TVL = 1000 // $USD
 
 export const useBestRoute = (fixedPoolAddress?: string) => {
   const [bestRoute, setBestRoute] = useState<RouteState>({
@@ -21,7 +24,7 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
   })
   const { bid: bidData, ask: askData } = useSelector((state: AppState) => state)
   const { pools } = usePool()
-
+  const { getTvl } = usePoolTvl()
   /**
    * Find optimal route
    */
@@ -57,10 +60,19 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
       bidMintAddress === askMintAddress
     )
       return setBestRoute(bestRoute)
+    // filter pool tvl
+    let filteredPool: Record<string, PoolData> = {}
+    await Promise.all(
+      Object.keys(pools).map(async (pool) => {
+        let tvl = await getTvl(pool)
+        if (tvl < MIN_TVL) return
+        filteredPool[pool] = pools[pool]
+      }),
+    )
 
     // All possible routes
     let allRoutes = findAllRoutes(
-      buildPoolGraph(pools),
+      buildPoolGraph(filteredPool),
       bidMintAddress,
       askMintAddress,
     )
@@ -77,7 +89,7 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
       bestRoute = findBestRouteFromBid(allRoutes, bidData)
     else bestRoute = findBestRouteFromAsk(allRoutes, askData)
     return setBestRoute(bestRoute)
-  }, [askData, bidData, fixedPoolAddress, pools])
+  }, [askData, bidData, fixedPoolAddress, getTvl, pools])
 
   useEffect(() => {
     findBestRoute()
