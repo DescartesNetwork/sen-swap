@@ -15,7 +15,7 @@ import { updateBidData } from 'app/model/bid.controller'
 import { updateAskData } from 'app/model/ask.controller'
 import { SenLpState } from 'app/constant/senLpState'
 
-const Page = () => {
+const View = () => {
   const { pools } = usePool()
   const dispatch = useDispatch<AppDispatch>()
   const { state } = useLocation<SenLpState>()
@@ -74,4 +74,4 @@ const Page = () => {
   )
 }
 
-export default Page
+export default View
