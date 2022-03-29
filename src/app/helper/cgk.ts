@@ -1,4 +1,4 @@
-import TokenProvider from 'os/providers/tokenProvider'
+import TokenProvider from 'shared/tokenProvider'
 import { fetchCGK } from 'shared/util'
 import axios from 'axios'
 
