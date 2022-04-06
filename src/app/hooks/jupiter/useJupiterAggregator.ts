@@ -83,8 +83,8 @@ const useJupiterAggregator = () => {
     const wrappedWallet = new JupiterWalletWrapper(walletAddress, wallet)
     const result: any = await exchange({
       wallet: wrappedWallet,
-      route: routes[0],
-      confirmationWaiterFactory: async (txid) => {
+      routeInfo: routes[0],
+      onTransaction: async (txid: string) => {
         await connection.confirmTransaction(txid, 'confirmed')
         return await connection.getTransaction(txid, {
           commitment: 'confirmed',
