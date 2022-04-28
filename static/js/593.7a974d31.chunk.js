@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunksen_swap=globalThis.webpackChunksen_swap||[]).push([[593],{12060:(a,e,s)=>{s.r(e),s.d(e,{logo:()=>t,panels:()=>i,readme:()=>f});const p=s.p+"static/media/panel.f392e6e59d78d4991c6b.png",c=s.p+"static/media/panel1.cee91cd1f01b3f9e6f58.png",d=s.p+"static/media/panel2.1885f3af18f36ba650f8.png";s(92950);const t=s.p+"static/media/logo.d86456fa078e55b87bfac60a8309fe54.svg",f=s.p+"static/media/README.d01acb85618aed04ffea.md",i=[p,c,d]}}]);
+//# sourceMappingURL=593.7a974d31.chunk.js.map
