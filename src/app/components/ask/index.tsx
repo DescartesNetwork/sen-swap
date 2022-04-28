@@ -17,6 +17,7 @@ import { updateAskData } from 'app/model/ask.controller'
 import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
+import { setLoadingSenSwap } from 'app/model/route.controller'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -27,14 +28,15 @@ const Ask = () => {
   const { state } = useLocation<SenLpState>()
   const { balance: maxBalance } = useAccountBalance(accountAddress)
   const selectionDefault = useMintSelection(configs.swap.askDefault)
-  const poolAdress = state?.poolAddress
+  const poolAddress = state?.poolAddress
 
   // Select default
   useEffect(() => {
-    if (account.isAddress(accountAddress) || account.isAddress(poolAdress))
+    if (account.isAddress(accountAddress) || account.isAddress(poolAddress))
       return
+    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     dispatch(updateAskData(selectionDefault))
-  }, [accountAddress, dispatch, poolAdress, selectionDefault])
+  }, [accountAddress, dispatch, poolAddress, selectionDefault])
 
   // Compute selection info
   const selectionInfo: SelectionInfo = useMemo(
@@ -43,13 +45,17 @@ const Ask = () => {
   )
 
   // Handle amount
-  const onAmount = (val: string) =>
+  const onAmount = (val: string) => {
+    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     dispatch(updateAskData({ amount: val, prioritized: true }))
+  }
 
   // Update ask data
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
     const { splt } = window.sentre
     const { address: mintAddress } = selectionInfo.mintInfo || {}
+    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
+
     if (!account.isAddress(mintAddress))
       return dispatch(
         updateAskData({ amount: '', prioritized: true, ...selectionInfo }),

@@ -35,6 +35,7 @@ export const useMintTotalValue = () => {
       mintAddress: string
       amount: bigint
     }) => {
+      if (!amount) return 0
       const tokenInfo = await tokenProvider.findByAddress(mintAddress)
       if (tokenInfo) return getTokenUsd(mintAddress, amount)
 

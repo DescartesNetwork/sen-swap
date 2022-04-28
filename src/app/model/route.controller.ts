@@ -10,7 +10,8 @@ export type RouteState = {
   best: RouteTrace // The best route
   amount: bigint
   priceImpact: number
-  loadingJubRoute?: boolean
+  loadingJupSwap?: boolean
+  loadingSenswap?: boolean
 }
 
 const NAME = 'route'
@@ -19,7 +20,8 @@ const initialState: RouteState = {
   best: [],
   amount: BigInt(0),
   priceImpact: 0,
-  loadingJubRoute: false,
+  loadingJupSwap: false,
+  loadingSenswap: false,
 }
 
 /**
@@ -30,8 +32,16 @@ export const setLoadingJupiterRoute = createAsyncThunk<
   Partial<RouteState>,
   Partial<RouteState>,
   { state: any }
->(`${NAME}/setLoadingJupiterRoute`, async ({ loadingJubRoute }) => {
-  return { loadingJubRoute }
+>(`${NAME}/setLoadingJupiterRoute`, async ({ loadingJupSwap }) => {
+  return { loadingJupSwap }
+})
+
+export const setLoadingSenSwap = createAsyncThunk<
+  Partial<RouteState>,
+  Partial<RouteState>,
+  { state: any }
+>(`${NAME}/loadingSenswap`, async ({ loadingSenswap }) => {
+  return { loadingSenswap }
 })
 
 export const updateRoute = createAsyncThunk<
@@ -59,6 +69,10 @@ const slice = createSlice({
       )
       .addCase(
         setLoadingJupiterRoute.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        setLoadingSenSwap.fulfilled,
         (state, { payload }) => void Object.assign(state, payload),
       ),
 })

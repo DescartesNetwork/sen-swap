@@ -11,6 +11,18 @@ type Conf = {
   swapAddress: string
 }
 
+const balancing = () => {
+  const endPoints = [
+    'https://ssc-dao.genesysgo.net/',
+    // 'https://sentre.genesysgo.net',
+    'https://solana-api.projectserum.com',
+    'https://api.google.mainnet-beta.solana.com',
+  ]
+  const rand = Math.floor(Math.random() * 100) % endPoints.length
+  console.log('APP RPC:', endPoints[rand])
+  return endPoints[rand]
+}
+
 const conf: Record<Net, Conf> = {
   /**
    * Development configurations
@@ -38,7 +50,7 @@ const conf: Record<Net, Conf> = {
    * Production configurations
    */
   mainnet: {
-    node: 'https://api.google.mainnet-beta.solana.com',
+    node: balancing(),
     cluster: 'mainnet-beta',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
