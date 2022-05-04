@@ -9,6 +9,7 @@ import { AppState } from 'app/model'
 import { numeric } from 'shared/util'
 import Price from './price'
 import { priceImpactColor } from 'app/helper/utils'
+import { useSwapStatus } from 'app/hooks/useSwapStatus'
 
 export type LiteMintInfo = {
   address: string
@@ -48,9 +49,10 @@ const ExtraTypography = ({
 
 const PreviewSwap = () => {
   const {
-    route: { priceImpact, loadingJubRoute },
+    route: { priceImpact },
     settings: { slippage },
   } = useSelector((state: AppState) => state)
+  const { loading } = useSwapStatus()
 
   return (
     <Row gutter={[12, 12]}>
@@ -62,28 +64,24 @@ const PreviewSwap = () => {
               {numeric(Number(priceImpact)).format('0.[0000]%')}
             </Typography.Text>
           }
-          loading={loadingJubRoute}
+          loading={loading}
         />
       </Col>
       <Col span={24}>
-        <ExtraTypography
-          label="Price"
-          content={<Price />}
-          loading={loadingJubRoute}
-        />
+        <ExtraTypography label="Price" content={<Price />} loading={loading} />
       </Col>
       <Col span={24}>
         <ExtraTypography
           label="Slippage Tolerance"
           content={numeric(slippage).format('0.[00]%')}
-          loading={loadingJubRoute}
+          loading={loading}
         />
       </Col>
       <Col span={24} style={{ minHeight: 24 }}>
         <ExtraTypography
           label="Route"
           content={<RouteAvatar />}
-          loading={loadingJubRoute}
+          loading={loading}
         />
       </Col>
     </Row>

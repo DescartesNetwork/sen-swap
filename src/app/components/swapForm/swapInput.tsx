@@ -9,6 +9,7 @@ import Bid from '../bid'
 import { AppDispatch, AppState } from 'app/model'
 import { updateAskData } from 'app/model/ask.controller'
 import { updateBidData } from 'app/model/bid.controller'
+import { setLoadingSenSwap } from 'app/model/route.controller'
 
 const SwapInput = ({ widget = false }: { widget?: boolean }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -22,6 +23,7 @@ const SwapInput = ({ widget = false }: { widget?: boolean }) => {
     const { amount: askAmount, priority: askPriority, ...askRest } = askData
     const amount = bidPriority > askPriority ? bidAmount : askAmount
     const updateData = bidPriority > askPriority ? updateAskData : updateBidData
+    await dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     await dispatch(updateBidData({ ...askRest, amount: '', reset: true }))
     await dispatch(updateAskData({ ...bidRest, amount: '', reset: true }))
     await dispatch(updateData({ amount, prioritized: true }))

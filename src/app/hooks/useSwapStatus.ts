@@ -6,9 +6,9 @@ import { useWallet } from '@senhub/providers'
 import { AppState } from 'app/model'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 
-export const useDisabledSwap = () => {
+export const useSwapStatus = () => {
   const {
-    route: { best, loadingJubRoute },
+    route: { best, loadingJupSwap, loadingSenswap },
     bid: {
       amount: bidAmount,
       accountAddress: bidAccountAddress,
@@ -44,5 +44,6 @@ export const useDisabledSwap = () => {
     Number(bidAmount) > Number(availableBid) ||
     bidMintAddress === askMintAddress
 
-  return disabled || loadingJubRoute
+  const loading = loadingJupSwap || loadingSenswap
+  return { disabled, loading }
 }

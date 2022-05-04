@@ -17,6 +17,7 @@ import { SelectionInfo } from '../selection/mintSelection'
 import { useMintSelection } from 'app/hooks/useMintSelection'
 import { SenLpState } from 'app/constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
+import { setLoadingSenSwap } from 'app/model/route.controller'
 
 const {
   swap: { bidDefault },
@@ -46,6 +47,7 @@ const Bid = () => {
   useEffect(() => {
     if (account.isAddress(accountAddress) || account.isAddress(poolAdress))
       return
+    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     dispatch(updateBidData(selectionDefault))
   }, [accountAddress, dispatch, poolAdress, selectionDefault])
 
@@ -74,6 +76,7 @@ const Bid = () => {
   // Handle amount
   const onAmount = useCallback(
     (val: string) => {
+      dispatch(setLoadingSenSwap({ loadingSenswap: true }))
       return dispatch(updateBidData({ amount: val, prioritized: true }))
     },
 
@@ -106,6 +109,7 @@ const Bid = () => {
   const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
     const { splt } = window.sentre
     const { address: mintAddress } = selectionInfo.mintInfo || {}
+    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     if (!account.isAddress(mintAddress))
       return dispatch(
         updateBidData({ amount: '', prioritized: true, ...selectionInfo }),

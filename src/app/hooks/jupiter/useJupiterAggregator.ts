@@ -116,7 +116,7 @@ const useJupiterAggregator = () => {
   }, [routes])
 
   useEffect(() => {
-    dispatch(setLoadingJupiterRoute({ loadingJubRoute: loading }))
+    dispatch(setLoadingJupiterRoute({ loadingJupSwap: loading }))
   }, [dispatch, loading])
 
   useEffect(() => {

@@ -5,16 +5,14 @@ import { Button, Card, Col, Row, Typography } from 'antd'
 import Preview from 'app/components/preview'
 
 import ConfirmSwap from 'app/components/confirmSwap'
-import { useDisabledSwap } from 'app/hooks/useDisabledSwap'
+import { useSwapStatus } from 'app/hooks/useSwapStatus'
 import { AppState } from 'app/model'
 
 const SwapActions = () => {
-  const [visivle, setVisivle] = useState(false)
-  const disabled = useDisabledSwap()
-  const {
-    route: { loadingJubRoute },
-  } = useSelector((state: AppState) => state)
+  const [visible, setVisible] = useState(false)
+  const { disabled, loading } = useSwapStatus()
   const { enhancement } = useSelector((state: AppState) => state.settings)
+
   return (
     <Card bordered={false}>
       <Row gutter={[24, 24]}>
@@ -28,15 +26,15 @@ const SwapActions = () => {
         <Col span={24}>
           <Button
             type="primary"
-            onClick={() => setVisivle(true)}
+            onClick={() => setVisible(true)}
             disabled={disabled}
-            loading={loadingJubRoute}
+            loading={loading}
             block
           >
             Review & Swap
           </Button>
         </Col>
-        <ConfirmSwap visible={visivle} onCancel={setVisivle} />
+        <ConfirmSwap visible={visible} onCancel={setVisible} />
       </Row>
     </Card>
   )
