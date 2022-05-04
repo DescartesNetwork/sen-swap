@@ -11,7 +11,7 @@ module.exports = {
     '@reduxjs/toolkit': { singleton: true, requiredVersion: '^1.6.2' },
     'react-redux': { singleton: true, requiredVersion: '^7.2.5' },
     '@jup-ag/react-hook': { singleton: true, requiredVersion: '^1.0.0-beta.5' },
-    antd: { singleton: true, requiredVersion: '^4.18.2' },
+    antd: { singleton: true, requiredVersion: '^4.19.5' },
     '@senhub/context': {
       import: 'os/store/context',
       singleton: true,
