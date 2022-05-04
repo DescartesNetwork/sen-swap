@@ -27,7 +27,7 @@ const overrideWebpackConfig = ({ context, webpackConfig, pluginOptions }) => {
     path: require.resolve('path-browserify'),
     url: require.resolve('url/'),
     fs: false,
-    // For Project Serum
+    // For Jupiter Aggregator
     process: require.resolve('process/browser'),
   }
   // Fix unrecognized change / caching problem
