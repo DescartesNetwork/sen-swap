@@ -1,14 +1,13 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
-import { useWallet } from '@senhub/providers'
+import { useMint, usePool, useUI, useWallet } from '@senhub/providers'
 
 import { Row, Col, Typography, Space } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
-import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
-import { MintSymbol } from 'shared/antd/mint'
+import { MintSelection, MintSymbol } from 'shared/antd/mint'
 
 import configs from 'app/configs'
 import { numeric } from 'shared/util'
@@ -21,7 +20,14 @@ import { setLoadingSenSwap } from 'app/model/route.controller'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { wallet } = useWallet()
+  const {
+    wallet: { address: walletAddress },
+  } = useWallet()
+  const { pools } = usePool()
+  const { getDecimals } = useMint()
+  const {
+    ui: { theme },
+  } = useUI()
   const {
     ask: { amount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
@@ -50,21 +56,42 @@ const Ask = () => {
     dispatch(updateAskData({ amount: val, prioritized: true }))
   }
 
-  // Update ask data
-  const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
-    const { splt } = window.sentre
-    const { address: mintAddress } = selectionInfo.mintInfo || {}
-    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
+  // Compute available pools
+  const getAvailablePoolAddresses = useCallback(
+    (mintAddress: string) => {
+      if (!account.isAddress(mintAddress)) return []
+      return Object.keys(pools).filter((poolAddress) => {
+        const { mint_a, mint_b } = pools[poolAddress]
+        return [mint_a, mint_b].includes(mintAddress)
+      })
+    },
+    [pools],
+  )
 
+  const onSelectionInfo = async (mintAddress: string) => {
+    const { splt } = window.sentre
+    const poolAddresses = getAvailablePoolAddresses(mintAddress)
+    const decimals = await getDecimals(mintAddress)
+
+    const selectionInfo: SelectionInfo = {
+      mintInfo: {
+        address: mintAddress,
+        decimals,
+      },
+      poolAddresses,
+    }
+
+    dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     if (!account.isAddress(mintAddress))
       return dispatch(
         updateAskData({ amount: '', prioritized: true, ...selectionInfo }),
       )
     const accountAddress = await splt.deriveAssociatedAddress(
-      wallet.address,
+      walletAddress,
       mintAddress,
     )
-    dispatch(
+
+    return dispatch(
       updateAskData({
         amount: '',
         prioritized: true,
@@ -74,10 +101,25 @@ const Ask = () => {
     )
   }
 
+  const DARK_BOX_SHADOW = '0px 4px 44px rgba(0, 0, 0, 0.42)'
+  const LIGHT_BOX_SHADOW = '0px 4px 40px rgba(33, 36, 51, 0.18)'
+
+  const MINT_SELECTION_STYLE = {
+    marginLeft: -7,
+    padding: '3px 8px',
+    borderRadius: 8,
+    cursor: 'pointer',
+    boxShadow: theme === 'dark' ? DARK_BOX_SHADOW : LIGHT_BOX_SHADOW,
+  }
+
   return (
     <Row gutter={[0, 0]}>
       <Col flex="auto">
-        <Selection value={selectionInfo} onChange={onSelectionInfo} />
+        <MintSelection
+          value={mintInfo.address}
+          onChange={onSelectionInfo}
+          style={MINT_SELECTION_STYLE}
+        />
       </Col>
       <Col>
         <NumericInput
