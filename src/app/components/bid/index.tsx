@@ -2,12 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
-import { useWallet } from '@senhub/providers'
+import { useMint, usePool, useUI, useWallet } from '@senhub/providers'
 
 import { Row, Col, Typography, Space, Radio } from 'antd'
-import Selection from '../selection'
 import NumericInput from 'shared/antd/numericInput'
-import { MintSymbol } from 'shared/antd/mint'
+import { MintSelection, MintSymbol } from 'shared/antd/mint'
 
 import configs from 'app/configs'
 import { numeric } from 'shared/util'
@@ -33,6 +32,11 @@ const Bid = () => {
   const {
     wallet: { address: walletAddress, lamports },
   } = useWallet()
+  const { pools } = usePool()
+  const { getDecimals } = useMint()
+  const {
+    ui: { theme },
+  } = useUI()
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
@@ -105,10 +109,32 @@ const Bid = () => {
     return setActiveValue(0)
   }, [bidAmount, maxBalance])
 
+  // Compute available pools
+  const getAvailablePoolAddresses = useCallback(
+    (mintAddress: string) => {
+      if (!account.isAddress(mintAddress)) return []
+      return Object.keys(pools).filter((poolAddress) => {
+        const { mint_a, mint_b } = pools[poolAddress]
+        return [mint_a, mint_b].includes(mintAddress)
+      })
+    },
+    [pools],
+  )
+
   // Update bid data
-  const onSelectionInfo = async (selectionInfo: SelectionInfo) => {
+  const onSelectionInfo = async (mintAddress: string) => {
     const { splt } = window.sentre
-    const { address: mintAddress } = selectionInfo.mintInfo || {}
+    const poolAddresses = getAvailablePoolAddresses(mintAddress)
+    const decimals = await getDecimals(mintAddress)
+
+    const selectionInfo: SelectionInfo = {
+      mintInfo: {
+        address: mintAddress,
+        decimals,
+      },
+      poolAddresses,
+    }
+
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     if (!account.isAddress(mintAddress))
       return dispatch(
@@ -118,6 +144,7 @@ const Bid = () => {
       walletAddress,
       mintAddress,
     )
+
     return dispatch(
       updateBidData({
         amount: '',
@@ -132,10 +159,25 @@ const Bid = () => {
     checkActive()
   }, [checkActive])
 
+  const DARK_BOX_SHADOW = '0px 4px 44px rgba(0, 0, 0, 0.42)'
+  const LIGHT_BOX_SHADOW = '0px 4px 40px rgba(33, 36, 51, 0.18)'
+
+  const MINT_SELECTION_STYLE = {
+    marginLeft: -7,
+    padding: '3px 8px',
+    borderRadius: 8,
+    cursor: 'pointer',
+    boxShadow: theme === 'dark' ? DARK_BOX_SHADOW : LIGHT_BOX_SHADOW,
+  }
+
   return (
     <Row gutter={[0, 0]} align="middle">
       <Col flex="auto">
-        <Selection value={selectionInfo} onChange={onSelectionInfo} />
+        <MintSelection
+          value={mintAddress}
+          onChange={onSelectionInfo}
+          style={MINT_SELECTION_STYLE}
+        />
       </Col>
       <Col>
         <NumericInput
