@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { account } from '@senswap/sen-js'
-import LazyLoad from '@senswap/react-lazyload'
+import LazyLoad from '@sentre/react-lazyload'
 import { useMint, usePool } from '@senhub/providers'
 
 import { Row, Col, Typography, Divider } from 'antd'

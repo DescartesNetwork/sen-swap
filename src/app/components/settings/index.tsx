@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Row, Col, Button, Popover, Typography, Divider } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import IonIcon from '@sentre/antd-ionicon'
 import PoweredBySentre from 'app/components/poweredBySentre'
 import Slippage from './slippage'
 import Advanced from './advanced'

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Card, Col, Row, Typography, Table, Button } from 'antd'
 import { HISTORY_COLUMN } from './column'
-import IonIcon from 'shared/antd/ionicon'
+import IonIcon from '@sentre/antd-ionicon'
 
 import { fetchHistorySwap } from 'app/model/history.controller'
 import { AppDispatch, AppState } from 'app/model'

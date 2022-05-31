@@ -1,9 +1,9 @@
 import { useState, Fragment, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { forceCheck } from '@senswap/react-lazyload'
+import { forceCheck } from '@sentre/react-lazyload'
 
 import { Row, Col, Typography, Modal, Space } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import IonIcon from '@sentre/antd-ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import MintSelection, { SelectionInfo } from './mintSelection'
 

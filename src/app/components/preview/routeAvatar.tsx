@@ -2,7 +2,7 @@ import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Divider, Space } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import IonIcon from '@sentre/antd-ionicon'
 import PoweredByJupiter from '../poweredByJupiter'
 
 import { AppState } from 'app/model'

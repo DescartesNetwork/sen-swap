@@ -4,7 +4,7 @@ import moment from 'moment'
 import { useMint } from '@senhub/providers'
 
 import { Button, Card, Col, Radio, Row, Typography, Space, Popover } from 'antd'
-import IonIcon from 'shared/antd/ionicon'
+import IonIcon from '@sentre/antd-ionicon'
 import Cross from './cross'
 import SenChart from './chart'
 import ChartEmpty from './chartEmpty'

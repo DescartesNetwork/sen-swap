@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { Row, Col, Space, Typography, Modal, Card, Checkbox } from 'antd'
 import Preview from 'app/components/preview'
-import IonIcon from 'shared/antd/ionicon'
+import IonIcon from '@sentre/antd-ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import SwapAction from 'app/components/swapAction'
 
