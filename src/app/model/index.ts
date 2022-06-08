@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { devTools, bigintSerializationMiddleware } from 'shared/devTools'
+import { devTools, bigintSerializationMiddleware } from 'app/model/devTools'
 
 import ask from './ask.controller'
 import bid from './bid.controller'

@@ -28,6 +28,5 @@ module.exports = {
   },
   exposes: {
     './bootstrap': 'app/bootstrap.app',
-    './static': 'app/static.app',
   },
 }
