@@ -4,7 +4,6 @@ import { Net } from '@sentre/senhub'
  * Contructor
  */
 type Conf = {
-  node: string
   cluster: 'devnet' | 'testnet' | 'mainnet-beta'
   spltAddress: string
   splataAddress: string
@@ -16,7 +15,6 @@ const conf: Record<Net, Conf> = {
    * Development configurations
    */
   devnet: {
-    node: 'https://api.devnet.solana.com',
     cluster: 'devnet',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
@@ -27,7 +25,6 @@ const conf: Record<Net, Conf> = {
    * Staging configurations
    */
   testnet: {
-    node: 'https://api.testnet.solana.com',
     cluster: 'testnet',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
@@ -38,7 +35,6 @@ const conf: Record<Net, Conf> = {
    * Production configurations
    */
   mainnet: {
-    node: 'https://ssc-dao.genesysgo.net',
     cluster: 'mainnet-beta',
     spltAddress: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     splataAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
