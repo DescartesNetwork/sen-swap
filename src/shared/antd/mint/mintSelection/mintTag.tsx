@@ -1,9 +1,9 @@
+import { util } from '@sentre/senhub'
+
 import { Card, Space, Typography } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
 import { MintAvatar } from 'shared/antd/mint'
 import MintSymbol from '../mintSymbol'
-
-import { util } from '@sentre/senhub'
 
 import './index.less'
 

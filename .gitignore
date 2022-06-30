@@ -24,4 +24,3 @@ yarn-error.log*
 *.orig
 *.manifest.json
 package-lock.json
-yarn.lock
