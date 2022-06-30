@@ -8,7 +8,7 @@ let timeoutId: ReturnType<typeof setTimeout> | undefined
 /**
  * Numeric Input
  * - Check balance based on the max
- * - Only accept numeric characters
+ * - Only acceptutilcharacters
  * @remarks The props of input follows the same as https://ant.design/components/input/#API. Extra & Overrided props
  * @param max - Maximum
  * @param onValue - A triggerred function if a valid number
