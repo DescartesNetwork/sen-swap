@@ -4,7 +4,6 @@ import { account, PoolData } from '@senswap/sen-js'
 import { useJupiter } from '@jup-ag/react-hook'
 import { Connection } from '@solana/web3.js'
 
-import configs from 'configs'
 import { AppDispatch, AppState } from 'model'
 import {
   RouteState,
@@ -14,13 +13,10 @@ import {
 import { RouteTrace } from 'helper/router'
 
 import JupiterWalletWrapper from 'hooks/jupiter/jupiterWalletWrapper'
-import { useWallet } from '@sentre/senhub'
+import { useWallet, rpc } from '@sentre/senhub'
 import { HopData } from 'components/preview'
 
-const {
-  sol: { node },
-} = configs
-const connection = new Connection(node)
+const connection = new Connection(rpc)
 
 const DEFAULT_DATA: RouteState = {
   platform: SwapPlatform.JupiterAggregator,

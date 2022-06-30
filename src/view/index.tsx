@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
-import { usePool, useWallet } from '@sentre/senhub'
+import { usePool, useWallet, rpc } from '@sentre/senhub'
 import { JupiterProvider } from '@jup-ag/react-hook'
 import { Connection, PublicKey } from '@solana/web3.js'
 
@@ -19,9 +19,10 @@ import { SenLpState } from 'constant/senLpState'
 import configs from 'configs'
 
 const {
-  sol: { node, cluster },
+  sol: { cluster },
 } = configs
-const connection = new Connection(node)
+
+const connection = new Connection(rpc)
 
 const View = () => {
   const { pools } = usePool()
