@@ -9,7 +9,7 @@
     "@sentre/antd-ionicon": "^1.0.31",
     "@sentre/connector": "^0.0.30",
     "@sentre/react-lazyload": "^3.2.2",
-    "@sentre/senhub": "^3.0.28",
+    "@sentre/senhub": "^3.0.37",
     "@solana/spl-token-registry": "^0.2.3771",
     "@solana/wallet-adapter-base": "^0.9.2",
     "antd": "^4.21.1",
