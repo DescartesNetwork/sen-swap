@@ -5,6 +5,7 @@ import { Button, Empty, Col, Input, Row, Spin } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
 import MintTag from './mintTag'
 import MintCard from './mintCard'
+import SolCard from './solCard'
 import LoadMore from './loadMore'
 
 import { useRecommendedMints } from './hooks/useRecommendedMints'
@@ -19,12 +20,19 @@ export type SearchMintsProps = {
   onChange?: (value: string) => void
   visible?: boolean
   onClose?: () => void
+  nativeSol?: boolean
+  hoverable?: boolean
+  cardItemClassName?: string
 }
 
 const SearchMints = ({
   value = '',
   onChange = () => {},
+  onClose = () => {},
   visible,
+  nativeSol = false,
+  hoverable = true,
+  cardItemClassName,
 }: SearchMintsProps) => {
   const [keyword, setKeyword] = useState('')
   const [offset, setOffset] = useState(LIMIT)
@@ -35,8 +43,9 @@ const SearchMints = ({
     (mintAddress: string) => {
       onChange(mintAddress)
       addRecommendMint(mintAddress)
+      onClose()
     },
-    [onChange, addRecommendMint],
+    [onChange, addRecommendMint, onClose],
   )
 
   useEffect(() => {
@@ -44,6 +53,8 @@ const SearchMints = ({
     const list = document.getElementById('sentre-token-selection-list')
     if (list) list.scrollTop = 0
   }, [keyword, visible])
+
+  const searching = !!keyword.length
 
   return (
     <Row gutter={[32, 32]}>
@@ -65,11 +76,11 @@ const SearchMints = ({
           onChange={(e) => setKeyword(e.target.value || '')}
         />
       </Col>
-      {!keyword.length && (
+      {!searching && (
         <Col span={24}>
           <Row gutter={[8, 8]}>
             {recommendedMints.map((mintAddress) => (
-              <Col xs={12} sm={8} md={6} key={mintAddress}>
+              <Col key={mintAddress} flex={1}>
                 <MintTag
                   mintAddress={mintAddress}
                   onClick={onSelect}
@@ -83,7 +94,7 @@ const SearchMints = ({
       <Col span={24}>
         <Spin
           spinning={loading}
-          tip={!keyword.length ? 'Loading...' : 'Searching...'}
+          tip={!searching ? 'Loading...' : 'Searching...'}
         >
           <Row
             gutter={[8, 8]}
@@ -92,11 +103,21 @@ const SearchMints = ({
             id="sentre-token-selection-list"
             justify="center"
           >
+            {nativeSol && !searching && (
+              <Col span={24}>
+                <SolCard onClick={onSelect} />
+              </Col>
+            )}
             {searchedMints.length || loading ? (
               searchedMints.slice(0, offset).map((mintAddress, index) => (
                 <Col span={24} key={mintAddress + index}>
                   <LazyLoad height={60} overflow throttle={300}>
-                    <MintCard mintAddress={mintAddress} onClick={onSelect} />
+                    <MintCard
+                      mintAddress={mintAddress}
+                      onClick={onSelect}
+                      hoverable={hoverable}
+                      className={cardItemClassName}
+                    />
                   </LazyLoad>
                   {index === offset - AMOUNT_BEFORE_LOAD_MORE && (
                     <LoadMore

@@ -4,9 +4,8 @@ import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
 
-import { Row, Col, Typography, Space } from 'antd'
+import { Row, Col, Typography, Space, InputNumber } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
-import NumericInput from 'shared/antd/numericInput'
 import { MintSelection, MintSymbol } from 'shared/antd/mint'
 
 import configs from 'configs'
@@ -114,25 +113,22 @@ const Ask = () => {
 
   return (
     <Row gutter={[0, 0]}>
-      <Col flex="auto">
+      <Col>
         <MintSelection
           value={mintInfo.address}
           onChange={onSelectionInfo}
           style={MINT_SELECTION_STYLE}
         />
       </Col>
-      <Col>
-        <NumericInput
+      <Col flex="1">
+        <InputNumber
           bordered={false}
-          style={{
-            textAlign: 'right',
-            fontSize: 24,
-            maxWidth: 150,
-            padding: 0,
-          }}
+          className="amount-input"
           placeholder="0"
           value={amount}
-          onValue={onAmount}
+          onChange={onAmount}
+          controls={false}
+          min="0"
         />
       </Col>
       <Col span={24}>
