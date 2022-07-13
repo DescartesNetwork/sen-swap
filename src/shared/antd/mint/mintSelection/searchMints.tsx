@@ -21,8 +21,6 @@ export type SearchMintsProps = {
   visible?: boolean
   onClose?: () => void
   nativeSol?: boolean
-  hoverable?: boolean
-  cardItemClassName?: string
 }
 
 const SearchMints = ({
@@ -31,8 +29,6 @@ const SearchMints = ({
   onClose = () => {},
   visible,
   nativeSol = false,
-  hoverable = true,
-  cardItemClassName,
 }: SearchMintsProps) => {
   const [keyword, setKeyword] = useState('')
   const [offset, setOffset] = useState(LIMIT)
@@ -76,21 +72,19 @@ const SearchMints = ({
           onChange={(e) => setKeyword(e.target.value || '')}
         />
       </Col>
-      {!searching && (
-        <Col span={24}>
-          <Row gutter={[8, 8]}>
-            {recommendedMints.map((mintAddress) => (
-              <Col key={mintAddress} flex={1}>
-                <MintTag
-                  mintAddress={mintAddress}
-                  onClick={onSelect}
-                  active={mintAddress === value}
-                />
-              </Col>
-            ))}
-          </Row>
-        </Col>
-      )}
+      <Col span={24}>
+        <Row gutter={[8, 8]}>
+          {recommendedMints.map((mintAddress) => (
+            <Col key={mintAddress} flex={1}>
+              <MintTag
+                mintAddress={mintAddress}
+                onClick={onSelect}
+                active={mintAddress === value}
+              />
+            </Col>
+          ))}
+        </Row>
+      </Col>
       <Col span={24}>
         <Spin
           spinning={loading}
@@ -112,12 +106,7 @@ const SearchMints = ({
               searchedMints.slice(0, offset).map((mintAddress, index) => (
                 <Col span={24} key={mintAddress + index}>
                   <LazyLoad height={60} overflow throttle={300}>
-                    <MintCard
-                      mintAddress={mintAddress}
-                      onClick={onSelect}
-                      hoverable={hoverable}
-                      className={cardItemClassName}
-                    />
+                    <MintCard mintAddress={mintAddress} onClick={onSelect} />
                   </LazyLoad>
                   {index === offset - AMOUNT_BEFORE_LOAD_MORE && (
                     <LoadMore
