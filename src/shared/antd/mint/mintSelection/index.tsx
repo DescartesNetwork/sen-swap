@@ -11,8 +11,6 @@ export type MintSelectionProps = {
   style?: CSSProperties
   disabled?: boolean
   nativeSol?: boolean
-  hoverable?: boolean
-  cardItemClassname?: string
 }
 
 const MintSelection = ({
@@ -21,8 +19,6 @@ const MintSelection = ({
   style = {},
   disabled = false,
   nativeSol = false,
-  hoverable = true,
-  cardItemClassname,
 }: MintSelectionProps) => {
   const [visible, setVisible] = useState(false)
 
@@ -54,8 +50,6 @@ const MintSelection = ({
           onClose={() => setVisible(false)}
           nativeSol={nativeSol}
           value={value}
-          hoverable={hoverable}
-          cardItemClassName={cardItemClassname}
         />
       </Modal>
     </Fragment>

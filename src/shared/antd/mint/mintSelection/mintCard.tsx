@@ -72,28 +72,18 @@ export const MintCardActions = ({
 export type MintSelectionProps = {
   mintAddress: string
   onClick?: (mintAddress: string) => void
-  hoverable?: boolean
-  className?: string
 }
-const MintCard = ({
-  mintAddress,
-  onClick = () => {},
-  hoverable = false,
-  className,
-}: MintSelectionProps) => {
+const MintCard = ({ mintAddress, onClick = () => {} }: MintSelectionProps) => {
   const jptTokens = useJupiterTokens()
-
-  const cardCln = hoverable ? `mint-card-hoverable ${className}` : className
 
   return (
     <Card
       bodyStyle={{ padding: 8 }}
       style={{ boxShadow: 'unset', cursor: 'pointer' }}
       bordered={false}
-      className={cardCln}
       onClick={() => onClick(mintAddress)}
     >
-      <Row gutter={[16, 16]} align="top">
+      <Row gutter={[16, 16]} align="middle">
         <Col>
           <MintAvatar mintAddress={mintAddress} size={36} />
         </Col>
@@ -113,7 +103,7 @@ const MintCard = ({
           </Space>
         </Col>
         {/*  Button open explorer */}
-        <Col flex="auto" style={{ textAlign: 'right' }}>
+        <Col flex="auto" style={{ textAlign: 'right', alignSelf: 'start' }}>
           <MintCardActions address={mintAddress} />
         </Col>
       </Row>
