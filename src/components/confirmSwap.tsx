@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Row, Col, Space, Typography, Modal, Card, Checkbox } from 'antd'
 import Preview from 'components/preview'
 import IonIcon from '@sentre/antd-ionicon'
-import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import { MintAvatar, MintSymbol } from '@sen-use/components'
 import SwapAction from 'components/swapAction'
 
 import { AppState } from 'model'
