@@ -7,7 +7,7 @@ import PoweredByJupiter from '../poweredByJupiter'
 
 import { AppState } from 'model'
 import { account } from '@senswap/sen-js'
-import { MintAvatar } from 'shared/antd/mint'
+import { MintAvatar } from '@sen-use/components'
 import { SwapPlatform } from 'model/route.controller'
 
 const RouteAvatar = () => {

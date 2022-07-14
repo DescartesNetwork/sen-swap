@@ -6,7 +6,7 @@ import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
 import { util } from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, Radio, InputNumber } from 'antd'
-import { MintSelection, MintSymbol } from 'shared/antd/mint'
+import { MintSelection, MintSymbol } from '@sen-use/components'
 
 import { AppDispatch, AppState } from 'model'
 import { updateBidData } from 'model/bid.controller'

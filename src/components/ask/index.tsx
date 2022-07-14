@@ -6,7 +6,7 @@ import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, InputNumber } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
-import { MintSelection, MintSymbol } from 'shared/antd/mint'
+import { MintSelection, MintSymbol } from '@sen-use/components'
 
 import configs from 'configs'
 import { util } from '@sentre/senhub'

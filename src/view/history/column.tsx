@@ -1,5 +1,5 @@
 import { Button, Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import { MintAvatar, MintSymbol } from '@sen-use/components'
 import IonIcon from '@sentre/antd-ionicon'
 import StatusTag from './statusTag'
 
