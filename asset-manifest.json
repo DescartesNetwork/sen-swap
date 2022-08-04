@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/static/js/main.3033084d.js",
+    "main.js": "/static/js/main.9a591d04.js",
     "sen_swap.js": "/index.js",
     "static/js/src_bootstrap_tsx.ab15a0e6.chunk.js": "/static/js/src_bootstrap_tsx.ab15a0e6.chunk.js",
     "static/js/vendors-node_modules_reduxjs_toolkit_dist_redux-toolkit_esm_js.4e9e1bc6.chunk.js": "/static/js/vendors-node_modules_reduxjs_toolkit_dist_redux-toolkit_esm_js.4e9e1bc6.chunk.js",
@@ -8,8 +8,8 @@
     "static/js/node_modules_copy-to-clipboard_index_js.b3bd5458.chunk.js": "/static/js/node_modules_copy-to-clipboard_index_js.b3bd5458.chunk.js",
     "static/js/node_modules_prop-types_index_js-node_modules_react-router-dom_esm_react-router-dom_js.b65a48e9.chunk.js": "/static/js/node_modules_prop-types_index_js-node_modules_react-router-dom_esm_react-router-dom_js.b65a48e9.chunk.js",
     "static/js/node_modules_react_index_js.3aa27b31.chunk.js": "/static/js/node_modules_react_index_js.3aa27b31.chunk.js",
-    "static/css/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c62ffe1e.chunk.css": "/static/css/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c62ffe1e.chunk.css",
-    "static/js/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.28271129.chunk.js": "/static/js/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.28271129.chunk.js",
+    "static/css/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.fe298364.chunk.css": "/static/css/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.fe298364.chunk.css",
+    "static/js/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c1b448f3.chunk.js": "/static/js/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c1b448f3.chunk.js",
     "static/js/vendors-node_modules_react-dom_index_js.8ba86a7c.chunk.js": "/static/js/vendors-node_modules_react-dom_index_js.8ba86a7c.chunk.js",
     "static/js/_18f2-_0b7d-_25ed-_8131-_3fc0-_e4dd-_7bec-_ec71-_df0e-_887c-_c738-_9820-_7d1a-_b254-_ed1b-_d1-147343.8ac10af1.chunk.js": "/static/js/_18f2-_0b7d-_25ed-_8131-_3fc0-_e4dd-_7bec-_ec71-_df0e-_887c-_c738-_9820-_7d1a-_b254-_ed1b-_d1-147343.8ac10af1.chunk.js",
     "static/js/node_modules_web-vitals_dist_web-vitals_js.a7539233.chunk.js": "/static/js/node_modules_web-vitals_dist_web-vitals_js.a7539233.chunk.js",
@@ -78,7 +78,7 @@
     "static/media/icon-telegram.svg": "/static/media/icon-telegram.2450489f40d03000fe65fc1c6f238d85.svg",
     "static/media/README.md": "/static/media/README.d01acb85618aed04ffea.md",
     "static.app.tsx": "/sen_swap-asset-senhub.json",
-    "main.3033084d.js.map": "/static/js/main.3033084d.js.map",
+    "main.9a591d04.js.map": "/static/js/main.9a591d04.js.map",
     "index.js.map": "/index.js.map",
     "src_bootstrap_tsx.ab15a0e6.chunk.js.map": "/static/js/src_bootstrap_tsx.ab15a0e6.chunk.js.map",
     "vendors-node_modules_reduxjs_toolkit_dist_redux-toolkit_esm_js.4e9e1bc6.chunk.js.map": "/static/js/vendors-node_modules_reduxjs_toolkit_dist_redux-toolkit_esm_js.4e9e1bc6.chunk.js.map",
@@ -86,8 +86,8 @@
     "node_modules_copy-to-clipboard_index_js.b3bd5458.chunk.js.map": "/static/js/node_modules_copy-to-clipboard_index_js.b3bd5458.chunk.js.map",
     "node_modules_prop-types_index_js-node_modules_react-router-dom_esm_react-router-dom_js.b65a48e9.chunk.js.map": "/static/js/node_modules_prop-types_index_js-node_modules_react-router-dom_esm_react-router-dom_js.b65a48e9.chunk.js.map",
     "node_modules_react_index_js.3aa27b31.chunk.js.map": "/static/js/node_modules_react_index_js.3aa27b31.chunk.js.map",
-    "src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c62ffe1e.chunk.css.map": "/static/css/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c62ffe1e.chunk.css.map",
-    "src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.28271129.chunk.js.map": "/static/js/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.28271129.chunk.js.map",
+    "src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.fe298364.chunk.css.map": "/static/css/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.fe298364.chunk.css.map",
+    "src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c1b448f3.chunk.js.map": "/static/js/src_bootstrap_app_tsx-src_static_images_coingecko-logo_png-webpack_sharing_consume_default_se-6ae1b7.c1b448f3.chunk.js.map",
     "vendors-node_modules_react-dom_index_js.8ba86a7c.chunk.js.map": "/static/js/vendors-node_modules_react-dom_index_js.8ba86a7c.chunk.js.map",
     "node_modules_web-vitals_dist_web-vitals_js.a7539233.chunk.js.map": "/static/js/node_modules_web-vitals_dist_web-vitals_js.a7539233.chunk.js.map",
     "node_modules_react-router-dom_esm_react-router-dom_js.50f73b17.chunk.js.map": "/static/js/node_modules_react-router-dom_esm_react-router-dom_js.50f73b17.chunk.js.map",
@@ -109,6 +109,6 @@
     "vendors-node_modules_certusone_wormhole-sdk_lib_esm_index_js-node_modules_jup-ag_react-hook_d-7dc57b.ec19a7b4.chunk.js.map": "/static/js/vendors-node_modules_certusone_wormhole-sdk_lib_esm_index_js-node_modules_jup-ag_react-hook_d-7dc57b.ec19a7b4.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.3033084d.js"
+    "static/js/main.9a591d04.js"
   ]
 }
