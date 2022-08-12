@@ -2,7 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
-import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
+import {
+  useGetMintDecimals,
+  useUI,
+  useWalletAddress,
+  useWalletBalance,
+} from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, Radio } from 'antd'
 import NumericInput from 'shared/antd/numericInput'
@@ -17,6 +22,7 @@ import { useMintSelection } from 'hooks/useMintSelection'
 import { SenLpState } from 'constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { setLoadingSenSwap } from 'model/route.controller'
+import { usePool } from 'hooks/usePool'
 
 const {
   swap: { bidDefault },
@@ -29,11 +35,10 @@ export enum RATE {
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    wallet: { address: walletAddress, lamports },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
+  const lamports = useWalletBalance()
   const { pools } = usePool()
-  const { getDecimals } = useMint()
+  const getDecimals = useGetMintDecimals()
   const {
     ui: { theme },
   } = useUI()
@@ -125,7 +130,7 @@ const Bid = () => {
   const onSelectionInfo = async (mintAddress: string) => {
     const { splt } = window.sentre
     const poolAddresses = getAvailablePoolAddresses(mintAddress)
-    const decimals = await getDecimals(mintAddress)
+    const decimals = (await getDecimals({ mintAddress })) || 0
 
     const selectionInfo: SelectionInfo = {
       mintInfo: {

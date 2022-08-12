@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { usePool } from '@sentre/senhub'
 
 import { useMintTotalValue } from './useMintTotalValue'
+import { usePool } from './usePool'
 
 // Refer: sen-lp
 export const usePoolTvl = (poolAddress?: string) => {

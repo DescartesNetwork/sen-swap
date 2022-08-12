@@ -2,15 +2,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
-import { usePool, useWallet, rpc } from '@sentre/senhub'
+import { rpc, useWalletAddress } from '@sentre/senhub'
 import { JupiterProvider } from '@jup-ag/react-hook'
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { Row, Col } from 'antd'
 import SwapChart from './chart'
 import Swap from './swap'
+import PoolWatcher from 'watcher/poolWatcher'
 import History from './history'
 
+import { usePool } from 'hooks/usePool'
 import { useMintSelection } from 'hooks/useMintSelection'
 import { AppDispatch, AppState } from 'model'
 import { updateBidData } from 'model/bid.controller'
@@ -26,9 +28,7 @@ const connection = new Connection(rpc)
 
 const View = () => {
   const { pools } = usePool()
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
   const dispatch = useDispatch<AppDispatch>()
   const { state } = useLocation<SenLpState>()
   const [bid, setBid] = useState('')
@@ -88,6 +88,7 @@ const View = () => {
           </Col>
         )}
       </Row>
+      <PoolWatcher />
     </JupiterProvider>
   )
 }

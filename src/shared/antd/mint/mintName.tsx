@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { account } from '@senswap/sen-js'
-import { useMint, usePool } from '@sentre/senhub'
+import { tokenProvider } from '@sentre/senhub'
+
+import { usePool } from 'hooks/usePool'
 
 const DEFAULT_NAME = 'Unknown Token'
 
@@ -21,17 +23,13 @@ const MintName = ({
   reversed?: boolean
 }) => {
   const [name, setName] = useState(DEFAULT_NAME)
-  const { tokenProvider } = useMint()
   const { pools } = usePool()
 
-  const deriveName = useCallback(
-    async (address: string) => {
-      const token = await tokenProvider.findByAddress(address)
-      if (token?.name) return token.name
-      return DEFAULT_NAME
-    },
-    [tokenProvider],
-  )
+  const deriveName = useCallback(async (address: string) => {
+    const token = await tokenProvider.findByAddress(address)
+    if (token?.name) return token.name
+    return DEFAULT_NAME
+  }, [])
 
   const deriveNames = useCallback(async () => {
     if (!account.isAddress(mintAddress)) return setName(DEFAULT_NAME)

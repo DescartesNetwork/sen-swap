@@ -13,7 +13,7 @@ import {
 import { RouteTrace } from 'helper/router'
 
 import JupiterWalletWrapper from 'hooks/jupiter/jupiterWalletWrapper'
-import { useWallet, rpc } from '@sentre/senhub'
+import { rpc, useWalletAddress } from '@sentre/senhub'
 import { HopData } from 'components/preview'
 
 const connection = new Connection(rpc)
@@ -39,9 +39,7 @@ const useJupiterAggregator = () => {
     },
     settings: { slippage },
   } = useSelector((state: AppState) => state)
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
 
   const amount = Number(bidAmount) * 10 ** bidDecimals
   const inputMint = useMemo(

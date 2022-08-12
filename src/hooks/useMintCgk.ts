@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useMint } from '@sentre/senhub'
-import { util } from '@sentre/senhub'
+import { util, tokenProvider } from '@sentre/senhub'
 
 const DEFAULT_DATA = {
   address: '',
@@ -15,7 +14,6 @@ const DEFAULT_DATA = {
 
 const useMintCgk = (mintAddress?: string): CgkData => {
   const [cgkData, setCgkData] = useState<CgkData>(DEFAULT_DATA)
-  const { tokenProvider } = useMint()
 
   const fetchCgkData = useCallback(async () => {
     if (!mintAddress) return setCgkData(DEFAULT_DATA)
@@ -27,7 +25,7 @@ const useMintCgk = (mintAddress?: string): CgkData => {
     } catch (error) {
       return setCgkData(DEFAULT_DATA)
     }
-  }, [mintAddress, tokenProvider])
+  }, [mintAddress])
 
   useEffect(() => {
     fetchCgkData()

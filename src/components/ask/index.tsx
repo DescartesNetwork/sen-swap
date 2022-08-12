@@ -2,7 +2,7 @@ import { useMemo, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
-import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
+import { useGetMintDecimals, useUI, useWalletAddress } from '@sentre/senhub'
 
 import { Row, Col, Typography, Space } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
@@ -17,14 +17,13 @@ import { useMintSelection } from 'hooks/useMintSelection'
 import { SenLpState } from 'constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { setLoadingSenSwap } from 'model/route.controller'
+import { usePool } from 'hooks/usePool'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
   const { pools } = usePool()
-  const { getDecimals } = useMint()
+  const getDecimals = useGetMintDecimals()
   const {
     ui: { theme },
   } = useUI()
@@ -71,7 +70,7 @@ const Ask = () => {
   const onSelectionInfo = async (mintAddress: string) => {
     const { splt } = window.sentre
     const poolAddresses = getAvailablePoolAddresses(mintAddress)
-    const decimals = await getDecimals(mintAddress)
+    const decimals = (await getDecimals({ mintAddress })) || 0
 
     const selectionInfo: SelectionInfo = {
       mintInfo: {

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
-import { usePool } from '@sentre/senhub'
 
 import { AppState } from 'model'
 import { RouteState, SwapPlatform } from 'model/route.controller'
@@ -12,6 +11,7 @@ import {
   findBestRouteFromBid,
 } from 'helper/router'
 import { usePoolTvl } from '../usePoolTvl'
+import { usePool } from 'hooks/usePool'
 
 const MIN_TVL = 1000 // $USD
 

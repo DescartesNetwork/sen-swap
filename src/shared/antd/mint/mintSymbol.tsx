@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { account } from '@senswap/sen-js'
-import { useMint, usePool } from '@sentre/senhub'
+import { tokenProvider } from '@sentre/senhub'
+
+import { usePool } from 'hooks/usePool'
 
 const DEFAULT_SYMBOL = 'TOKN'
 
@@ -21,17 +23,13 @@ const MintSymbol = ({
   reversed?: boolean
 }) => {
   const [symbol, setSymbol] = useState(DEFAULT_SYMBOL)
-  const { tokenProvider } = useMint()
   const { pools } = usePool()
 
-  const deriveSymbol = useCallback(
-    async (address: string) => {
-      const token = await tokenProvider.findByAddress(address)
-      if (token?.symbol) return token.symbol
-      return address.substring(0, 4)
-    },
-    [tokenProvider],
-  )
+  const deriveSymbol = useCallback(async (address: string) => {
+    const token = await tokenProvider.findByAddress(address)
+    if (token?.symbol) return token.symbol
+    return address.substring(0, 4)
+  }, [])
 
   const deriveSymbols = useCallback(async () => {
     if (!account.isAddress(mintAddress)) return setSymbol(DEFAULT_SYMBOL)

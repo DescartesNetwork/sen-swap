@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { TokenInfo } from '@solana/spl-token-registry'
-import { useMint, usePool } from '@sentre/senhub'
+import { tokenProvider } from '@sentre/senhub'
+
+import { usePool } from './usePool'
 
 const useTokenProvider = (mintAddress: string) => {
-  const { tokenProvider } = useMint()
   const { pools } = usePool()
   const [tokenInfo, setTokenInfo] = useState<(TokenInfo | undefined)[]>([])
 
