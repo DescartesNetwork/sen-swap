@@ -1,6 +1,7 @@
-import { useCallback, useState, useEffect, Fragment, ReactNode } from 'react'
+import { useCallback, useState, Fragment, ReactNode } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { utils } from '@senswap/sen-js'
+import { useDebounce } from 'react-use'
 
 import ValidateSwap from '../validateSwap'
 import SwapButtonSen from './swapButtonSen'
@@ -36,6 +37,7 @@ const SwapAction = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const [validSwap, setValidSwap] = useState('')
+  const [isUseJup, setIsUseJup] = useState(false)
   const [loading, setLoading] = useState(false)
   const {
     route: { priceImpact, amount: bestAmount, loadingSenswap, platform },
@@ -86,9 +88,7 @@ const SwapAction = ({
       )
     }
   }, [askMintDecimals, askPriority, bestAmount, bidPriority, dispatch])
-  useEffect(() => {
-    setAskData()
-  }, [setAskData])
+  useDebounce(setAskData, 500, [setAskData])
 
   const setBidData = useCallback(() => {
     if (bidPriority < askPriority) {
@@ -99,9 +99,7 @@ const SwapAction = ({
       )
     }
   }, [askPriority, bestAmount, bidMintDecimals, bidPriority, dispatch])
-  useEffect(() => {
-    setBidData()
-  }, [setBidData])
+  useDebounce(setBidData, 500, [setBidData])
 
   const tooHighImpact =
     !advanced && priceImpact > PriceImpact.acceptableSwap && !forceSwap
@@ -113,10 +111,15 @@ const SwapAction = ({
     : 'Swap'
 
   const validSwapValue = Number(bestAmount)
-  const isUseJup =
-    !loadingSenswap &&
-    !!Number(bidAmount) &&
-    (!validSwapValue || platform === SwapPlatform.JupiterAggregator)
+
+  const checkUseJup = useCallback(() => {
+    const isUseJup =
+      !loadingSenswap &&
+      !!Number(bidAmount) &&
+      (!validSwapValue || platform === SwapPlatform.JupiterAggregator)
+    setIsUseJup(isUseJup)
+  }, [bidAmount, loadingSenswap, platform, validSwapValue])
+  useDebounce(checkUseJup, 500, [checkUseJup])
 
   return (
     <Fragment>

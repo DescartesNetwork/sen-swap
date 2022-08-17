@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 
 import { Avatar, Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import { MintAvatar, MintSymbol } from '@sen-use/components'
 
 import { AppState } from 'model'
 

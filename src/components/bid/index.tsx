@@ -8,13 +8,11 @@ import {
   useWalletAddress,
   useWalletBalance,
 } from '@sentre/senhub'
-
-import { Row, Col, Typography, Space, Radio } from 'antd'
-import NumericInput from 'shared/antd/numericInput'
-import { MintSelection, MintSymbol } from 'shared/antd/mint'
-
-import configs from 'configs'
 import { util } from '@sentre/senhub'
+
+import { Row, Col, Typography, Space, Radio, InputNumber } from 'antd'
+import { MintSelection, MintSymbol } from '@sen-use/components'
+
 import { AppDispatch, AppState } from 'model'
 import { updateBidData } from 'model/bid.controller'
 import { SelectionInfo } from '../selection/mintSelection'
@@ -23,6 +21,8 @@ import { SenLpState } from 'constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { setLoadingSenSwap } from 'model/route.controller'
 import { usePool } from 'hooks/usePool'
+
+import configs from 'configs'
 
 const {
   swap: { bidDefault },
@@ -177,25 +177,22 @@ const Bid = () => {
 
   return (
     <Row gutter={[0, 0]} align="middle">
-      <Col flex="auto">
+      <Col>
         <MintSelection
           value={mintAddress}
           onChange={onSelectionInfo}
           style={MINT_SELECTION_STYLE}
         />
       </Col>
-      <Col>
-        <NumericInput
+      <Col flex="1">
+        <InputNumber
           bordered={false}
-          style={{
-            textAlign: 'right',
-            fontSize: 24,
-            maxWidth: 150,
-            padding: 0,
-          }}
+          className="amount-input"
           placeholder="0"
           value={bidAmount}
-          onValue={onAmount}
+          onChange={onAmount}
+          controls={false}
+          min="0"
         />
       </Col>
       <Col span={24}>

@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useDebounce } from 'react-use'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
 
@@ -90,10 +91,7 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
     else bestRoute = findBestRouteFromAsk(allRoutes, askData)
     return setBestRoute(bestRoute)
   }, [askData, bidData, fixedPoolAddress, getTvl, pools])
-
-  useEffect(() => {
-    findBestRoute()
-  }, [findBestRoute])
+  useDebounce(findBestRoute, 500, [findBestRoute])
 
   return bestRoute
 }

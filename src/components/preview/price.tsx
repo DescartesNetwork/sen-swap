@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { Button, Space, Typography } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
-import { MintSymbol } from 'shared/antd/mint'
+import { MintSymbol } from '@sen-use/components'
 
 import { util } from '@sentre/senhub'
 import { AppState } from 'model'
