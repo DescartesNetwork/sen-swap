@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
-import { rpc, useWalletAddress } from '@sentre/senhub'
+import { rpc, useWalletAddress, useAppRoute } from '@sentre/senhub'
 import { JupiterProvider } from '@jup-ag/react-hook'
 import { Connection, PublicKey } from '@solana/web3.js'
 
@@ -40,6 +40,7 @@ const View = () => {
   const poolAddress = state?.poolAddress
   const { enhancement } = useSelector((state: AppState) => state.settings)
   const history = useHistory()
+  const { to } = useAppRoute()
 
   /** Check state when user come from sen LP */
   const checkIsSenLpCome = useCallback(() => {
