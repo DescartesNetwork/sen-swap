@@ -6,7 +6,7 @@ import { rpc, useWalletAddress, useAppRoute } from '@sentre/senhub'
 import { JupiterProvider } from '@jup-ag/react-hook'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { Row, Col, Segmented } from 'antd'
+import { Row, Col, Segmented, Alert, Typography } from 'antd'
 import SwapChart from './chart'
 import Swap from './swap'
 import PoolWatcher from 'watcher/poolWatcher'
@@ -84,6 +84,35 @@ const View = () => {
         style={{ paddingBottom: 12 }}
         justify={enhancement ? 'start' : 'center'}
       >
+        <Col xs={24} lg={18}>
+          <Alert
+            type="info"
+            message={
+              <Typography.Title level={5}>
+                Balansol is launched ✅ Explorer Now ✨
+              </Typography.Title>
+            }
+            description={
+              <Typography.Text type="secondary">
+                Liquidity Providing and Swapping are now live on{' '}
+                <strong>Balansol</strong> with index funds and custom pool
+                weights.{' '}
+                <strong>
+                  Get your LPs for juicy APR farming - Click here to use
+                  Balansol now!
+                </strong>
+              </Typography.Text>
+            }
+            onClick={() =>
+              to('/app/balansol?autoInstall=true', {
+                absolutePath: true,
+                newWindow: true,
+              })
+            }
+            style={{ cursor: 'pointer' }}
+            showIcon
+          />
+        </Col>
         <Col lg={8} md={12} xs={24}>
           <Row gutter={[24, 24]} justify="center">
             <Col>
