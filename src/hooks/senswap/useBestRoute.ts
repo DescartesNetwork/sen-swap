@@ -1,8 +1,8 @@
 import { useDebounce } from 'react-use'
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { account, PoolData } from '@senswap/sen-js'
-import { usePool } from '@sentre/senhub'
+import { PoolData } from '@senswap/sen-js'
+import { util } from '@sentre/senhub'
 
 import { AppState } from 'model'
 import { RouteState, SwapPlatform } from 'model/route.controller'
@@ -13,6 +13,7 @@ import {
   findBestRouteFromBid,
 } from 'helper/router'
 import { usePoolTvl } from '../usePoolTvl'
+import { usePool } from 'hooks/usePool'
 
 const MIN_TVL = 1000 // $USD
 
@@ -54,8 +55,8 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
     // Return empty default
     if (
       (!Number(bidAmount) && !Number(askAmount)) ||
-      !account.isAddress(bidMintAddress) ||
-      !account.isAddress(askMintAddress) ||
+      !util.isAddress(bidMintAddress) ||
+      !util.isAddress(askMintAddress) ||
       !bidPoolAddresses.length ||
       !askPoolAddresses.length ||
       bidMintAddress === askMintAddress
@@ -80,7 +81,7 @@ export const useBestRoute = (fixedPoolAddress?: string) => {
     // No available route
     if (!allRoutes.length) return setBestRoute(bestRoute)
     // When user select original route from senlp
-    if (account.isAddress(fixedPoolAddress))
+    if (util.isAddress(fixedPoolAddress))
       allRoutes = allRoutes.filter(
         (route) =>
           route.length === 1 && route[0].poolData.address === fixedPoolAddress,

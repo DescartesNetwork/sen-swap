@@ -4,8 +4,8 @@ import { forceCheck } from '@sentre/react-lazyload'
 
 import { Row, Col, Typography, Modal, Space } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
-import { MintAvatar, MintSymbol } from '@sen-use/components'
 import MintSelection, { SelectionInfo } from './mintSelection'
+import { MintAvatar, MintSymbol } from '@sen-use/app'
 
 import { SenLpState } from 'constant/senLpState'
 

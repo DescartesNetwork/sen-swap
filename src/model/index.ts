@@ -6,6 +6,7 @@ import bid from './bid.controller'
 import settings from './settings.controller'
 import route from './route.controller'
 import history from './history.controller'
+import pools from './pools.controller'
 
 /**
  * Isolated store
@@ -20,6 +21,7 @@ const model = configureStore({
     settings,
     route,
     history,
+    pools,
   },
 })
 

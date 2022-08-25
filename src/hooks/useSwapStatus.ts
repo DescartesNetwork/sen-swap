@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
-import { useWallet } from '@sentre/senhub'
+import { useWalletBalance } from '@sentre/senhub'
 
 import { AppState } from 'model'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
@@ -20,9 +20,7 @@ export const useSwapStatus = () => {
     },
   } = useSelector((state: AppState) => state)
 
-  const {
-    wallet: { lamports },
-  } = useWallet()
+  const lamports = useWalletBalance()
 
   const { amount: bidBalance } = useAccountBalance(bidAccountAddress)
 

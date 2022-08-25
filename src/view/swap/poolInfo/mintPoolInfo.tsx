@@ -1,7 +1,7 @@
-import { Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from '@sen-use/components'
-
 import { util } from '@sentre/senhub'
+
+import { Space, Typography } from 'antd'
+import { MintAvatar, MintSymbol } from '@sen-use/app'
 
 const MintPoolInfo = ({
   mintAddress,

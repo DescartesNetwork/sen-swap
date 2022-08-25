@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
 
 import { Popover, Tag } from 'antd'
 
@@ -33,7 +32,7 @@ const WormholeSupported = () => {
 
   useEffect(() => {
     ;(async () => {
-      if (!account.isAddress(mintAddress)) return setWormholeSupported(false)
+      if (!util.isAddress(mintAddress)) return setWormholeSupported(false)
       const wormholeSupported = await checkAttestedWormhole(mintAddress)
       return setWormholeSupported(wormholeSupported)
     })()

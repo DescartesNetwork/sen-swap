@@ -1,13 +1,13 @@
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { util } from '@sentre/senhub'
 
 import { Divider, Space } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
 import PoweredByJupiter from '../poweredByJupiter'
+import { MintAvatar } from '@sen-use/app'
 
 import { AppState } from 'model'
-import { account } from '@senswap/sen-js'
-import { MintAvatar } from '@sen-use/components'
 import { SwapPlatform } from 'model/route.controller'
 
 const RouteAvatar = () => {
@@ -18,11 +18,11 @@ const RouteAvatar = () => {
 
   const srcMintAddress = mintInfo?.address
   const chainMintAddresses = useMemo(() => {
-    if (!best.length || !account.isAddress(srcMintAddress)) return []
+    if (!best.length || !util.isAddress(srcMintAddress)) return []
     let list = [srcMintAddress]
     for (const hop of best) {
       const { dstMintAddress } = hop
-      if (account.isAddress(dstMintAddress)) list.push(dstMintAddress)
+      if (util.isAddress(dstMintAddress)) list.push(dstMintAddress)
     }
     return list
   }, [srcMintAddress, best])

@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react'
-import { account } from '@senswap/sen-js'
+
 import LazyLoad from '@sentre/react-lazyload'
-import { useMint, usePool } from '@sentre/senhub'
+import { useGetMintDecimals, util } from '@sentre/senhub'
 
 import { Row, Col, Typography, Divider } from 'antd'
 import Search from './search'
 import Mint from './mint'
-
 import { LiteMintInfo } from '../preview'
+
+import { usePool } from 'hooks/usePool'
 
 const LIMITATION = 100
 
@@ -26,12 +27,12 @@ const MintSelection = ({
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
   const { address: currentMintAddress } = value.mintInfo || {}
   const { pools } = usePool()
-  const { getDecimals } = useMint()
+  const getDecimals = useGetMintDecimals()
 
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
     (mintAddress: string) => {
-      if (!account.isAddress(mintAddress)) return []
+      if (!util.isAddress(mintAddress)) return []
       return Object.keys(pools).filter((poolAddress) => {
         const { mint_a, mint_b } = pools[poolAddress]
         return [mint_a, mint_b].includes(mintAddress)
@@ -44,7 +45,7 @@ const MintSelection = ({
   const onMint = useCallback(
     async (mintAddress: string) => {
       const poolAddresses = getAvailablePoolAddresses(mintAddress)
-      const decimals = await getDecimals(mintAddress)
+      const decimals = (await getDecimals({ mintAddress })) || 0
       return onChange({
         mintInfo: {
           address: mintAddress,

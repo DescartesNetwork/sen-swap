@@ -1,12 +1,12 @@
 import { useMemo, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { account } from '@senswap/sen-js'
-import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
+
+import { useGetMintDecimals, useTheme, useWalletAddress } from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, InputNumber } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
-import { MintSelection, MintSymbol } from '@sen-use/components'
+import { MintSelection, MintSymbol } from '@sen-use/app'
 
 import configs from 'configs'
 import { util } from '@sentre/senhub'
@@ -16,17 +16,14 @@ import { useMintSelection } from 'hooks/useMintSelection'
 import { SenLpState } from 'constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { setLoadingSenSwap } from 'model/route.controller'
+import { usePool } from 'hooks/usePool'
 
 const Ask = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
   const { pools } = usePool()
-  const { getDecimals } = useMint()
-  const {
-    ui: { theme },
-  } = useUI()
+  const getDecimals = useGetMintDecimals()
+  const theme = useTheme()
   const {
     ask: { amount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
@@ -37,8 +34,7 @@ const Ask = () => {
 
   // Select default
   useEffect(() => {
-    if (account.isAddress(accountAddress) || account.isAddress(poolAddress))
-      return
+    if (util.isAddress(accountAddress) || util.isAddress(poolAddress)) return
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     dispatch(updateAskData(selectionDefault))
   }, [accountAddress, dispatch, poolAddress, selectionDefault])
@@ -58,7 +54,7 @@ const Ask = () => {
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
     (mintAddress: string) => {
-      if (!account.isAddress(mintAddress)) return []
+      if (!util.isAddress(mintAddress)) return []
       return Object.keys(pools).filter((poolAddress) => {
         const { mint_a, mint_b } = pools[poolAddress]
         return [mint_a, mint_b].includes(mintAddress)
@@ -70,7 +66,7 @@ const Ask = () => {
   const onSelectionInfo = async (mintAddress: string) => {
     const { splt } = window.sentre
     const poolAddresses = getAvailablePoolAddresses(mintAddress)
-    const decimals = await getDecimals(mintAddress)
+    const decimals = (await getDecimals({ mintAddress })) || 0
 
     const selectionInfo: SelectionInfo = {
       mintInfo: {
@@ -81,7 +77,7 @@ const Ask = () => {
     }
 
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
-    if (!account.isAddress(mintAddress))
+    if (!util.isAddress(mintAddress))
       return dispatch(
         updateAskData({ amount: '', prioritized: true, ...selectionInfo }),
       )

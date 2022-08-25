@@ -13,7 +13,7 @@ import {
 import { RouteTrace } from 'helper/router'
 
 import JupiterWalletWrapper from 'hooks/jupiter/jupiterWalletWrapper'
-import { useWallet, rpc } from '@sentre/senhub'
+import { rpc, util, useWalletAddress } from '@sentre/senhub'
 import { HopData } from 'components/preview'
 
 const connection = new Connection(rpc)
@@ -39,21 +39,19 @@ const useJupiterAggregator = () => {
     },
     settings: { slippage },
   } = useSelector((state: AppState) => state)
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
 
   const amount = Number(bidAmount) * 10 ** bidDecimals
   const inputMint = useMemo(
     () =>
-      account.isAddress(bidMintAddress)
+      util.isAddress(bidMintAddress)
         ? account.fromAddress(bidMintAddress)
         : undefined,
     [bidMintAddress],
   )
   const outputMint = useMemo(
     () =>
-      account.isAddress(askMintAddress)
+      util.isAddress(askMintAddress)
         ? account.fromAddress(askMintAddress)
         : undefined,
     [askMintAddress],
@@ -72,7 +70,7 @@ const useJupiterAggregator = () => {
     const {
       sentre: { wallet },
     } = window
-    if (!wallet || !account.isAddress(walletAddress))
+    if (!wallet || !util.isAddress(walletAddress))
       throw new Error('Wallet is not connected')
     if (!routes?.length) throw new Error('No available route')
 
