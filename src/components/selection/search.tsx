@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useAccount, useMint, usePool } from '@sentre/senhub'
+import { useAccounts, tokenProvider } from '@sentre/senhub'
 
 import { Card, Input, Button } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
+
+import { usePool } from 'hooks/usePool'
 
 const KEYSIZE = 3
 
@@ -15,9 +17,8 @@ const Search = ({
 }) => {
   const [mintAddresses, setMintAddresses] = useState<string[]>([])
   const [keyword, setKeyword] = useState('')
-  const { tokenProvider } = useMint()
   const { pools } = usePool()
-  const { accounts } = useAccount()
+  const accounts = useAccounts()
 
   const sortMintAddresses = useCallback(async () => {
     let sortedMint: Record<string, boolean> = {}
@@ -45,7 +46,7 @@ const Search = ({
 
     // Return
     return setMintAddresses(Object.keys(sortedMint))
-  }, [tokenProvider, pools, accounts])
+  }, [pools, accounts])
 
   useEffect(() => {
     sortMintAddresses()
@@ -64,7 +65,7 @@ const Search = ({
       return data.push(mintAddress)
     })
     return onChange(data)
-  }, [keyword, onChange, tokenProvider, mintAddresses])
+  }, [keyword, onChange, mintAddresses])
 
   useEffect(() => {
     search()

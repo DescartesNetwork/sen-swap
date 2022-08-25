@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useWallet } from '@sentre/senhub'
+import { useWalletAddress } from '@sentre/senhub'
 
 import useMintCgk from 'hooks/useMintCgk'
 import { createPDB } from '@sentre/senhub'
@@ -19,9 +19,7 @@ const ValidateSwap = ({ txId = '' }: { txId?: string }) => {
       mintInfo: { address: mintAddress },
     },
   } = useSelector((state: AppState) => state)
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
   const { price } = useMintCgk(mintAddress)
 
   useEffect(() => {

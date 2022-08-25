@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { utils } from '@senswap/sen-js'
-import { useWallet } from '@sentre/senhub'
+import { useWalletAddress } from '@sentre/senhub'
 
 import { AppState } from 'model'
 
@@ -20,9 +20,7 @@ export const useHandleSwap = () => {
     },
     settings: { slippage },
   } = useSelector((state: AppState) => state)
-  const {
-    wallet: { address: walletAddress },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
 
   const handleSwap = useCallback(async () => {
     const { swap, splt, wallet } = window.sentre

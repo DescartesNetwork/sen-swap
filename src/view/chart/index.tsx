@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
-import { useMint } from '@sentre/senhub'
+import { tokenProvider } from '@sentre/senhub'
 
 import { Button, Card, Col, Radio, Row, Typography, Space, Popover } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
@@ -56,7 +56,6 @@ const SwapChart = () => {
   )
   const bidData = useSelector((state: AppState) => state.bid)
   const askData = useSelector((state: AppState) => state.ask)
-  const { tokenProvider } = useMint()
 
   const swapChartConfigs = {
     borderColor: CHART_CONFIGS.transparent,
@@ -161,7 +160,6 @@ const SwapChart = () => {
     interval,
     parseChartDaily,
     parseChartDay,
-    tokenProvider,
   ])
 
   useEffect(() => {

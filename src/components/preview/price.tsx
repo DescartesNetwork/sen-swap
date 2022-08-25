@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { util } from '@sentre/senhub'
 
 import { Button, Space, Typography } from 'antd'
 import IonIcon from '@sentre/antd-ionicon'
-import { MintSymbol } from '@sen-use/components'
+import { MintSymbol } from '@sen-use/app'
 
-import { util } from '@sentre/senhub'
 import { AppState } from 'model'
 
 const Price = () => {

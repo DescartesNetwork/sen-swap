@@ -1,12 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
-import { useMint, usePool, useUI, useWallet } from '@sentre/senhub'
+import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
+import {
+  useGetMintDecimals,
+  useTheme,
+  useWalletAddress,
+  useWalletBalance,
+} from '@sentre/senhub'
 import { util } from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, Radio, InputNumber } from 'antd'
-import { MintSelection, MintSymbol } from '@sen-use/components'
+import { MintSelection, MintSymbol } from '@sen-use/app'
 
 import { AppDispatch, AppState } from 'model'
 import { updateBidData } from 'model/bid.controller'
@@ -15,6 +20,7 @@ import { useMintSelection } from 'hooks/useMintSelection'
 import { SenLpState } from 'constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { setLoadingSenSwap } from 'model/route.controller'
+import { usePool } from 'hooks/usePool'
 import configs from 'configs'
 
 const {
@@ -28,14 +34,11 @@ export enum RATE {
 
 const Bid = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    wallet: { address: walletAddress, lamports },
-  } = useWallet()
+  const walletAddress = useWalletAddress()
+  const lamports = useWalletBalance()
   const { pools } = usePool()
-  const { getDecimals } = useMint()
-  const {
-    ui: { theme },
-  } = useUI()
+  const getDecimals = useGetMintDecimals()
+  const theme = useTheme()
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
@@ -48,8 +51,7 @@ const Bid = () => {
 
   // Select default
   useEffect(() => {
-    if (account.isAddress(accountAddress) || account.isAddress(poolAdress))
-      return
+    if (util.isAddress(accountAddress) || util.isAddress(poolAdress)) return
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     dispatch(updateBidData(selectionDefault))
   }, [accountAddress, dispatch, poolAdress, selectionDefault])
@@ -111,7 +113,7 @@ const Bid = () => {
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
     (mintAddress: string) => {
-      if (!account.isAddress(mintAddress)) return []
+      if (!util.isAddress(mintAddress)) return []
       return Object.keys(pools).filter((poolAddress) => {
         const { mint_a, mint_b } = pools[poolAddress]
         return [mint_a, mint_b].includes(mintAddress)
@@ -124,7 +126,7 @@ const Bid = () => {
   const onSelectionInfo = async (mintAddress: string) => {
     const { splt } = window.sentre
     const poolAddresses = getAvailablePoolAddresses(mintAddress)
-    const decimals = await getDecimals(mintAddress)
+    const decimals = (await getDecimals({ mintAddress })) || 0
 
     const selectionInfo: SelectionInfo = {
       mintInfo: {
@@ -135,7 +137,7 @@ const Bid = () => {
     }
 
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
-    if (!account.isAddress(mintAddress))
+    if (!util.isAddress(mintAddress))
       return dispatch(
         updateBidData({ amount: '', prioritized: true, ...selectionInfo }),
       )

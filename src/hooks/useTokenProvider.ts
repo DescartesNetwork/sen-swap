@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { TokenInfo } from '@solana/spl-token-registry'
-import { useMint, usePool } from '@sentre/senhub'
+import { tokenProvider } from '@sentre/senhub'
+import { usePool } from 'hooks/usePool'
 
 const useTokenProvider = (mintAddress: string) => {
-  const { tokenProvider } = useMint()
   const { pools } = usePool()
   const [tokenInfo, setTokenInfo] = useState<(TokenInfo | undefined)[]>([])
 
@@ -21,7 +21,7 @@ const useTokenProvider = (mintAddress: string) => {
     const tokenA = await tokenProvider.findByAddress(mint_a)
     const tokenB = await tokenProvider.findByAddress(mint_b)
     return setTokenInfo([tokenA, tokenB])
-  }, [mintAddress, pools, tokenProvider])
+  }, [mintAddress, pools])
 
   useEffect(() => {
     fetchTokenInfo()
