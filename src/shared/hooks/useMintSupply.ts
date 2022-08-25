@@ -14,9 +14,11 @@ const useMintSupply = (mintAddress: string) => {
 
   const fetchSupply = useCallback(async () => {
     try {
-      const {
-        [mintAddress]: { supply },
-      } = (await getMint({ mintAddress })) || {}
+      const supply = await getMint({ mintAddress }).then((data) => {
+        if (data) return data[mintAddress].supply
+        return BigInt(0)
+      })
+
       return setSupply(new BN(supply.toString()))
     } catch (er: any) {
       return setSupply(undefined)

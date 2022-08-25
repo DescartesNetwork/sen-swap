@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
+
 import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import {
   useGetMintDecimals,
@@ -21,6 +22,7 @@ import { SenLpState } from 'constant/senLpState'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
 import { setLoadingSenSwap } from 'model/route.controller'
 import { usePool } from 'hooks/usePool'
+
 import configs from 'configs'
 
 const {
@@ -39,6 +41,7 @@ const Bid = () => {
   const { pools } = usePool()
   const getDecimals = useGetMintDecimals()
   const theme = useTheme()
+
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)

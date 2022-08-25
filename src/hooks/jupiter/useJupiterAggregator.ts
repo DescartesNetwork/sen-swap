@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
 import { useJupiter } from '@jup-ag/react-hook'
 import { Connection } from '@solana/web3.js'
+import { rpc, util, useWalletAddress } from '@sentre/senhub'
 
 import { AppDispatch, AppState } from 'model'
 import {
@@ -11,9 +12,7 @@ import {
   SwapPlatform,
 } from 'model/route.controller'
 import { RouteTrace } from 'helper/router'
-
 import JupiterWalletWrapper from 'hooks/jupiter/jupiterWalletWrapper'
-import { rpc, util, useWalletAddress } from '@sentre/senhub'
 import { HopData } from 'components/preview'
 
 const connection = new Connection(rpc)
