@@ -13,7 +13,7 @@ const useMintDecimals = (mintAddress: string) => {
 
   const fetchDecimals = useCallback(async () => {
     try {
-      const decimals = await getDecimals({ mintAddress })
+      const decimals = (await getDecimals({ mintAddress })) || 0
       return setDecimals(decimals)
     } catch (er: any) {
       return setDecimals(undefined)

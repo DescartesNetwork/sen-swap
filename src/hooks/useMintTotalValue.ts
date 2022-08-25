@@ -3,12 +3,12 @@ import { Swap, utils } from '@senswap/sen-js'
 import { tokenProvider, useGetMintData } from '@sentre/senhub'
 import { util } from '@sentre/senhub'
 
-import { usePool } from './usePool'
+import { usePool } from 'hooks/usePool'
 
 // Refer: sen-lp
 export const useMintTotalValue = () => {
-  const getMint = useGetMintData()
   const { pools } = usePool()
+  const getMint = useGetMintData()
 
   const getTokenUsd = useCallback(
     async (mintAddress: string, amount: bigint) => {
@@ -51,6 +51,7 @@ export const useMintTotalValue = () => {
         if (data) return data[mintAddress].supply
         return BigInt(0)
       })
+
       const { deltaA, deltaB } = Swap.oracle.withdraw(
         amount,
         supply,

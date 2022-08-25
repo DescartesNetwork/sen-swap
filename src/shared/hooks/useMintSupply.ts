@@ -18,6 +18,7 @@ const useMintSupply = (mintAddress: string) => {
         if (data) return data[mintAddress].supply
         return BigInt(0)
       })
+
       return setSupply(new BN(supply.toString()))
     } catch (er: any) {
       return setSupply(undefined)

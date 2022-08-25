@@ -1,24 +1,23 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { account } from '@senswap/sen-js'
-import { rpc, useWalletAddress, useAppRoute } from '@sentre/senhub'
+import { rpc, useWalletAddress, util, useAppRoute } from '@sentre/senhub'
 import { JupiterProvider } from '@jup-ag/react-hook'
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { Row, Col, Segmented, Alert, Typography } from 'antd'
 import SwapChart from './chart'
 import Swap from './swap'
-import PoolWatcher from 'watcher/poolWatcher'
 import History from './history'
 
-import { usePool } from 'hooks/usePool'
 import { useMintSelection } from 'hooks/useMintSelection'
 import { AppDispatch, AppState } from 'model'
 import { updateBidData } from 'model/bid.controller'
 import { updateAskData } from 'model/ask.controller'
 import { SenLpState } from 'constant/senLpState'
 import { HOMEPAGE_TABS } from 'constant/swap'
+import PoolWatcher from 'components/watcher/pool.watcher'
+import { usePool } from 'hooks/usePool'
 import configs from 'configs'
 
 const {
@@ -44,7 +43,7 @@ const View = () => {
 
   /** Check state when user come from sen LP */
   const checkIsSenLpCome = useCallback(() => {
-    if (!account.isAddress(poolAddress)) return
+    if (!util.isAddress(poolAddress)) return
     const poolData = pools[poolAddress]
     if (!poolData) return
     setBid(poolData?.mint_a)
@@ -65,8 +64,8 @@ const View = () => {
 
   useEffect(() => {
     if (
-      !account.isAddress(bidData.accountAddress) ||
-      !account.isAddress(askData.accountAddress)
+      !util.isAddress(bidData.accountAddress) ||
+      !util.isAddress(askData.accountAddress)
     )
       return
     dispatch(updateBidData(bidData))

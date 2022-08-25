@@ -46,7 +46,7 @@ const Search = ({
 
     // Return
     return setMintAddresses(Object.keys(sortedMint))
-  }, [tokenProvider, pools, accounts])
+  }, [pools, accounts])
 
   useEffect(() => {
     sortMintAddresses()
@@ -65,7 +65,7 @@ const Search = ({
       return data.push(mintAddress)
     })
     return onChange(data)
-  }, [keyword, onChange, tokenProvider, mintAddresses])
+  }, [keyword, onChange, mintAddresses])
 
   useEffect(() => {
     search()

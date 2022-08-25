@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { util, tokenProvider } from '@sentre/senhub'
+import { tokenProvider, util } from '@sentre/senhub'
 
 const DEFAULT_DATA = {
   address: '',

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useMintTotalValue } from './useMintTotalValue'
-import { usePool } from './usePool'
+import { usePool } from 'hooks/usePool'
 
 // Refer: sen-lp
 export const usePoolTvl = (poolAddress?: string) => {

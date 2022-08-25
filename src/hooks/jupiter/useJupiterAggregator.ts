@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { account, PoolData } from '@senswap/sen-js'
 import { useJupiter } from '@jup-ag/react-hook'
 import { Connection } from '@solana/web3.js'
+import { rpc, util, useWalletAddress } from '@sentre/senhub'
 
 import { AppDispatch, AppState } from 'model'
 import {
@@ -11,9 +12,7 @@ import {
   SwapPlatform,
 } from 'model/route.controller'
 import { RouteTrace } from 'helper/router'
-
 import JupiterWalletWrapper from 'hooks/jupiter/jupiterWalletWrapper'
-import { rpc, useWalletAddress } from '@sentre/senhub'
 import { HopData } from 'components/preview'
 
 const connection = new Connection(rpc)
@@ -44,14 +43,14 @@ const useJupiterAggregator = () => {
   const amount = Number(bidAmount) * 10 ** bidDecimals
   const inputMint = useMemo(
     () =>
-      account.isAddress(bidMintAddress)
+      util.isAddress(bidMintAddress)
         ? account.fromAddress(bidMintAddress)
         : undefined,
     [bidMintAddress],
   )
   const outputMint = useMemo(
     () =>
-      account.isAddress(askMintAddress)
+      util.isAddress(askMintAddress)
         ? account.fromAddress(askMintAddress)
         : undefined,
     [askMintAddress],
@@ -70,7 +69,7 @@ const useJupiterAggregator = () => {
     const {
       sentre: { wallet },
     } = window
-    if (!wallet || !account.isAddress(walletAddress))
+    if (!wallet || !util.isAddress(walletAddress))
       throw new Error('Wallet is not connected')
     if (!routes?.length) throw new Error('No available route')
 

@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { account } from '@senswap/sen-js'
-import { useWalletAddress, tokenProvider } from '@sentre/senhub'
+import { tokenProvider, useWalletAddress, util } from '@sentre/senhub'
 
 import { SelectionInfo } from 'components/selection/mintSelection'
-import { usePool } from './usePool'
+import { usePool } from 'hooks/usePool'
 
 const DEFAULT_INFO = {
   accountAddress: '',
@@ -15,13 +14,13 @@ type MintSelection = SelectionInfo & {
 }
 
 export const useMintSelection = (mintAddress: string): MintSelection => {
-  const walletAddress = useWalletAddress()
   const { pools } = usePool()
+  const walletAddress = useWalletAddress()
   const [selectionInfo, setSelectionInfo] =
     useState<MintSelection>(DEFAULT_INFO)
 
   const getSelectionInfo = useCallback(async () => {
-    if (!account.isAddress(mintAddress) || !Object.keys(pools).length)
+    if (!util.isAddress(mintAddress) || !Object.keys(pools).length)
       return setSelectionInfo(DEFAULT_INFO)
 
     const mintInfo = await tokenProvider.findByAddress(mintAddress)

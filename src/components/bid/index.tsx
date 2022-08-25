@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { account, DEFAULT_WSOL, utils } from '@senswap/sen-js'
+
+import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 import {
   useGetMintDecimals,
-  useUI,
+  useTheme,
   useWalletAddress,
   useWalletBalance,
 } from '@sentre/senhub'
 import { util } from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, Radio, InputNumber } from 'antd'
-import { MintSelection, MintSymbol } from '@sen-use/components'
+import { MintSelection, MintSymbol } from '@sen-use/app'
 
 import { AppDispatch, AppState } from 'model'
 import { updateBidData } from 'model/bid.controller'
@@ -39,9 +40,8 @@ const Bid = () => {
   const lamports = useWalletBalance()
   const { pools } = usePool()
   const getDecimals = useGetMintDecimals()
-  const {
-    ui: { theme },
-  } = useUI()
+  const theme = useTheme()
+
   const {
     bid: { amount: bidAmount, accountAddress, mintInfo, poolAddresses },
   } = useSelector((state: AppState) => state)
@@ -54,8 +54,7 @@ const Bid = () => {
 
   // Select default
   useEffect(() => {
-    if (account.isAddress(accountAddress) || account.isAddress(poolAdress))
-      return
+    if (util.isAddress(accountAddress) || util.isAddress(poolAdress)) return
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
     dispatch(updateBidData(selectionDefault))
   }, [accountAddress, dispatch, poolAdress, selectionDefault])
@@ -117,7 +116,7 @@ const Bid = () => {
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
     (mintAddress: string) => {
-      if (!account.isAddress(mintAddress)) return []
+      if (!util.isAddress(mintAddress)) return []
       return Object.keys(pools).filter((poolAddress) => {
         const { mint_a, mint_b } = pools[poolAddress]
         return [mint_a, mint_b].includes(mintAddress)
@@ -141,7 +140,7 @@ const Bid = () => {
     }
 
     dispatch(setLoadingSenSwap({ loadingSenswap: true }))
-    if (!account.isAddress(mintAddress))
+    if (!util.isAddress(mintAddress))
       return dispatch(
         updateBidData({ amount: '', prioritized: true, ...selectionInfo }),
       )

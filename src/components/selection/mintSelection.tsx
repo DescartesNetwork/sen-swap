@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react'
-import { account } from '@senswap/sen-js'
 import LazyLoad from '@sentre/react-lazyload'
-import { useGetMintDecimals } from '@sentre/senhub'
+import { useGetMintDecimals, util } from '@sentre/senhub'
 
 import { Row, Col, Typography, Divider } from 'antd'
 import Search from './search'
@@ -32,7 +31,7 @@ const MintSelection = ({
   // Compute available pools
   const getAvailablePoolAddresses = useCallback(
     (mintAddress: string) => {
-      if (!account.isAddress(mintAddress)) return []
+      if (!util.isAddress(mintAddress)) return []
       return Object.keys(pools).filter((poolAddress) => {
         const { mint_a, mint_b } = pools[poolAddress]
         return [mint_a, mint_b].includes(mintAddress)

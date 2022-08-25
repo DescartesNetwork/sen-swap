@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { account, PoolData, utils } from '@senswap/sen-js'
+import { PoolData, utils } from '@senswap/sen-js'
 
 import { Card, Col, Divider, Row } from 'antd'
 import MintPoolInfo from './mintPoolInfo'
@@ -9,6 +9,7 @@ import { AppState } from 'model'
 import { extractReserve } from 'helper/router'
 import useMintCgk from 'hooks/useMintCgk'
 import './index.less'
+import { util } from '@sentre/senhub/dist'
 
 const PoolInfo = () => {
   const {
@@ -24,7 +25,7 @@ const PoolInfo = () => {
 
   const getMintTVL = (mintAddress?: string, poolData?: PoolData) => {
     try {
-      if (!account.isAddress(mintAddress) || !poolData) return BigInt(0)
+      if (!util.isAddress(mintAddress) || !poolData) return BigInt(0)
       return extractReserve(mintAddress, poolData)
     } catch (er) {
       return BigInt(0)

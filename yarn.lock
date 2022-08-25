@@ -2220,7 +2220,7 @@
     "@solana/spl-token" "^0.1.8"
     "@solana/web3.js" "^1.31.0"
 
-"@metaplex/js@4.12.0", "@metaplex/js@^4.12.0":
+"@metaplex/js@4.12.0":
   version "4.12.0"
   resolved "https://registry.yarnpkg.com/@metaplex/js/-/js-4.12.0.tgz#1190767a4e69d4e5613002aab3f4c1fb8de07896"
   integrity sha512-rIUTMXo5gIXFIZt08AEHyqH4oVoLL2dMYiNePQluw9pydesRym4jDayJ5POxEmKmyc6KGqVKw/YWUIivmUY5zg==
@@ -2602,19 +2602,19 @@
     tiny-invariant "^1.2.0"
     tslib "^2.4.0"
 
-"@sen-use/components@^2.0.15":
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/@sen-use/components/-/components-2.0.15.tgz#35b368fa6584b57009a73361a2352600a2fab50f"
-  integrity sha512-rZ11vWCK7jUbCyYvSbZrmwk8U76eSvkdDgBFv2m83htH5Oq4CtxFrOLzdUFd8T6yJmiDgIIIGIdDYndUhRG1YQ==
+"@sen-use/app@^3.2.4":
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@sen-use/app/-/app-3.2.4.tgz#38af3dfc5617cbe7375bc3119953889ae823f25c"
+  integrity sha512-B6R/wqpbgttqR4+Eyf4fs1nmsOWf4C9FbXJiJHg48D6gYWUUj6Gr79mLuqWTnl3BGkccjybLlOx8mTPZCqwZ0Q==
   dependencies:
-    "@metaplex/js" "^4.12.0"
-    lunr "^2.3.9"
+    localforage "^1.10.0"
     react-use "^17.4.0"
+    web3.storage "^4.2.0"
 
-"@sen-use/web3@^2.0.15":
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/@sen-use/web3/-/web3-2.0.15.tgz#4876a6e80d8e3d8e5fe964deb83de67c40184819"
-  integrity sha512-uSFVsqXW0s1ej1c1nGrQWLrjcA1tbdMf4Agvqc+AwIIiNEzEZJ3r78rnwtISU4Gn3SZn0IihuoEgO3UP2jhxew==
+"@sen-use/web3@^3.2.4":
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@sen-use/web3/-/web3-3.2.4.tgz#d68ec6262480184aa62631ffa98d2d0bb1a475de"
+  integrity sha512-WC7CtbWwu8sBr5jZJFbde7vb/4Kp80x0TSH/CJMZCsaZInNe0mZcWVbnwRkQmmsZctxrBFP6deHo7I9rlFFYVQ==
   dependencies:
     "@project-serum/anchor" "^0.24.2"
     "@solana/web3.js" "^1.50.0"
@@ -2637,42 +2637,28 @@
     soprox-abi "^0.0.18"
     tweetnacl "^1.0.3"
 
-"@sentre/antd-ionicon@^1.0.31":
-  version "1.0.35"
-  resolved "https://registry.yarnpkg.com/@sentre/antd-ionicon/-/antd-ionicon-1.0.35.tgz#d5f1cfdba3da53eb201cc04f20e2db7dbc0af437"
-  integrity sha512-/pQ8wFvdo3ska8k8m/V3DexjBmmQ4774VzQuOASS3FWUV85nQkjyFvSw4kKc0OYQ4ooB/YC+mhxrEkXK6Sozpg==
+"@sentre/antd-ionicon@^1.0.43":
+  version "1.0.43"
+  resolved "https://registry.yarnpkg.com/@sentre/antd-ionicon/-/antd-ionicon-1.0.43.tgz#78522a375c90ab385edf288cd2acbbfa48a8e1c6"
+  integrity sha512-A8eQnqk52xEcuFS6l2tafWhZ5o7cvJA7gsyMoikDEFy0M9MdqlZTSxTHMIciaCje7e1Lu4E0DioG2CVGZHr/OQ==
   dependencies:
     react-helmet "^6.1.0"
 
-"@sentre/antd-ionicon@^1.0.38":
-  version "1.0.38"
-  resolved "https://registry.yarnpkg.com/@sentre/antd-ionicon/-/antd-ionicon-1.0.38.tgz#45149ee0599d8e06e41a0b322853995e818c1039"
-  integrity sha512-gCeS27E3DFIUS35E1r0DHzsEYGnBE6rIA86XnbtNJQwZNBjWlCpXsD0UA5WxYF/0lgY+cTh+L+/1kjZiwOslrg==
+"@sentre/connector@^0.0.59":
+  version "0.0.59"
+  resolved "https://registry.yarnpkg.com/@sentre/connector/-/connector-0.0.59.tgz#d2bd9a8a76a01416db648e88a0e91be53eb9b339"
+  integrity sha512-9shScgd/czkqpbDDUdKs2aLv6Tp4bZlkZVm1bauFgaLK6xTWxhVudhBP1EZgH5TKnK0CA0SnAcOVWn6nzOe3Eg==
   dependencies:
-    react-helmet "^6.1.0"
-
-"@sentre/connector@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@sentre/connector/-/connector-0.0.30.tgz#c77162b7d799e12b74d8d3b65eea465d0ffb5fcc"
-  integrity sha512-/tJHcOBfsk96LcCM98JfuOtD/Ski1W4hBowiG7/tRw/u639R3hFCbUfg3pUcA9DwMJXCv1dTK2ld/99TvQGVyw==
-  dependencies:
-    "@solana/web3.js" "^1.43.1"
-
-"@sentre/connector@^0.0.57":
-  version "0.0.57"
-  resolved "https://registry.yarnpkg.com/@sentre/connector/-/connector-0.0.57.tgz#bab8c17db3553af9537ae4b2ce6628b1a50892f4"
-  integrity sha512-E2R3WVM6LJwt1QFmxT9DYl7jMUbiDhooWEuSqD0wd4h6MrPivfL2cmxLWfRsWO0wO4P6yoVP1p4W4K+r8nT/jw==
-  dependencies:
-    "@solana/wallet-adapter-base" "^0.9.7"
+    "@solana/wallet-adapter-base" "0.9.7"
     "@solana/web3.js" "^1.44.3"
     bs58 "^5.0.0"
     tweetnacl "^1.0.3"
     uuid "^8.3.2"
 
-"@sentre/craco-plugins@^1.0.37":
-  version "1.0.38"
-  resolved "https://registry.yarnpkg.com/@sentre/craco-plugins/-/craco-plugins-1.0.38.tgz#b61e414515ec9faae6f0ab9c6d18fbe31074ee73"
-  integrity sha512-xIVORdoVYzaZwZDxq0uXqW/9D154t2GxkeFcPlQ3h40lwXebp6wv1yLSjihkX2dJARQP0j9xI2ZNdkiLCnHhGw==
+"@sentre/craco-plugins@^1.0.43":
+  version "1.0.43"
+  resolved "https://registry.yarnpkg.com/@sentre/craco-plugins/-/craco-plugins-1.0.43.tgz#d8ad3a8757918b64f3073978bb548cf9afca5018"
+  integrity sha512-IqPFzf2JmioSgbhEixciCTKRhD+cq8VCHDWIhqOrZjVvbMQed7PxzZm0FacnYZMe7tC31ZXwqNTf43GXNtrzLw==
   dependencies:
     "@babel/cli" "^7.17.10"
     "@babel/core" "^7.18.2"
@@ -2687,6 +2673,7 @@
     buffer "^6.0.3"
     craco-module-federation "^1.1.0"
     crypto-browserify "^3.12.0"
+    dotenv-expand "^8.0.3"
     https-browserify "^1.0.0"
     less "^4.1.2"
     less-loader "^11.0.0"
@@ -2716,10 +2703,10 @@
   resolved "https://registry.yarnpkg.com/@sentre/react-lazyload/-/react-lazyload-3.2.2.tgz#f3d921327a2b14b9b3a9e906d01034f11387097a"
   integrity sha512-NKJhz9G8pModoZJaLMziRJtd582pFHbIydNXwRI72ECkjqbc7XIgBX+8kssrUtRxK2rW9VVQnGKDpmyZ8iSIyw==
 
-"@sentre/senhub@^3.2.9":
-  version "3.2.14"
-  resolved "https://registry.yarnpkg.com/@sentre/senhub/-/senhub-3.2.14.tgz#53aec418f2d61fbc3c6e857674e6836f38952390"
-  integrity sha512-YmZrCwP82CY3etq4J5QsItYgz2+taaXbK1mwHigDr4N8yWzs4GX2KbiI6WejlT9wWgmfnsj3dcXmflky5IpIGA==
+"@sentre/senhub@^3.2.20":
+  version "3.2.20"
+  resolved "https://registry.yarnpkg.com/@sentre/senhub/-/senhub-3.2.20.tgz#98a4ad726088a5fffd9514c5ddc251d268d17b75"
+  integrity sha512-IAXCgtOE3+CgvtDeyrCWTC8GSCj/sfhDyfvleqKZK3Pra+JWheLrBtGtub0/Oy/6KX3OFfHQ8CPm5ZComSrjlQ==
   dependencies:
     "@dnd-kit/core" "^4.0.1"
     "@dnd-kit/sortable" "^5.0.0"
@@ -2728,8 +2715,8 @@
     "@project-serum/sol-wallet-adapter" "^0.2.6"
     "@reduxjs/toolkit" "^1.8.0"
     "@senswap/sen-js" "^1.4.0"
-    "@sentre/antd-ionicon" "^1.0.38"
-    "@sentre/connector" "^0.0.57"
+    "@sentre/antd-ionicon" "^1.0.43"
+    "@sentre/connector" "^0.0.59"
     "@sentre/react-dynamic-remote-component" "^0.0.6"
     "@sentre/react-lazyload" "^3.2.2"
     "@solana/spl-token-registry" "^0.2.3771"
@@ -2744,6 +2731,7 @@
     lunr "^2.3.9"
     numbro "^2.3.5"
     qrcode.react "^3.0.0"
+    react-fast-compare "^3.2.0"
     react-json-view "^1.21.3"
     react-redux "^7.2.6"
     react-router-dom "^5.3.0"
@@ -2808,17 +2796,17 @@
     buffer-layout "^1.2.0"
     dotenv "10.0.0"
 
+"@solana/wallet-adapter-base@0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.7.tgz#9ce3446ed8d8ee5b3b39943df143e651289813f7"
+  integrity sha512-XS1roBwoS+5wRcWudJfS7NPDRJUwfuq9tZwFElpGlgVnndlLARiv7lLp2IkpFPyPr7Q2H4j9pkGi1XLoRAx1lQ==
+  dependencies:
+    eventemitter3 "^4.0.0"
+
 "@solana/wallet-adapter-base@^0.9.2":
   version "0.9.9"
   resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.9.tgz#110f99bc9eee18af2625fd6170264e4363e25ffd"
   integrity sha512-Z0zB+36JWRytE2OzMiB2DACRyVwiUdEg2Xy1nPR0rESCTXKI8wQGTb4g6ELjmTTU7+elKqsPE+fhFsJykn76pQ==
-  dependencies:
-    eventemitter3 "^4.0.0"
-
-"@solana/wallet-adapter-base@^0.9.7":
-  version "0.9.14"
-  resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.14.tgz#6039020eefeff527583c4bcf287f2c2efb570225"
-  integrity sha512-LdTN62dwez09C5TJzrKcPqMzJfwTaTqmaSZSrZl6mLa4G+pWAQbew6UelVvv8/dAVja/ukOc1+LM8MqTP1KehQ==
   dependencies:
     eventemitter3 "^4.0.0"
 
@@ -2842,7 +2830,7 @@
     superstruct "^0.14.2"
     tweetnacl "^1.0.0"
 
-"@solana/web3.js@^1.17.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.24.0", "@solana/web3.js@^1.29.2", "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.43.1":
+"@solana/web3.js@^1.17.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.24.0", "@solana/web3.js@^1.29.2", "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.36.0":
   version "1.48.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.48.0.tgz#331281b2d80640431fb3b6fdc6b704ec325917aa"
   integrity sha512-Gb6XvdhGjGI7CdAXLmlMIEvEYvrwqc78JOtwCsSrTqzz7Ek/BhJpZ/Cv89gxRDrWxf6kHegAfaN2FxwuYMmDZQ==
@@ -4068,6 +4056,18 @@
     "@web3-storage/multipart-parser" "^1.0.0"
     data-uri-to-buffer "^3.0.1"
 
+"@web-std/fetch@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@web-std/fetch/-/fetch-4.1.0.tgz#db1eb659198376dad692421896b7119fb13e6e52"
+  integrity sha512-ZRizMcP8YyuRlhIsRYNFD9x/w28K7kbUhNGmKM9hDy4qeQ5xMTk//wA89EF+Clbl6EP4ksmCcN+4TqBMSRL8Zw==
+  dependencies:
+    "@web-std/blob" "^3.0.3"
+    "@web-std/form-data" "^3.0.2"
+    "@web-std/stream" "^1.0.1"
+    "@web3-storage/multipart-parser" "^1.0.0"
+    data-uri-to-buffer "^3.0.1"
+    mrmime "^1.0.0"
+
 "@web-std/file@^3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@web-std/file/-/file-3.0.2.tgz#b84cc9ed754608b18dcf78ac62c40dbcc6a94692"
@@ -4086,6 +4086,13 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@web-std/stream/-/stream-1.0.0.tgz#01066f40f536e4329d9b696dc29872f3a14b93c1"
   integrity sha512-jyIbdVl+0ZJyKGTV0Ohb9E6UnxP+t7ZzX4Do3AHjZKxUXKMs9EmqnBDQgHF7bEw0EzbQygOjtt/7gvtmi//iCQ==
+  dependencies:
+    web-streams-polyfill "^3.1.1"
+
+"@web-std/stream@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@web-std/stream/-/stream-1.0.1.tgz#af2972654848e20a683781b0a50bef2ce3f011a0"
+  integrity sha512-tsz4Y0WNDgFA5jwLSeV7/UV5rfMIlj0cPsSLVfTihjaVW0OJPd5NxJ3le1B3yLyqqzRpeG5OAfJAADLc4VoGTA==
   dependencies:
     web-streams-polyfill "^3.1.1"
 
@@ -5506,7 +5513,7 @@ catering@^2.0.0, catering@^2.1.0:
   resolved "https://registry.yarnpkg.com/catering/-/catering-2.1.1.tgz#66acba06ed5ee28d5286133982a927de9a04b510"
   integrity sha512-K7Qy8O9p76sL3/3m7/zLKbRkyOlSZAgzEaLhyj2mXS8PsCud2Eo4hAb8aLtZqHh0QGqLcb9dlJSu6lHRVENm1w==
 
-cborg@^1.3.1, cborg@^1.3.3, cborg@^1.3.4, cborg@^1.5.4, cborg@^1.6.0, cborg@^1.8.0, cborg@^1.9.0:
+cborg@^1.3.1, cborg@^1.3.3, cborg@^1.3.4, cborg@^1.5.4, cborg@^1.6.0, cborg@^1.8.0, cborg@^1.9.0, cborg@^1.9.4:
   version "1.9.4"
   resolved "https://registry.yarnpkg.com/cborg/-/cborg-1.9.4.tgz#85354ee6e0fe017dd34e300c3dcd044407a27800"
   integrity sha512-ltobKo17xKYJolhg8UxQhvzcqXhjtUnovwe9Xx59Izo32gLwozGoJs/efp+8dZ5+zu9pNJYnHtmp6iJnDUapww==
@@ -6651,6 +6658,11 @@ dotenv-expand@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
+
+dotenv-expand@^8.0.3:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-8.0.3.tgz#29016757455bcc748469c83a19b36aaf2b83dd6e"
+  integrity sha512-SErOMvge0ZUyWd5B0NXMQlDkN+8r+HhVUsxgOO7IoPDOdDRD2JjExpN6y3KnFR66jsJMwSn1pqIivhU5rcJiNg==
 
 dotenv@10.0.0, dotenv@^10.0.0:
   version "10.0.0"
@@ -14660,7 +14672,7 @@ throttle-debounce@^3.0.1:
   resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-3.0.1.tgz#32f94d84dfa894f786c9a1f290e7a645b6a19abb"
   integrity sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==
 
-throttled-queue@^2.1.2:
+throttled-queue@^2.1.2, throttled-queue@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/throttled-queue/-/throttled-queue-2.1.4.tgz#4e2008c73ab3f72ba1bb09496c3cc9c5b745dbee"
   integrity sha512-YGdk8sdmr4ge3g+doFj/7RLF5kLM+Mi7DEciu9PHxnMJZMeVuZeTj31g4VE7ekUffx/IdbvrtOCiz62afg0mkg==
@@ -15237,6 +15249,17 @@ w3c-xmlserializer@^2.0.0:
   dependencies:
     xml-name-validator "^3.0.0"
 
+w3name@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/w3name/-/w3name-1.0.4.tgz#aacb8658ed43935f4b37fe6a868e78e44d6c0765"
+  integrity sha512-wR7+MCCgutYTc7R17zsUji/XRm9JcaX72ac8rJcAS+WUJYWYR+jf0v8NT82kYhpwnv/yeXlFa/KqNbzI7TvFSA==
+  dependencies:
+    "@web-std/fetch" "^4.1.0"
+    cborg "^1.9.4"
+    ipns "^0.16.0"
+    libp2p-crypto "^0.21.2"
+    throttled-queue "^2.1.4"
+
 walker@^1.0.7:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.8.tgz#bd498db477afe573dc04185f011d3ab8a8d7653f"
@@ -15278,7 +15301,29 @@ web-vitals@^2.1.1:
   resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-2.1.4.tgz#76563175a475a5e835264d373704f9dde718290c"
   integrity sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==
 
-web3.storage@^4.2.0, web3.storage@^4.3.0:
+web3.storage@^4.2.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/web3.storage/-/web3.storage-4.4.0.tgz#c62807e6400b16eb028d93bed6d7f76a929150a8"
+  integrity sha512-I48GB+cFGfSbi47e3ZmyRX/ZUi9EcrqUylZ6FG1AU8UGErG3t4svZocaXTaUnp2zZWAtbbUFsFtD/cd9FgoVjA==
+  dependencies:
+    "@ipld/car" "^3.1.4"
+    "@web-std/blob" "^3.0.4"
+    "@web-std/fetch" "^3.0.3"
+    "@web-std/file" "^3.0.2"
+    "@web3-storage/parse-link-header" "^3.1.0"
+    browser-readablestream-to-it "^1.0.3"
+    carbites "^1.0.6"
+    cborg "^1.8.0"
+    files-from-path "^0.2.4"
+    ipfs-car "^0.7.0"
+    libp2p-crypto "^0.21.0"
+    p-retry "^4.5.0"
+    streaming-iterables "^6.2.0"
+    throttled-queue "^2.1.2"
+    uint8arrays "^3.0.0"
+    w3name "^1.0.4"
+
+web3.storage@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/web3.storage/-/web3.storage-4.3.0.tgz#88f778a0e2463701a1d2434e9835d930fa7aa18f"
   integrity sha512-9IKn+4dyF7cMXC9etVzW3qmCV/6sL+Za4kcUUn7D3qRt4s1DrKUGJdAe9VvYcpHwbnnYoKNBu06lGO++daDo8w==

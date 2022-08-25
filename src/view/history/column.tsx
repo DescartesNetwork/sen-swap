@@ -1,9 +1,9 @@
+import { util } from '@sentre/senhub'
+
 import { Button, Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from '@sen-use/components'
 import IonIcon from '@sentre/antd-ionicon'
 import StatusTag from './statusTag'
-
-import { util } from '@sentre/senhub'
+import { MintAvatar, MintSymbol } from '@sen-use/app'
 
 const FORMAT_AMOUNT = '0,00.[0000]a'
 
