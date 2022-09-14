@@ -88,7 +88,7 @@ const View = () => {
             type="info"
             message={
               <Typography.Title level={5}>
-                Balansol is launched ✅ Explorer Now ✨
+                Balansol is launched ✅ Explore Now ✨
               </Typography.Title>
             }
             description={
