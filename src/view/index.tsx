@@ -93,13 +93,13 @@ const View = () => {
             }
             description={
               <Typography.Text type="secondary">
-                Liquidity Providing and Swapping are now live on{' '}
-                <strong>Balansol</strong> with index funds and custom pool
-                weights.{' '}
-                <strong>
+                Liquidity Provision and Swap are now live on{' '}
+                <span style={{ fontWeight: 900 }}>Balansol</span> with index
+                funds and custom pool weights.{' '}
+                <span style={{ fontWeight: 900 }}>
                   Get your LPs for juicy APR farming - Click here to use
                   Balansol now!
-                </strong>
+                </span>
               </Typography.Text>
             }
             onClick={() =>
