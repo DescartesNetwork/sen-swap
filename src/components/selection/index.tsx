@@ -46,7 +46,7 @@ const Selection = ({
         </Typography.Text>
       </Space>
       <Modal
-        visible={visible}
+        open={visible}
         onCancel={() => setVisible(false)}
         closeIcon={<IonIcon name="close" />}
         footer={null}

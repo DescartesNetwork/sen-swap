@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-
 import LazyLoad from '@sentre/react-lazyload'
 import { useGetMintDecimals, util } from '@sentre/senhub'
 
