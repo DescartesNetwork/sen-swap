@@ -22,7 +22,7 @@ export default class SwapService {
   }
 
   private async getPDB() {
-    const walletAddress = await window.sentre.wallet?.getAddress()
+    const walletAddress = await window.sentre.solana?.getAddress()
     if (!walletAddress) throw new Error('Invalid wallet address')
     const db = createPDB(walletAddress, appId)
     if (!db) throw new Error('Can not create pdb')

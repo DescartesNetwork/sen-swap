@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { account } from '@senswap/sen-js'
-import { useWalletAddress } from '@sentre/senhub'
+import { useWalletAddress, splt } from '@sentre/senhub'
 
 import { AppDispatch } from 'model'
 import { getPools, upsetPool } from 'model/pool.controller'
@@ -30,7 +30,7 @@ const PoolWatcher = () => {
       return dispatch(upsetPool({ address, data }))
     }
     const filters = [{ memcmp: { bytes: walletAddress, offset: 32 } }]
-    watchId = window.sentre.splt.watch(callback, filters)
+    watchId = splt.watch(callback, filters)
   }, [dispatch, walletAddress])
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const PoolWatcher = () => {
     return () => {
       ;(async () => {
         try {
-          await window.sentre.splt.unwatch(watchId)
+          await splt.unwatch(watchId)
         } catch (er) {}
       })()
       watchId = 0

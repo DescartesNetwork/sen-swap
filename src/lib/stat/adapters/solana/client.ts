@@ -5,6 +5,7 @@ import {
   ParsedConfirmedTransaction,
   PublicKey,
 } from '@solana/web3.js'
+import { connection } from '@sentre/senhub'
 
 import { OptionsFetchSignature } from '../../constants/transaction'
 
@@ -12,7 +13,7 @@ const DEFAULT_LIMIT = 700
 const TRANSACTION_LIMIT = 200
 
 export class Solana {
-  private conn: Connection = window.sentre.splt.connection
+  private conn: Connection = connection
 
   //Search for all signatures from last Signature and earlier
   //So: If new collection (to now) -> last Signature = null

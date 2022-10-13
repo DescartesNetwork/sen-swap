@@ -1,5 +1,5 @@
 import { CHAIN_ID_ETH, CHAIN_ID_SOLANA } from '@certusone/wormhole-sdk'
-import { storage } from '@sentre/senhub'
+import { storage, connection } from '@sentre/senhub'
 
 import {
   EtherNetwork,
@@ -45,7 +45,7 @@ export const getSolContext = () => {
 export const checkAttestedWormhole = async (mintAddress: string) => {
   const solContext = getSolContext()
   return getIsWrappedAssetSol(
-    window.sentre.splt.connection,
+    connection,
     solContext.tokenBridgeAddress,
     mintAddress,
   )

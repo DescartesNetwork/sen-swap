@@ -35,7 +35,7 @@ const initialState: State = {
 export const fetchHistorySwap = createAsyncThunk<{
   historySwap: HistorySwap[]
 }>(`${NAME}/fetchHistorySwap`, async () => {
-  const myWalletAddress = await window.sentre.wallet?.getAddress()
+  const myWalletAddress = await window.sentre.solana?.getAddress()
   if (!myWalletAddress) throw Error('Login first')
 
   const transLogService = new SwapService(myWalletAddress)

@@ -67,13 +67,13 @@ const useJupiterAggregator = () => {
 
   const swap = useCallback(async () => {
     const {
-      sentre: { wallet },
+      sentre: { solana },
     } = window
-    if (!wallet || !util.isAddress(walletAddress))
+    if (!solana || !util.isAddress(walletAddress))
       throw new Error('Wallet is not connected')
     if (!routes?.length) throw new Error('No available route')
 
-    const wrappedWallet = new JupiterWalletWrapper(walletAddress, wallet)
+    const wrappedWallet = new JupiterWalletWrapper(walletAddress, solana)
     const result: any = await exchange({
       wallet: wrappedWallet,
       routeInfo: routes[0],
