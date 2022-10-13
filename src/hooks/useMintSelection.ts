@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { tokenProvider, useWalletAddress, util } from '@sentre/senhub'
+import { tokenProvider, useWalletAddress, util, splt } from '@sentre/senhub'
 
 import { SelectionInfo } from 'components/selection/mintSelection'
 import { usePool } from 'hooks/usePool'
@@ -25,7 +25,6 @@ export const useMintSelection = (mintAddress: string): MintSelection => {
 
     const mintInfo = await tokenProvider.findByAddress(mintAddress)
     if (!mintInfo) return setSelectionInfo(DEFAULT_INFO)
-    const { splt } = window.sentre
     // get mint account
     const accountAddress = await splt.deriveAssociatedAddress(
       walletAddress,

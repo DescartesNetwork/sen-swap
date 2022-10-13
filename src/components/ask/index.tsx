@@ -1,8 +1,12 @@
 import { useMemo, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-
-import { useGetMintDecimals, useTheme, useWalletAddress } from '@sentre/senhub'
+import {
+  useGetMintDecimals,
+  useTheme,
+  useWalletAddress,
+  splt,
+} from '@sentre/senhub'
 
 import { Row, Col, Typography, Space, InputNumber } from 'antd'
 import { SelectionInfo } from '../selection/mintSelection'
@@ -64,7 +68,6 @@ const Ask = () => {
   )
 
   const onSelectionInfo = async (mintAddress: string) => {
-    const { splt } = window.sentre
     const poolAddresses = getAvailablePoolAddresses(mintAddress)
     const decimals = (await getDecimals({ mintAddress })) || 0
 

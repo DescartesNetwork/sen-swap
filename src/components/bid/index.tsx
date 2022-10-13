@@ -8,6 +8,7 @@ import {
   useTheme,
   useWalletAddress,
   useWalletBalance,
+  splt,
 } from '@sentre/senhub'
 import { util } from '@sentre/senhub'
 
@@ -76,7 +77,7 @@ const Bid = () => {
       return utils.undecimalize(balance, decimals)
     // So estimate max = 0.01 fee -> multi transaction.
     const estimateFee = utils.decimalize(0.01, decimals)
-    const max = lamports + balance - estimateFee
+    const max = BigInt(lamports) + balance - estimateFee
     if (max <= balance) return utils.undecimalize(balance, decimals)
     return utils.undecimalize(max, decimals)
   }, [balance, decimals, lamports, mintAddress])
@@ -127,7 +128,6 @@ const Bid = () => {
 
   // Update bid data
   const onSelectionInfo = async (mintAddress: string) => {
-    const { splt } = window.sentre
     const poolAddresses = getAvailablePoolAddresses(mintAddress)
     const decimals = (await getDecimals({ mintAddress })) || 0
 

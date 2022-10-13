@@ -1,11 +1,16 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { utils } from '@senswap/sen-js'
-import { useWalletAddress } from '@sentre/senhub'
+import { useWalletAddress, splt } from '@sentre/senhub'
 
 import { AppState } from 'model'
+import configs from 'configs'
 
 const PRECISION = BigInt(1000000000)
+
+const {
+  sol: { swap },
+} = configs
 
 export const useHandleSwap = () => {
   const {
@@ -23,8 +28,8 @@ export const useHandleSwap = () => {
   const walletAddress = useWalletAddress()
 
   const handleSwap = useCallback(async () => {
-    const { swap, splt, wallet } = window.sentre
-    if (!wallet) throw new Error('Wallet is not connected')
+    const { solana } = window.sentre
+    if (!solana) throw new Error('Wallet is not connected')
     // Synthetize routings
     const routingAddresses = await Promise.all(
       best.map(
@@ -55,7 +60,7 @@ export const useHandleSwap = () => {
     const limit =
       (askAmount * (PRECISION - utils.decimalize(slippage, 9))) / PRECISION
     // Execute swap
-    return await swap.route(bidAmount, limit, routingAddresses, wallet)
+    return await swap.route(bidAmount, limit, routingAddresses, solana)
   }, [
     best,
     bidMintDecimals,

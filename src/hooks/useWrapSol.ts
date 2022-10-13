@@ -4,6 +4,11 @@ import { DEFAULT_WSOL, utils } from '@senswap/sen-js'
 
 import { AppState } from 'model'
 import useAccountBalance from 'shared/hooks/useAccountBalance'
+import configs from 'configs'
+
+const {
+  sol: { swap },
+} = configs
 
 export const useWrapSol = () => {
   const {
@@ -23,9 +28,9 @@ export const useWrapSol = () => {
   }, [bidBalance, bidAmount, bidMintAddress, bidMintDecimals])
 
   const wrapSol = async () => {
-    const { swap, wallet } = window.sentre
-    if (!wallet) throw new Error('Wallet is not connected')
-    if (wrapAmount) return await swap.wrapSol(wrapAmount, wallet)
+    const { solana } = window.sentre
+    if (!solana) throw new Error('Wallet is not connected')
+    if (wrapAmount) return await swap.wrapSol(wrapAmount, solana)
   }
 
   return { wrapAmount, wrapSol }

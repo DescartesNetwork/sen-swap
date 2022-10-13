@@ -29,7 +29,7 @@ export const useSwapStatus = () => {
       return utils.undecimalize(bidBalance, bidMintDecimals)
     // So estimate max = 0.01 fee -> multi transaction.
     const estimateFee = utils.decimalize(0.01, bidMintDecimals)
-    const max = lamports + bidBalance - estimateFee
+    const max = BigInt(lamports) + BigInt(bidBalance) - estimateFee
     if (max <= bidBalance)
       return utils.undecimalize(bidBalance, bidMintDecimals)
     return utils.undecimalize(max, bidMintDecimals)
